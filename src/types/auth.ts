@@ -1,12 +1,10 @@
 export interface WorkerLoginRequest {
-  loginId: string;
+  orgId: string;
   password: string;
 }
 
-export interface WorkerLoginResponse {
-  accessToken: string;
-  tokenType: string;
-}
+// 백엔드가 JWT 토큰 문자열 하나만 반환
+export type WorkerLoginResponse = string;
 
 export interface OAuthLoginResponse {
   accessToken: string;

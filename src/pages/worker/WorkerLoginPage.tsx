@@ -6,7 +6,7 @@ import BaseButton from '../../components/common/BaseButton';
 
 export default function WorkerLoginPage() {
   const navigate = useNavigate();
-  const [loginId, setLoginId] = useState('');
+  const [orgId, setLoginId] = useState('');
   const [password, setPassword] = useState('');
   const [idError, setIdError] = useState('');
   const [pwError, setPwError] = useState('');
@@ -18,7 +18,7 @@ export default function WorkerLoginPage() {
     setIdError('');
     setPwError('');
     setServerError('');
-    if (!loginId.trim()) {
+    if (!orgId.trim()) {
       setIdError('아이디를 입력해주세요.');
       valid = false;
     }
@@ -33,8 +33,8 @@ export default function WorkerLoginPage() {
     if (!validate()) return;
     setIsLoading(true);
     try {
-      const res = await workerLogin({ loginId, password });
-      localStorage.setItem('accessToken', res.accessToken);
+      const res = await workerLogin({ orgId, password });
+      localStorage.setItem('accessToken', res);
       navigate('/worker/dashboard');
     } catch (err: any) {
       const msg =
@@ -85,7 +85,7 @@ export default function WorkerLoginPage() {
             label="아이디"
             type="text"
             placeholder="아이디를 입력해주세요."
-            value={loginId}
+            value={orgId}
             onChange={(e) => {
               setLoginId(e.target.value);
               if (idError) setIdError('');
@@ -128,12 +128,7 @@ export default function WorkerLoginPage() {
           </button>
         </div>
 
-        {/* Mock 안내 */}
-        <div className="mt-6 p-3 bg-indigo-50 rounded-lg">
-          <p className="text-xs text-indigo-600 text-center">
-            🔑 테스트 계정: <strong>admin</strong> / <strong>1234</strong>
-          </p>
-        </div>
+
       </div>
     </div>
   );

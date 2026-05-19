@@ -1,121 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+
+import BaseButton from './components/common/BaseButton';
+import InputField from './components/common/InputField';
+import BaseModal from './components/common/BaseModal';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [value, setValue] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <div style={{ padding: 24 }}>
+        <h1>컴포넌트 테스트</h1>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        <div style={{ margin: '16px 0' }}>
+          <BaseButton onClick={() => alert('BaseButton 클릭')}>기본 버튼</BaseButton>
+          <BaseButton variant="secondary" className="ml-2">Secondary</BaseButton>
+          <BaseButton loading className="ml-2">로딩</BaseButton>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+        <div style={{ margin: '16px 0', maxWidth: 420 }}>
+          <InputField
+            label="이름"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            placeholder="이름 입력"
+            required
+          />
+        </div>
+
+        <div style={{ marginTop: 12 }}>
+          <BaseButton onClick={() => setIsOpen(true)}>모달 열기</BaseButton>
+        </div>
+
+        <BaseModal isOpen={isOpen} onClose={() => setIsOpen(false)} title="테스트 모달">
+          <p>입력값: {value}</p>
+          <div style={{ marginTop: 12 }}>
+            <BaseButton onClick={() => setIsOpen(false)}>닫기</BaseButton>
+          </div>
+        </BaseModal>
+      </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

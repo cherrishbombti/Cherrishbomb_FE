@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getTargets } from '../../apis/targets';
-import type { Target } from '../../types/target';
+import { getTargets } from '../../apis/targets'; // API 호출 함수 (경로 확인 필요)
+import type { Target, TargetsResponse } from '../../types/target';
 import TargetCard from '../../components/domain/TargetCard';
 import AddTargetModal from '../../components/domain/AddTargetModal';
 
+// ✨ 상태값을 백엔드 명세에 맞춰 EMERGENCY -> DANGER로 변경
 const SECTIONS = [
   {
-    status: 'EMERGENCY' as const,
+    status: 'DANGER' as const, 
     label: '긴급',
     icon: (
       <svg className="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -42,7 +43,7 @@ const SECTIONS = [
   },
 ];
 
-// 상단 요약 카드 설정
+// ✨ 상단 요약 카드 키값을 백엔드 stats 구조에 맞춰 emergency -> danger로 변경
 const STAT_CARDS = [
   {
     key: 'total' as const,
@@ -81,7 +82,7 @@ const STAT_CARDS = [
     valueColor: 'text-gray-800',
   },
   {
-    key: 'emergency' as const,
+    key: 'danger' as const,
     label: '긴급',
     icon: (
       <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
@@ -119,7 +120,8 @@ export default function WorkerDashboardPage() {
   const [selectedTargetId, setSelectedTargetId] = useState<number | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  const { data, isLoading, isRefetching, refetch } = useQuery({
+  // ✨ 제네릭을 명시해주면 타입 추론이 더 깔끔하게 됨
+  const { data, isLoading, isRefetching, refetch } = useQuery<TargetsResponse>({
     queryKey: ['targets'],
     queryFn: getTargets,
     refetchInterval: 1000 * 30,
@@ -134,14 +136,15 @@ export default function WorkerDashboardPage() {
     queryClient.invalidateQueries({ queryKey: ['targets'] });
   };
 
+  // ✨ data.targets -> data.members 로 변경
   const byStatus = (status: Target['status']) =>
-    data?.targets.filter((t) => t.status === status) ?? [];
+    data?.members.filter((m) => m.status === status) ?? [];
 
-  const summary = data?.summary;
+  // ✨ data.summary -> data.stats 로 변경
+  const stats = data?.stats;
 
   return (
     <div className="min-h-screen bg-gray-50">
-
       {/* 헤더 */}
       <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-2">
@@ -168,7 +171,6 @@ export default function WorkerDashboardPage() {
       </header>
 
       <main className="px-6 py-6 flex flex-col gap-6 max-w-screen-xl mx-auto">
-
         {/* ── 페이지 타이틀 ── */}
         <div>
           <h1 className="text-xl font-bold text-gray-800">통합 관제 대시보드</h1>
@@ -178,7 +180,8 @@ export default function WorkerDashboardPage() {
         {/* ── 상단 요약 카드 4개 ── */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {STAT_CARDS.map(({ key, label, icon, valueColor }) => {
-            const value = key === 'total' ? summary?.total : summary?.[key];
+            // ✨ stats 변수를 사용하도록 수정
+            const value = stats?.[key];
             return (
               <div key={key} className="bg-white rounded-xl border border-gray-100 p-5 flex flex-col gap-3 shadow-sm">
                 {icon}
@@ -240,24 +243,25 @@ export default function WorkerDashboardPage() {
             )}
 
             {!isLoading && SECTIONS.map(({ status, label, icon, textColor, emptyMsg }) => {
-              const targets = byStatus(status);
+              const members = byStatus(status);
               return (
                 <section key={status}>
                   <div className="flex items-center gap-2 mb-4">
                     {icon}
                     <h3 className={`text-sm font-bold ${textColor}`}>
                       {label}
-                      <span className="ml-1.5 font-normal text-gray-400">({targets.length})</span>
+                      <span className="ml-1.5 font-normal text-gray-400">({members.length})</span>
                     </h3>
                   </div>
-                  {targets.length === 0 ? (
+                  {members.length === 0 ? (
                     <p className="text-sm text-gray-400 py-2">{emptyMsg}</p>
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {targets.map((target) => (
+                      {members.map((member) => (
                         <TargetCard
-                          key={target.targetId}
-                          target={target}
+                          // ✨ 백엔드 PK 이름인 id로 변경
+                          key={member.id} 
+                          target={member} 
                           onClick={(id) => setSelectedTargetId(id)}
                         />
                       ))}
@@ -268,7 +272,6 @@ export default function WorkerDashboardPage() {
             })}
           </div>
         </div>
-
       </main>
 
       <AddTargetModal

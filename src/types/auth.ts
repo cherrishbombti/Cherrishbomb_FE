@@ -4,7 +4,9 @@ export interface WorkerLoginRequest {
 }
 
 // 백엔드가 JWT 토큰 문자열 하나만 반환
-export type WorkerLoginResponse = string;
+export interface WorkerLoginResponse {
+  token: string;
+}
 
 export interface OAuthLoginResponse {
   accessToken: string;

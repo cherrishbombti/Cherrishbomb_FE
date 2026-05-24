@@ -14,7 +14,7 @@ const STATUS_CONFIG: Record<TargetStatus, {
   avatarBg: string;
   dotColor: string;
 }> = {
-  EMERGENCY: {
+  DANGER: {
     cardBg: 'bg-red-50',
     border: 'border-red-200',
     badgeBg: 'bg-red-100',
@@ -59,7 +59,7 @@ export default function TargetCard({ target, onClick }: Props) {
 
   return (
     <div
-      onClick={() => onClick(target.targetId)}
+      onClick={() => onClick(target.id)}
       className={`${cfg.cardBg} border ${cfg.border} rounded-xl p-4 cursor-pointer hover:shadow-md transition-shadow flex flex-col gap-3`}
     >
       {/* 상단: 드래그 핸들 + 상태 뱃지 + 전화 버튼 */}
@@ -71,8 +71,8 @@ export default function TargetCard({ target, onClick }: Props) {
           </svg>
           {/* 상태 점 + 뱃지 */}
           <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${cfg.badgeBg} ${cfg.badgeText}`}>
-            <span className={`w-1.5 h-1.5 rounded-full ${cfg.dotColor} ${target.status === 'EMERGENCY' ? 'animate-pulse' : ''}`} />
-            {target.statusReason}
+            <span className={`w-1.5 h-1.5 rounded-full ${cfg.dotColor} ${target.status === 'DANGER' ? 'animate-pulse' : ''}`} />
+            {target.status}
           </div>
         </div>
         {/* 전화 버튼 */}
@@ -110,23 +110,16 @@ export default function TargetCard({ target, onClick }: Props) {
             <svg className="w-3 h-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
             </svg>
-            {target.isActive ? '활동 중' : '비활동'}
+            {target.status ? '활동 중' : '비활동'}
           </span>
-          {/* 배터리 */}
-          <span className={`flex items-center gap-1 ${target.battery <= 20 ? 'text-red-500 font-semibold' : ''}`}>
-            <svg className="w-3.5 h-3 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <rect x="2" y="7" width="18" height="10" rx="2" />
-              <path strokeLinecap="round" d="M22 11v2" />
-            </svg>
-            {target.battery}%
-          </span>
+          
         </div>
         {/* 마지막 업데이트 */}
         <span className="flex items-center gap-1">
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          최종 업데이트: {timeAgo(target.lastUpdatedAt)}
+          최종 업데이트: {timeAgo(target.lastUpdated)}
         </span>
       </div>
     </div>

@@ -34,7 +34,9 @@ export default function WorkerLoginPage() {
     setIsLoading(true);
     try {
       const res = await workerLogin({ orgId, password });
-      localStorage.setItem('accessToken', res);
+      localStorage.setItem('accessToken', res.token);
+      console.log("백엔드가 준 진짜 데이터 타입:", typeof res);
+      console.log("데이터 내용:", res);
       navigate('/worker/dashboard');
     } catch (err: any) {
       const msg =

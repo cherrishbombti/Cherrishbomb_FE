@@ -116,7 +116,7 @@ function SkeletonCard() {
 export default function WorkerDashboardPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [selectedTargetId, setSelectedTargetId] = useState<number | null>(null);
+  const [_selectedTargetId, setSelectedTargetId] = useState<number | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const { data, isLoading, isRefetching, refetch } = useQuery({

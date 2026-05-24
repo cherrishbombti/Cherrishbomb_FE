@@ -1,5 +1,5 @@
 import { axiosInstance } from './axiosInstance';
-import type { WardSummary, SensorData, Contact, AddContactRequest } from '../types/guardian';
+import type { WardSummary, SensorData, Contact, AddContactRequest, RegisterWardRequest, RegisterWardResponse } from '../types/guardian';
 
 const USE_MOCK = true;
 
@@ -79,4 +79,18 @@ export async function updateContactPriority(contacts: Contact[]): Promise<void> 
   await axiosInstance.put('/api/wards/me/contacts/priority', {
     contacts: contacts.map((c, i) => ({ contactId: c.contactId, priority: i + 1 })),
   });
+}
+
+// POST /api/wards/me (최초 피보호자 등록)
+export async function registerWard(body: RegisterWardRequest): Promise<RegisterWardResponse> {
+  if (USE_MOCK) {
+    const mock: RegisterWardResponse = {
+      wardId: Date.now(),
+      ...body,
+      createdAt: new Date().toISOString(),
+    };
+    return mockDelay(mock, 800);
+  }
+  const { data } = await axiosInstance.post<RegisterWardResponse>('/api/wards/me', body);
+  return data;
 }

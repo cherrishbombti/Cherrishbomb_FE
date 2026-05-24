@@ -8,13 +8,13 @@ export default function GuardianLoginPage() {
 
   const handleSocialLogin = (provider: 'google' | 'kakao') => {
     setLoadingProvider(provider);
-    const USE_MOCK = true;
+    /*const USE_MOCK = true;
     if (USE_MOCK) {
       setTimeout(() => {
         navigate(`/oauth/callback?provider=${provider}&code=mock-code-1234`);
       }, 600);
       return;
-    }
+    }*/
     window.location.href = getSocialLoginUrl(provider);
   };
 

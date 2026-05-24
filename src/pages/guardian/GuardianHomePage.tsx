@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getWardSummary, getWardSensors, getWardContacts, updateContactPriority } from '../../apis/guardian';
@@ -82,16 +82,18 @@ export default function GuardianHomePage() {
     queryFn: getWardSensors,
   });
 
-  useQuery({
+  const { data: contactsData } = useQuery({
     queryKey: ['wardContacts'],
     queryFn: getWardContacts,
-    onSuccess: (data: Contact[]) => {
-      if (!contactsLoaded) {
-        setContacts(data);
-        setContactsLoaded(true);
-      }
-    },
-  } as any);
+  });
+
+  // ✅ TanStack Query v5: onSuccess 대신 useEffect로 contacts 초기화
+  useEffect(() => {
+    if (contactsData && !contactsLoaded) {
+      setContacts(contactsData);
+      setContactsLoaded(true);
+    }
+  }, [contactsData]);
 
   const sensor = sensors?.[0];
   const status = summary?.status ?? 'SAFE';

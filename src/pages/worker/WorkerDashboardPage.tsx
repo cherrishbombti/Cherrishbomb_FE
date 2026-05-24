@@ -117,7 +117,7 @@ function SkeletonCard() {
 export default function WorkerDashboardPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [selectedTargetId, setSelectedTargetId] = useState<number | null>(null);
+  const [_selectedTargetId, setSelectedTargetId] = useState<number | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // ✨ 제네릭을 명시해주면 타입 추론이 더 깔끔하게 됨

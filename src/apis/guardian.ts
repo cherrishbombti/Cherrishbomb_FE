@@ -1,19 +1,20 @@
 import { axiosInstance } from './axiosInstance';
-import type { WardSummary, SensorData, Contact, AddContactRequest } from '../types/guardian';
+import type { WardSummary, SensorData, Contact, AddContactRequest, RegisterWardRequest, RegisterWardResponse } from '../types/guardian';
 
-const USE_MOCK = true;
+// ✅ Mock 해제 — 실제 백엔드 연결
+const USE_MOCK = false;
 
 function mockDelay<T>(data: T, ms = 500): Promise<T> {
   return new Promise((res) => setTimeout(() => res(data), ms));
 }
 
-// ── Mock 데이터 ──────────────────────────────────────────────
+// ── Mock 데이터 (USE_MOCK=true 시에만 사용) ────────────────────
 const MOCK_SUMMARY: WardSummary = {
   wardName: '김영희',
   relationship: '어머니',
   phone: '010-5555-6666',
   status: 'SAFE',
-  totalActivityMinutes: 390,   // 6.5시간
+  totalActivityMinutes: 390,
   lastActivityMinutes: 10,
   lastUpdatedAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
 };
@@ -79,4 +80,18 @@ export async function updateContactPriority(contacts: Contact[]): Promise<void> 
   await axiosInstance.put('/api/wards/me/contacts/priority', {
     contacts: contacts.map((c, i) => ({ contactId: c.contactId, priority: i + 1 })),
   });
+}
+
+// POST /api/wards/me (최초 피보호자 등록)
+export async function registerWard(body: RegisterWardRequest): Promise<RegisterWardResponse> {
+  if (USE_MOCK) {
+    const mock: RegisterWardResponse = {
+      wardId: Date.now(),
+      ...body,
+      createdAt: new Date().toISOString(),
+    };
+    return mockDelay(mock, 800);
+  }
+  const { data } = await axiosInstance.post<RegisterWardResponse>('/api/wards/me', body);
+  return data;
 }

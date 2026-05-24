@@ -17,7 +17,7 @@ export async function workerLogin(body: WorkerLoginRequest): Promise<WorkerLogin
 
 export function getSocialLoginUrl(provider: 'google' | 'kakao'): string {
   const base = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
-  return `${base}/api/login/oauth2/${provider}`;
+  return `${base}/api/auth/${provider}`;
 }
 
 export async function exchangeOAuthCode(

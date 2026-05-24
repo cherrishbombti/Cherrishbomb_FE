@@ -33,3 +33,22 @@ export interface AddContactRequest {
   relationship: string;
   phone: string;
 }
+
+// POST /api/wards/me
+export interface RegisterWardRequest {
+  name: string;           // 피보호자 이름
+  birthDate: string;      // YYYY-MM-DD
+  address: string;
+  phone: string;
+  relationship: string;   // 보호자와의 관계
+}
+
+export interface RegisterWardResponse {
+  wardId: number;
+  name: string;
+  birthDate: string;
+  address: string;
+  phone: string;
+  relationship: string;
+  createdAt: string;
+}

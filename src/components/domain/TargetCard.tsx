@@ -60,7 +60,7 @@ export default function TargetCard({ target, onClick }: Props) {
   return (
     <div
       onClick={() => onClick(target.id)}
-      className={`${cfg.cardBg} border ${cfg.border} rounded-xl p-4 cursor-pointer hover:shadow-md transition-shadow flex flex-col gap-3`}
+      className={`${cfg.cardBg} border ${cfg.border} rounded-xl p-4 cursor-pointer hover:shadow-md transition-shadow flex flex-col gap-3 ${target.status === 'DANGER' ? 'danger-blink' : ''}`}
     >
       {/* 상단: 드래그 핸들 + 상태 뱃지 + 전화 버튼 */}
       <div className="flex items-center justify-between">

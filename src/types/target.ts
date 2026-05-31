@@ -33,8 +33,8 @@ export interface TargetsResponse {
 // (이전 백엔드 코드를 보면 deviceMac이 필수로 들어갔었으므로 추가함)
 export interface AddTargetRequest {
   name: string;
-  age: number;
+  age: number;          // Long
   address: string;
-  phone: string;             // phone -> contact
-  //deviceMac: string;           // 백엔드에서 중복 검사하던 MAC 주소
+  contact: number;      // Long (전화번호 숫자, 예: 1012345678)
+  deviceMac: string;    // 디바이스 MAC 주소 (예: AA:BB:CC:DD:EE:FF)
 }

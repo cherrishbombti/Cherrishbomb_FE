@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getWardSummary, getWardSensors, getWardContacts, updateContactPriority } from '../../apis/guardian';
@@ -82,16 +82,18 @@ export default function GuardianHomePage() {
     queryFn: getWardSensors,
   });
 
-  useQuery({
+  const { data: contactsData } = useQuery({
     queryKey: ['wardContacts'],
     queryFn: getWardContacts,
-    onSuccess: (data: Contact[]) => {
-      if (!contactsLoaded) {
-        setContacts(data);
-        setContactsLoaded(true);
-      }
-    },
-  } as any);
+  });
+
+  // ✅ TanStack Query v5: onSuccess 대신 useEffect로 contacts 초기화
+  useEffect(() => {
+    if (contactsData && !contactsLoaded) {
+      setContacts(contactsData);
+      setContactsLoaded(true);
+    }
+  }, [contactsData]);
 
   const sensor = sensors?.[0];
   const status = summary?.status ?? 'SAFE';
@@ -134,28 +136,27 @@ export default function GuardianHomePage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* 헤더 */}
-      <header className="bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
+      <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-2">
-          <button className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          <div className="w-7 h-7 rounded-lg bg-indigo-500 flex items-center justify-center">
+            <svg className="w-4 h-4 text-pink-300" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
-          </button>
-          <span className="font-semibold text-gray-700 text-sm">보호자 모드</span>
+          </div>
+          <span className="font-bold text-gray-800 text-sm">낙상감지 핫 라인시스템</span>
+          <span className="text-xs text-gray-400">보호자 모드</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3 text-sm text-gray-500">
+          <span>{summary?.wardName ? `${summary.wardName} 보호자 님` : '보호자 님'}</span>
           <button
             onClick={() => { localStorage.removeItem('accessToken'); navigate('/guardian/login'); }}
-            className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors"
-            aria-label="로그아웃"
+            className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
+            로그아웃
           </button>
-          <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center">
-            <span className="text-white text-xs font-bold">홍</span>
-          </div>
         </div>
       </header>
 

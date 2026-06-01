@@ -5,6 +5,7 @@ import WorkerDashboardPage from '../pages/worker/WorkerDashboardPage';
 import GuardianLoginPage from '../pages/guardian/GuardianLoginPage';
 import GuardianHomePage from '../pages/guardian/GuardianHomePage';
 import OAuthCallbackPage from '../pages/guardian/OAuthCallbackPage';
+import WardRegisterPage from '../pages/guardian/WardRegisterPage';
 import WorkerSignupPage from '../pages/worker/WorkerSignupPage';
 
 const router = createBrowserRouter([
@@ -30,6 +31,15 @@ const router = createBrowserRouter([
     element: (
       <PrivateRoute redirectTo="/guardian/login">
         <GuardianHomePage />
+      </PrivateRoute>
+    ),
+  },
+  // 피보호자 등록 (신규 유저 전용 — OAuthCallbackPage에서 isNewUser 시 redirect)
+  {
+    path: '/guardian/signup',
+    element: (
+      <PrivateRoute redirectTo="/guardian/login">
+        <WardRegisterPage />
       </PrivateRoute>
     ),
   },

@@ -119,6 +119,7 @@ function SkeletonCard() {
 export default function WorkerDashboardPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [_selectedTargetId, setSelectedTargetId] = useState<number | null>(null);
   const [selectedTarget, setSelectedTarget] = useState<Target | null>(null);
   const [dangerAlertNames, setDangerAlertNames] = useState<string[]>([]);
   const prevStatusMapRef = useRef<Record<number, string>>({});

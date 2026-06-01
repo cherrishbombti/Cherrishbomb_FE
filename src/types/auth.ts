@@ -4,10 +4,24 @@ export interface WorkerLoginRequest {
 }
 
 // 백엔드가 JWT 토큰 문자열 하나만 반환
-export type WorkerLoginResponse = string;
+export interface WorkerLoginResponse {
+  token: string;
+}
 
 export interface OAuthLoginResponse {
   accessToken: string;
   tokenType: string;
   isNewUser: boolean;
+}
+
+// 사회복지사 회원가입 요청
+export interface WorkerSignupRequest {
+  orgId: string;    // 아이디
+  password: string; // 비밀번호
+  name: string;     // 기관명
+}
+
+// 회원가입 응답 (성공 메시지 등)
+export interface WorkerSignupResponse {
+  message?: string;
 }

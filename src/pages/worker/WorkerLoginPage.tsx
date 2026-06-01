@@ -1,11 +1,15 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { workerLogin } from '../../apis/auth';
 import InputField from '../../components/common/InputField';
 import BaseButton from '../../components/common/BaseButton';
 
 export default function WorkerLoginPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const location = useLocation();
+  const signupSuccess = (location.state as any)?.signupSuccess ?? false;
   const [orgId, setLoginId] = useState('');
   const [password, setPassword] = useState('');
   const [idError, setIdError] = useState('');
@@ -34,7 +38,8 @@ export default function WorkerLoginPage() {
     setIsLoading(true);
     try {
       const res = await workerLogin({ orgId, password });
-      localStorage.setItem('accessToken', res);
+      localStorage.setItem('accessToken', res.token);
+      queryClient.clear(); // 이전 계정 캐시 제거
       navigate('/worker/dashboard');
     } catch (err: any) {
       const msg =
@@ -53,6 +58,13 @@ export default function WorkerLoginPage() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
       {/* 카드 */}
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-8">
+        {/* 회원가입 성공 메시지 */}
+        {signupSuccess && (
+          <div className="mb-4 px-4 py-3 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700 text-center">
+            🎉 회원가입이 완료되었습니다! 로그인해주세요.
+          </div>
+        )}
+
         {/* 로고 / 타이틀 */}
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-indigo-500 mb-4">
@@ -125,6 +137,17 @@ export default function WorkerLoginPage() {
         <div className="mt-4 text-center">
           <button className="text-sm text-gray-400 hover:text-gray-600 underline underline-offset-2 transition-colors">
             비밀번호를 잊으셨나요?
+          </button>
+        </div>
+
+        {/* 회원가입 링크 */}
+        <div className="mt-3 text-center">
+          <span className="text-sm text-gray-400">계정이 없으신가요? </span>
+          <button
+            className="text-sm text-indigo-500 font-semibold hover:text-indigo-700 transition-colors"
+            onClick={() => navigate('/worker/signup')}
+          >
+            회원가입
           </button>
         </div>
 

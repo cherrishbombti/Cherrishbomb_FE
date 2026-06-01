@@ -11,10 +11,11 @@ interface Props {
   onSuccess: () => void; // 등록 성공 시 부모에서 목록 새로고침
 }
 
-const INITIAL: AddTargetRequest = { name: '', age: 0, address: '', phone: '' };
+const INITIAL: AddTargetRequest = { name: '', age: 0, address: '', contact: 0, deviceMac: '' };
 
 export default function AddTargetModal({ isOpen, onClose, onSuccess }: Props) {
   const [form, setForm] = useState(INITIAL);
+  const [contactStr, setContactStr] = useState(''); // 전화번호 입력용 문자열
   const [errors, setErrors] = useState<Partial<Record<keyof AddTargetRequest, string>>>({});
   const [serverError, setServerError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -27,8 +28,17 @@ export default function AddTargetModal({ isOpen, onClose, onSuccess }: Props) {
     if (!form.name.trim()) e.name = '이름을 입력해주세요.';
     if (!form.age || form.age <= 0) e.age = '올바른 나이를 입력해주세요.';
     if (!form.address.trim()) e.address = '주소를 입력해주세요.';
-    const phoneReg = /^010-\d{4}-\d{4}$/;
-    if (!phoneReg.test(form.phone)) e.phone = '010-XXXX-XXXX 형식으로 입력해주세요.';
+    if (!contactStr.trim()) {
+      e.contact = '전화번호를 입력해주세요.';
+    } else if (!/^010\d{8}$/.test(contactStr)) {
+      e.contact = '010으로 시작하는 11자리 숫자를 입력해주세요.';
+    }
+    const macReg = /^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/;
+    if (!form.deviceMac.trim()) {
+      e.deviceMac = 'MAC 주소를 입력해주세요.';
+    } else if (!macReg.test(form.deviceMac)) {
+      e.deviceMac = 'AA:BB:CC:DD:EE:FF 형식으로 입력해주세요.';
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -50,12 +60,13 @@ export default function AddTargetModal({ isOpen, onClose, onSuccess }: Props) {
 
   const handleClose = () => {
     setForm(INITIAL);
+    setContactStr('');
     setErrors({});
     setServerError('');
     onClose();
   };
 
-  const isFormFilled = form.name && form.age > 0 && form.address && form.phone;
+  const isFormFilled = form.name && form.age > 0 && form.address && contactStr.length > 0 && form.deviceMac;
 
   return (
     <BaseModal isOpen={isOpen} onClose={handleClose} title="모니터링 대상 추가">
@@ -88,10 +99,23 @@ export default function AddTargetModal({ isOpen, onClose, onSuccess }: Props) {
         <InputField
           label="전화번호"
           type="tel"
-          placeholder="010-0000-0000"
-          value={form.phone}
-          onChange={(e) => set('phone', e.target.value)}
-          error={errors.phone}
+          placeholder="01012345678 (숫자만)"
+          value={contactStr}
+          onChange={(e) => {
+            const digits = e.target.value.replace(/\D/g, '');
+            setContactStr(digits);
+            set('contact', digits ? Number(digits) : 0);
+          }}
+          error={errors.contact}
+          required
+        />
+        <InputField
+          label="MAC 주소"
+          type="text"
+          placeholder="AA:BB:CC:DD:EE:FF"
+          value={form.deviceMac}
+          onChange={(e) => set('deviceMac', e.target.value.toUpperCase())}
+          error={errors.deviceMac}
           required
         />
 

@@ -1,5 +1,5 @@
 import { axiosInstance } from './axiosInstance';
-import type { WorkerLoginRequest, WorkerLoginResponse, OAuthLoginResponse } from '../types/auth';
+import type { WorkerLoginRequest, WorkerLoginResponse, OAuthLoginResponse, WorkerSignupRequest, WorkerSignupResponse } from '../types/auth';
 
 const USE_MOCK = false;
 
@@ -28,5 +28,11 @@ export async function exchangeOAuthCode(
     return mockDelay({ accessToken: 'mock-guardian-jwt-token', tokenType: 'Bearer', isNewUser: false });
   }
   const { data } = await axiosInstance.post<OAuthLoginResponse>('/api/auth/login', { provider, code });
+  return data;
+}
+
+// 사회복지사 회원가입 (POST /api/org/register)
+export async function workerSignup(body: WorkerSignupRequest): Promise<WorkerSignupResponse> {
+  const { data } = await axiosInstance.post<WorkerSignupResponse>('/api/org/signup', body);
   return data;
 }

@@ -5,12 +5,14 @@ import WorkerDashboardPage from '../pages/worker/WorkerDashboardPage';
 import GuardianLoginPage from '../pages/guardian/GuardianLoginPage';
 import GuardianHomePage from '../pages/guardian/GuardianHomePage';
 import OAuthCallbackPage from '../pages/guardian/OAuthCallbackPage';
+import WorkerSignupPage from '../pages/worker/WorkerSignupPage';
 
 const router = createBrowserRouter([
   { path: '/', element: <Navigate to="/worker/login" replace /> },
 
   // 로그인 (누구나 접근 가능)
   { path: '/worker/login',   element: <WorkerLoginPage /> },
+  { path: '/worker/signup',  element: <WorkerSignupPage /> },
   { path: '/guardian/login', element: <GuardianLoginPage /> },
   { path: '/oauth/callback', element: <OAuthCallbackPage /> },
 

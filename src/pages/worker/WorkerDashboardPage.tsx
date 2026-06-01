@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getTargets } from '../../apis/targets'; // API 호출 함수 (경로 확인 필요)
 import type { Target, TargetsResponse } from '../../types/target';
 import TargetCard from '../../components/domain/TargetCard';
 import AddTargetModal from '../../components/domain/AddTargetModal';
+import TargetDetailModal from '../../components/domain/TargetDetailModal';
+import DangerAlert from '../../components/domain/DangerAlert';
 
 // ✨ 상태값을 백엔드 명세에 맞춰 EMERGENCY -> DANGER로 변경
 const SECTIONS = [
@@ -117,22 +119,53 @@ function SkeletonCard() {
 export default function WorkerDashboardPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [selectedTargetId, setSelectedTargetId] = useState<number | null>(null);
+  const [selectedTarget, setSelectedTarget] = useState<Target | null>(null);
+  const [dangerAlertNames, setDangerAlertNames] = useState<string[]>([]);
+  const prevStatusMapRef = useRef<Record<number, string>>({});
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // ✨ 제네릭을 명시해주면 타입 추론이 더 깔끔하게 됨
   const { data, isLoading, isRefetching, refetch } = useQuery<TargetsResponse>({
     queryKey: ['targets'],
     queryFn: getTargets,
-    refetchInterval: 1000 * 30,
+    refetchInterval: 1000 * 5, // 5초마다 자동 갱신
   });
+
+  // DANGER 상태 변화 감지
+  useEffect(() => {
+    if (!data?.members) return;
+    const prev = prevStatusMapRef.current;
+    const newDangerNames: string[] = [];
+
+    data.members.forEach((m) => {
+      // 이전에 DANGER가 아니었다가 DANGER가 된 경우
+      if (m.status === 'DANGER' && prev[m.id] !== 'DANGER') {
+        // 최초 로드(prev 비어있을 때)는 알림 스킵
+        if (Object.keys(prev).length > 0) {
+          newDangerNames.push(m.name);
+        }
+      }
+    });
+
+    // 현재 상태를 prev로 저장
+    prevStatusMapRef.current = Object.fromEntries(data.members.map((m) => [m.id, m.status]));
+
+    if (newDangerNames.length > 0) {
+      setDangerAlertNames(newDangerNames);
+    }
+  }, [data]);
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
+    queryClient.clear(); // 다른 계정 로그인 시 이전 캐시 남지 않도록
     navigate('/worker/login');
   };
 
   const handleAddSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ['targets'] });
+  };
+
+  const handleDeleteSuccess = () => {
     queryClient.invalidateQueries({ queryKey: ['targets'] });
   };
 
@@ -262,7 +295,7 @@ export default function WorkerDashboardPage() {
                           // ✨ 백엔드 PK 이름인 id로 변경
                           key={member.id} 
                           target={member} 
-                          onClick={(id) => setSelectedTargetId(id)}
+                          onClick={(id) => setSelectedTarget(data?.members.find((m) => m.id === id) ?? null)}
                         />
                       ))}
                     </div>
@@ -273,6 +306,20 @@ export default function WorkerDashboardPage() {
           </div>
         </div>
       </main>
+
+      {/* 센서 상태 상세 모달 */}
+      <TargetDetailModal
+        key={selectedTarget?.id ?? 'none'}
+        target={selectedTarget}
+        onClose={() => setSelectedTarget(null)}
+        onDelete={handleDeleteSuccess}
+      />
+
+      {/* 위급 알림 */}
+      <DangerAlert
+        names={dangerAlertNames}
+        onClose={() => setDangerAlertNames([])}
+      />
 
       <AddTargetModal
         isOpen={isAddModalOpen}

@@ -7,6 +7,7 @@ import GuardianHomePage from '../pages/guardian/GuardianHomePage';
 import OAuthCallbackPage from '../pages/guardian/OAuthCallbackPage';
 import WardRegisterPage from '../pages/guardian/WardRegisterPage';
 import WorkerSignupPage from '../pages/worker/WorkerSignupPage';
+import GuardianSignupPage from '../pages/guardian/GuardianSignupPage';
 
 const router = createBrowserRouter([
   { path: '/', element: <Navigate to="/worker/login" replace /> },
@@ -15,6 +16,7 @@ const router = createBrowserRouter([
   { path: '/worker/login',   element: <WorkerLoginPage /> },
   { path: '/worker/signup',  element: <WorkerSignupPage /> },
   { path: '/guardian/login', element: <GuardianLoginPage /> },
+  { path: '/guardian/signup', element: <GuardianSignupPage /> },
   { path: '/oauth/callback', element: <OAuthCallbackPage /> },
 
   // 보호된 페이지 (토큰 없으면 로그인으로 이동)
@@ -36,7 +38,7 @@ const router = createBrowserRouter([
   },
   // 피보호자 등록 (신규 유저 전용 — OAuthCallbackPage에서 isNewUser 시 redirect)
   {
-    path: '/guardian/signup',
+    path: '/guardian/ward/register',
     element: (
       <PrivateRoute redirectTo="/guardian/login">
         <WardRegisterPage />

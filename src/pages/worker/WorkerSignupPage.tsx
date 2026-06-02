@@ -27,8 +27,6 @@ export default function WorkerSignupPage() {
 
     if (!form.orgId.trim()) {
       e.orgId = '아이디를 입력해주세요.';
-    } else if (form.orgId.length < 4) {
-      e.orgId = '아이디는 4자 이상이어야 합니다.';
     }
 
     if (!form.name.trim()) {
@@ -37,8 +35,6 @@ export default function WorkerSignupPage() {
 
     if (!form.password.trim()) {
       e.password = '비밀번호를 입력해주세요.';
-    } else if (form.password.length < 6) {
-      e.password = '비밀번호는 6자 이상이어야 합니다.';
     }
 
     if (!confirmPassword.trim()) {
@@ -145,7 +141,9 @@ export default function WorkerSignupPage() {
 
           {/* 서버 에러 */}
           {serverError && (
-            <p className="text-sm text-red-500 text-center">{serverError}</p>
+            <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-600 text-center">
+              {serverError}
+            </div>
           )}
 
           <BaseButton

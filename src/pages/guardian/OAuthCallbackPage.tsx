@@ -55,7 +55,7 @@ export default function OAuthCallbackPage() {
     const isNewUserParam = searchParams.get('isNewUser');
 
     if (isNewUserParam === 'true') {
-      navigate('/guardian/signup', { replace: true });
+      navigate('/guardian/ward/register', { replace: true });
       return;
     }
     if (isNewUserParam === 'false') {
@@ -70,7 +70,7 @@ export default function OAuthCallbackPage() {
       navigate('/guardian/home', { replace: true });
     } catch (e: any) {
       // 404 or 에러 → ward 미등록, 신규 유저 처리
-      navigate('/guardian/signup', { replace: true });
+      navigate('/guardian/ward/register', { replace: true });
     }
   }
 

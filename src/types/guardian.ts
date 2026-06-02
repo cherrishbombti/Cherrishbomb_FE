@@ -41,6 +41,7 @@ export interface RegisterWardRequest {
   address: string;
   phone: string;
   relationship: string;   // 보호자와의 관계
+  deviceMac: string;      // 디바이스 MAC 주소 (예: AA:BB:CC:DD:EE:FF)
 }
 
 export interface RegisterWardResponse {

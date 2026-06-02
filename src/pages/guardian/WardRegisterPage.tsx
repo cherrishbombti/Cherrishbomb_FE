@@ -15,6 +15,7 @@ const INITIAL: RegisterWardRequest = {
   address: '',
   phone: '',
   relationship: '',
+  deviceMac: ''
 };
 
 type Errors = Partial<Record<keyof RegisterWardRequest, string>>;

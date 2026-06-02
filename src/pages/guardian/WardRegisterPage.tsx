@@ -43,6 +43,9 @@ export default function WardRegisterPage() {
     if (s === 1) {
       if (!form.address.trim()) e.address = '주소를 입력해주세요.';
       if (!/^010-\d{4}-\d{4}$/.test(form.phone)) e.phone = '010-XXXX-XXXX 형식으로 입력해주세요.';
+      const macReg = /^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/;
+      if (!form.deviceMac.trim()) e.deviceMac = 'MAC 주소를 입력해주세요.';
+      else if (!macReg.test(form.deviceMac)) e.deviceMac = 'AA:BB:CC:DD:EE:FF 형식으로 입력해주세요.';
       const rel = form.relationship === '기타' ? customRelationship : form.relationship;
       if (!rel.trim()) e.relationship = '관계를 선택해주세요.';
     }
@@ -163,6 +166,16 @@ export default function WardRegisterPage() {
               required
             />
 
+            <InputField
+              label="MAC 주소"
+              type="text"
+              placeholder="AA:BB:CC:DD:EE:FF"
+              value={form.deviceMac}
+              onChange={(e) => set('deviceMac', e.target.value.toUpperCase())}
+              error={errors.deviceMac}
+              required
+            />
+
             {/* 관계 선택 */}
             <div className="flex flex-col gap-1 w-full">
               <label className="text-sm font-medium text-gray-700">
@@ -206,6 +219,7 @@ export default function WardRegisterPage() {
               { label: '주소', value: form.address },
               { label: '전화번호', value: form.phone },
               { label: '관계', value: displayRelationship },
+              { label: 'MAC 주소', value: form.deviceMac },
             ].map(({ label, value }) => (
               <div key={label} className="flex justify-between py-2 border-b border-gray-100">
                 <span className="text-sm text-gray-500">{label}</span>

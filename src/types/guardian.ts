@@ -1,4 +1,4 @@
-export type SafetyStatus = 'SAFE' | 'WARNING' | 'EMERGENCY';
+export type SafetyStatus = 'SAFE' | 'WARNING' | 'DANGER';
 
 export interface WardSummary {
   wardName: string;        // 피보호자 이름

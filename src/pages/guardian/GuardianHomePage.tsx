@@ -30,7 +30,7 @@ const STATUS_CONFIG: Record<SafetyStatus, {
       </svg>
     ),
   },
-  EMERGENCY: {
+  DANGER: {
     bg: 'bg-red-50', border: 'border-red-300',
     iconBg: 'bg-red-500', iconColor: 'text-white',
     label: '긴급',

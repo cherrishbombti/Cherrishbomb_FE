@@ -56,7 +56,7 @@ const InputField: React.FC<InputFieldProps> = ({
     : 'border-gray-300 hover:border-gray-400 focus:ring-blue-400 focus:border-blue-400';
 
   return (
-    <div className="flex flex-col gap-1 w-full">
+    <div className="flex flex-col gap-1.5 w-full">
       {label && (
         <label className="text-sm font-medium text-gray-700">
           {label}
@@ -81,7 +81,7 @@ const InputField: React.FC<InputFieldProps> = ({
 
       {/* 에러 자리 항상 확보 → 문구 나타날 때 레이아웃 밀림 방지 */}
       <span
-        className="text-xs text-red-500 min-h-[16px] leading-4 transition-opacity duration-200 motion-reduce:transition-none"
+        className="text-xs text-red-500 min-h-[15px] leading-tight transition-opacity duration-200 motion-reduce:transition-none"
         style={{ opacity: error ? 1 : 0 }}
       >
         {error || '\u00A0'}

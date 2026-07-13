@@ -58,7 +58,7 @@ export default function WorkerLoginPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
       {/* 카드 */}
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-8">
+      <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-7">
         {/* 회원가입 성공 메시지 */}
         {signupSuccess && (
           <div className="mb-4 px-4 py-3 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700 text-center">
@@ -67,7 +67,7 @@ export default function WorkerLoginPage() {
         )}
 
         {/* 로고 / 타이틀 */}
-        <div className="mb-8 text-center">
+        <div className="mb-6 text-center">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-indigo-500 mb-4">
             <svg className="w-8 h-8 text-pink-300" fill="currentColor" viewBox="0 0 24 24">
               <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -78,14 +78,14 @@ export default function WorkerLoginPage() {
         </div>
 
         {/* 탭 */}
-        <div className="flex bg-gray-100 rounded-lg p-1 mb-6">
+        <div className="flex bg-gray-100 rounded-lg p-1 mb-5">
           <button
-            className="flex-1 py-2 text-sm font-medium rounded-md bg-white text-indigo-600 shadow-sm transition-all"
+            className="flex-1 py-2 text-sm font-medium rounded-md bg-white text-indigo-600 shadow-sm transition-all duration-200 ease-out"
           >
             사회복지사
           </button>
           <button
-            className="flex-1 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-all"
+            className="flex-1 py-2 text-sm font-medium rounded-md text-gray-500 cursor-pointer hover:text-gray-700 hover:bg-white/60 active:scale-[0.98] transition-all duration-200 ease-out motion-reduce:transition-none"
             onClick={() => navigate('/guardian/login')}
           >
             보호자
@@ -93,7 +93,7 @@ export default function WorkerLoginPage() {
         </div>
 
         {/* 입력 폼 */}
-        <div className="flex flex-col gap-4" onKeyDown={handleKeyDown}>
+        <div className="flex flex-col gap-1.5" onKeyDown={handleKeyDown}>
           <InputField
             label="아이디"
             type="text"
@@ -121,7 +121,7 @@ export default function WorkerLoginPage() {
 
           {/* 서버 에러 — 자리 항상 확보해 레이아웃 밀림 방지 */}
           <p
-            className="text-sm text-red-500 text-center min-h-[20px] transition-opacity duration-200 motion-reduce:transition-none"
+            className="text-sm text-red-500 text-center min-h-[16px] transition-opacity duration-200 motion-reduce:transition-none"
             style={{ opacity: serverError ? 1 : 0 }}
           >
             {serverError || '\u00A0'}
@@ -131,7 +131,7 @@ export default function WorkerLoginPage() {
             onClick={handleLogin}
             disabled={isLoading}
             loading={isLoading}
-            className="w-full mt-2 !bg-indigo-500 hover:!bg-indigo-600 !text-white !py-3 !rounded-xl !text-base !font-semibold"
+            className="w-full !bg-indigo-500 hover:!bg-indigo-600 !text-white !py-3 !rounded-xl !text-base !font-semibold"
           >
             로그인
           </BaseButton>

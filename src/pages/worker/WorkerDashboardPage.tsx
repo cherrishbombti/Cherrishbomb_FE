@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { APP_NAME } from '../../constants/app';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getTargets } from '../../apis/targets'; // API 호출 함수 (경로 확인 필요)
@@ -186,7 +187,7 @@ export default function WorkerDashboardPage() {
               <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
           </div>
-          <span className="font-bold text-gray-800 text-sm">낙상감지 핫 라인시스템</span>
+          <span className="font-bold text-gray-800 text-sm">{APP_NAME}</span>
           <span className="text-xs text-gray-400">사회복지사 모드</span>
         </div>
         <div className="flex items-center gap-3 text-sm text-gray-500">

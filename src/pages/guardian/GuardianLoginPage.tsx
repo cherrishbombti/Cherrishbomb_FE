@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { APP_NAME } from '../../constants/app';
 import { useNavigate } from 'react-router-dom';
 import { getSocialLoginUrl } from '../../apis/auth';
 
@@ -28,7 +29,7 @@ export default function GuardianLoginPage() {
               <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">낙상감지 핫 라인 시스템</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{APP_NAME}</h1>
           <p className="text-sm text-gray-500 mt-1">보호자 로그인</p>
         </div>
 

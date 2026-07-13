@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { APP_NAME } from '../../constants/app';
 import { useNavigate } from 'react-router-dom';
 import { workerSignup } from '../../apis/auth';
 import InputField from '../../components/common/InputField';
@@ -82,7 +83,7 @@ export default function WorkerSignupPage() {
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-gray-800">사회복지사 회원가입</h1>
-          <p className="text-sm text-gray-500 mt-1">낙상감지 핫 라인 시스템</p>
+          <p className="text-sm text-gray-500 mt-1">{APP_NAME}</p>
         </div>
 
         {/* 입력 폼 */}

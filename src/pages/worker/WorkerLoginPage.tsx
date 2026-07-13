@@ -118,10 +118,13 @@ export default function WorkerLoginPage() {
             required
           />
 
-          {/* 서버 에러 */}
-          {serverError && (
-            <p className="text-sm text-red-500 text-center">{serverError}</p>
-          )}
+          {/* 서버 에러 — 자리 항상 확보해 레이아웃 밀림 방지 */}
+          <p
+            className="text-sm text-red-500 text-center min-h-[20px] transition-opacity duration-200 motion-reduce:transition-none"
+            style={{ opacity: serverError ? 1 : 0 }}
+          >
+            {serverError || '\u00A0'}
+          </p>
 
           <BaseButton
             onClick={handleLogin}

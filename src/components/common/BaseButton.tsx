@@ -19,8 +19,8 @@ interface BaseButtonProps {
 }
 
 const variantStyles: Record<Variant, string> = {
-  primary: 'bg-blue-500 text-white hover:bg-blue-600',
-  secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300',
+  primary: 'bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 shadow-sm hover:shadow-md',
+  secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300 active:bg-gray-400',
   text: 'bg-transparent text-blue-500 hover:underline',
 };
 
@@ -51,12 +51,14 @@ const BaseButton: React.FC<BaseButtonProps> = ({
 
   const baseStyle = [
     'inline-flex items-center justify-center',
-    'rounded-md font-medium',
-    'transition-colors duration-200',
-    'focus:outline-none',
+    'rounded-md font-medium select-none',
+    'transition-all duration-300 ease-out motion-reduce:transition-none',
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-400',
     variantStyles[variant],
     iconOnlyStyle,
-    disabled || loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
+    disabled || loading
+      ? 'opacity-50 cursor-not-allowed'
+      : 'cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97]',
     className,
   ].filter(Boolean).join(' ');
 

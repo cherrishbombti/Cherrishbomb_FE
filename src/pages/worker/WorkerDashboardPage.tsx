@@ -52,6 +52,9 @@ const STAT_CARDS = [
   {
     key: 'total' as const,
     label: '전체 가구',
+    card: 'bg-white border-gray-100',
+    valueColor: 'text-gray-800',
+    labelColor: 'text-gray-400',
     icon: (
       <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
         <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -59,43 +62,48 @@ const STAT_CARDS = [
         </svg>
       </div>
     ),
-    valueColor: 'text-gray-800',
   },
   {
     key: 'safe' as const,
     label: '안전',
+    card: 'bg-green-50 border-green-200',
+    valueColor: 'text-green-700',
+    labelColor: 'text-green-700',
     icon: (
-      <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+      <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
         <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       </div>
     ),
-    valueColor: 'text-gray-800',
   },
   {
     key: 'warning' as const,
     label: '주의',
+    card: 'bg-yellow-50 border-yellow-200',
+    valueColor: 'text-yellow-800',
+    labelColor: 'text-yellow-700',
     icon: (
-      <div className="w-10 h-10 rounded-xl bg-yellow-50 flex items-center justify-center">
+      <div className="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center">
         <svg className="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
         </svg>
       </div>
     ),
-    valueColor: 'text-gray-800',
   },
   {
     key: 'danger' as const,
     label: '긴급',
+    card: 'bg-red-50 border-red-200',
+    valueColor: 'text-red-600',
+    labelColor: 'text-red-700',
     icon: (
-      <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
-        <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
+        <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
         </svg>
       </div>
     ),
-    valueColor: 'text-gray-800',
   },
 ];
 
@@ -210,18 +218,18 @@ export default function WorkerDashboardPage() {
 
         {/* ── 상단 요약 카드 4개 ── */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {STAT_CARDS.map(({ key, label, icon, valueColor }) => {
+          {STAT_CARDS.map(({ key, label, icon, card, valueColor, labelColor }) => {
             // ✨ stats 변수를 사용하도록 수정
             const value = stats?.[key];
             return (
-              <div key={key} className="bg-white rounded-xl border border-gray-100 p-5 flex flex-col gap-3 shadow-sm">
+              <div key={key} className={`rounded-xl border p-5 flex flex-col gap-3 shadow-sm ${card}`}>
                 {icon}
                 {isLoading ? (
                   <div className="h-8 w-12 bg-gray-100 rounded animate-pulse" />
                 ) : (
                   <span className={`text-3xl font-bold ${valueColor}`}>{value ?? 0}</span>
                 )}
-                <span className="text-sm text-gray-400">{label}</span>
+                <span className={`text-sm ${labelColor}`}>{label}</span>
               </div>
             );
           })}

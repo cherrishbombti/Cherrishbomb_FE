@@ -7,7 +7,7 @@ export interface Target {
   name: string;
   age: number;
   address: string;
-  phone: string;             // phone(string) -> contact(number)로 변경됨!
+  contact: number;           // 연락처 (숫자, 예: 1012345678)
   status: TargetStatus;
   radar: boolean;              // 새로 추가된 센서 정보
   thermal: boolean;            // 새로 추가된 센서 정보

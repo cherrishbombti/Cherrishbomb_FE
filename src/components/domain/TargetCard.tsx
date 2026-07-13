@@ -54,7 +54,7 @@ export default function TargetCard({ target, onClick }: Props) {
 
   const handleCall = (e: React.MouseEvent) => {
     e.stopPropagation();
-    window.location.href = `tel:${target.phone}`;
+    window.location.href = `tel:${target.contact}`;
   };
 
   return (

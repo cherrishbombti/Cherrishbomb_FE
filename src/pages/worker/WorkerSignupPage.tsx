@@ -74,17 +74,17 @@ export default function WorkerSignupPage() {
     form.orgId && form.name && form.password && confirmPassword;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-50 px-4">
+      <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-7">
         {/* 로고 / 타이틀 */}
-        <div className="mb-8 text-center">
+        <div className="mb-6 text-center">
           <Logo size="lg" className="mb-4" />
           <h1 className="text-2xl font-bold text-gray-800">사회복지사 회원가입</h1>
           <p className="text-sm text-gray-500 mt-1">{APP_NAME}</p>
         </div>
 
         {/* 입력 폼 */}
-        <div className="flex flex-col gap-4" onKeyDown={handleKeyDown}>
+        <div className="flex flex-col gap-1.5" onKeyDown={handleKeyDown}>
           <InputField
             label="아이디"
             type="text"
@@ -148,7 +148,7 @@ export default function WorkerSignupPage() {
             onClick={handleSignup}
             disabled={!isFormFilled || isLoading}
             loading={isLoading}
-            className={`w-full mt-2 !text-white !py-3 !rounded-xl !text-base !font-semibold ${
+            className={`w-full mt-1 !text-white !py-3 !rounded-xl !text-base !font-semibold ${
               isFormFilled
                 ? '!bg-indigo-500 hover:!bg-indigo-600'
                 : '!bg-gray-300'

@@ -74,7 +74,7 @@ export default function WardRegisterPage() {
   const displayRelationship = form.relationship === '기타' ? customRelationship : form.relationship;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 py-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-50 px-4 py-8">
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-8">
 
         {/* 로고 / 타이틀 */}

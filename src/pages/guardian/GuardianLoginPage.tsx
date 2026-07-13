@@ -21,7 +21,7 @@ export default function GuardianLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-50 px-4">
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-8">
         {/* 로고 / 타이틀 */}
         <div className="mb-8 text-center">

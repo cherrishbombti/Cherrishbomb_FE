@@ -57,7 +57,7 @@ export default function WorkerLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-50 px-4">
       {/* 카드 */}
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-7">
         {/* 회원가입 성공 메시지 */}
@@ -116,13 +116,10 @@ export default function WorkerLoginPage() {
             required
           />
 
-          {/* 서버 에러 — 자리 항상 확보해 레이아웃 밀림 방지 */}
-          <p
-            className="text-sm text-red-500 text-center min-h-[16px] transition-opacity duration-200 motion-reduce:transition-none"
-            style={{ opacity: serverError ? 1 : 0 }}
-          >
-            {serverError || '\u00A0'}
-          </p>
+          {/* 서버 에러 — 있을 때만 표시 (드문 상황이라 예약 대신 조건부) */}
+          {serverError && (
+            <p className="text-sm text-red-500 text-center">{serverError}</p>
+          )}
 
           <BaseButton
             onClick={handleLogin}

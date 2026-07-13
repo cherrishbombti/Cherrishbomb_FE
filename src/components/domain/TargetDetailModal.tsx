@@ -53,6 +53,13 @@ function SensorRow({ icon, label, active, description }: SensorRowProps) {
 export default function TargetDetailModal({ target, onClose, onDelete }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [closing, setClosing] = useState(false);
+
+  // 퇴장 애니메이션 후 실제 닫기
+  const requestClose = () => {
+    setClosing(true);
+    setTimeout(() => onClose(), 180);
+  };
 
   if (!target) return null;
 
@@ -61,19 +68,19 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
   return (
     /* 오버레이 */
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
-      onClick={onClose}
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 ${closing ? 'modal-overlay-out' : 'modal-overlay-in'}`}
+      onClick={requestClose}
     >
       {/* 모달 패널 */}
       <div
-        className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden"
+        className={`bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden ${closing ? 'modal-panel-out' : 'modal-panel-in'}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* 헤더 */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <h2 className="font-bold text-gray-800 text-base">피보호자 상세 정보</h2>
           <button
-            onClick={onClose}
+            onClick={requestClose}
             className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -167,7 +174,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
           {!confirmDelete ? (
             <>
               <button
-                onClick={onClose}
+                onClick={requestClose}
                 className="w-full py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold transition-colors"
               >
                 닫기
@@ -199,7 +206,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
                     try {
                       await deleteTarget(target.id);
                       onDelete(target.id);
-                      onClose();
+                      requestClose();
                     } catch {
                       setIsDeleting(false);
                       setConfirmDelete(false);

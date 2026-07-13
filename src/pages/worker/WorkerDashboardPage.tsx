@@ -133,6 +133,7 @@ export default function WorkerDashboardPage() {
   const [dangerAlertNames, setDangerAlertNames] = useState<string[]>([]);
   const prevStatusMapRef = useRef<Record<number, string>>({});
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isSpinning, setIsSpinning] = useState(false);
 
   // ✨ 제네릭을 명시해주면 타입 추론이 더 깔끔하게 됨
   const { data, isLoading, isRefetching, refetch } = useQuery<TargetsResponse>({
@@ -140,6 +141,14 @@ export default function WorkerDashboardPage() {
     queryFn: getTargets,
     refetchInterval: 1000 * 5, // 5초마다 자동 갱신
   });
+
+  // 새로고침: 응답이 빨라도 최소 0.6초는 아이콘이 돌도록
+  const handleRefresh = () => {
+    setIsSpinning(true);
+    Promise.allSettled([refetch(), new Promise((r) => setTimeout(r, 600))]).then(() =>
+      setIsSpinning(false)
+    );
+  };
 
   // DANGER 상태 변화 감지
   useEffect(() => {
@@ -242,11 +251,11 @@ export default function WorkerDashboardPage() {
             <h2 className="font-semibold text-gray-800 text-sm">전체 가구 모니터링</h2>
             <div className="flex items-center gap-2">
               <button
-                onClick={() => refetch()}
-                disabled={isRefetching}
+                onClick={handleRefresh}
+                disabled={isSpinning}
                 className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 border border-gray-200 px-3 py-1.5 rounded-lg transition-colors"
               >
-                <svg className={`w-3.5 h-3.5 ${isRefetching ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className={`w-3.5 h-3.5 ${isSpinning || isRefetching ? 'animate-spin-reverse' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
                 새로고침

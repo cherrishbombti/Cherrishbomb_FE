@@ -13,6 +13,12 @@ interface Props {
 
 const INITIAL: AddTargetRequest = { name: '', age: 0, address: '', contact: 0, deviceMac: '' };
 
+// MAC 주소 입력 포맷: 16진수(0-9, A-F)만 남기고 2자리마다 콜론 자동 삽입
+function formatMac(raw: string): string {
+  const hex = raw.replace(/[^0-9a-fA-F]/g, '').toUpperCase().slice(0, 12);
+  return hex.match(/.{1,2}/g)?.join(':') ?? '';
+}
+
 export default function AddTargetModal({ isOpen, onClose, onSuccess }: Props) {
   const [form, setForm] = useState(INITIAL);
   const [contactStr, setContactStr] = useState(''); // 전화번호 입력용 문자열
@@ -114,7 +120,7 @@ export default function AddTargetModal({ isOpen, onClose, onSuccess }: Props) {
           type="text"
           placeholder="AA:BB:CC:DD:EE:FF"
           value={form.deviceMac}
-          onChange={(e) => set('deviceMac', e.target.value.toUpperCase())}
+          onChange={(e) => set('deviceMac', formatMac(e.target.value))}
           error={errors.deviceMac}
           required
         />

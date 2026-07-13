@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface BaseModalProps {
   isOpen: boolean;
@@ -15,19 +15,31 @@ const BaseModal: React.FC<BaseModalProps> = ({
   children,
   hasCloseButton = true,
 }) => {
+  const [render, setRender] = useState(isOpen);
+  const [closing, setClosing] = useState(false);
+
+  // 닫힐 때 퇴장 애니메이션 후 언마운트
   useEffect(() => {
     if (isOpen) {
-      const prev = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = prev || 'unset';
-      };
+      setRender(true);
+      setClosing(false);
+    } else if (render) {
+      setClosing(true);
+      const t = setTimeout(() => setRender(false), 200);
+      return () => clearTimeout(t);
     }
-    // 모달이 닫혀있을 때는 특별히 건드리지 않음
-    return;
-  }, [isOpen]);
+  }, [isOpen, render]);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (!render) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev || 'unset';
+    };
+  }, [render]);
+
+  if (!render) return null;
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -37,11 +49,11 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 ${closing ? 'modal-overlay-out' : 'modal-overlay-in'}`}
       onClick={handleOverlayClick}
     >
       <div
-        className="bg-white rounded-xl shadow-lg w-full max-w-md mx-4 p-6 flex flex-col gap-4"
+        className={`bg-white rounded-xl shadow-lg w-full max-w-md mx-4 p-6 flex flex-col gap-4 ${closing ? 'modal-panel-out' : 'modal-panel-in'}`}
         onClick={(e) => e.stopPropagation()}
       >
         {(title || hasCloseButton) && (

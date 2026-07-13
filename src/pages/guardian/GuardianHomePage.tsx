@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import Logo from '../../components/common/Logo';
 import { APP_NAME } from '../../constants/app';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -139,11 +140,7 @@ export default function GuardianHomePage() {
       {/* 헤더 */}
       <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-indigo-500 flex items-center justify-center">
-            <svg className="w-4 h-4 text-pink-300" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-          </div>
+          <Logo size="sm" />
           <span className="font-bold text-gray-800 text-sm">{APP_NAME}</span>
           <span className="text-xs text-gray-400">보호자 모드</span>
         </div>

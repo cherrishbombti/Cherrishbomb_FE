@@ -7,7 +7,7 @@ export interface Target {
   name: string;
   age: number;
   address: string;
-  contact: number;           // 연락처 (숫자, 예: 1012345678)
+  phone: string;             // 연락처 (문자열, 예: 010-1234-5678)
   status: TargetStatus;
   radar: boolean;              // 새로 추가된 센서 정보
   thermal: boolean;            // 새로 추가된 센서 정보

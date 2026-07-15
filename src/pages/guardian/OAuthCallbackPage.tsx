@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { isJwt } from '../../utils/validation';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { axiosInstance } from '../../apis/axiosInstance';
 
@@ -101,7 +102,3 @@ export default function OAuthCallbackPage() {
   );
 }
 
-/** JWT 형식 여부 판별 (헤더.페이로드.서명) */
-function isJwt(value: string): boolean {
-  return /^eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]*$/.test(value);
-}

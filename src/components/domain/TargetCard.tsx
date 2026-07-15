@@ -1,4 +1,5 @@
 import type { Target, TargetStatus } from '../../types/target';
+import { timeAgo } from '../../utils/date';
 
 interface Props {
   target: Target;
@@ -43,14 +44,6 @@ const STATUS_CONFIG: Record<TargetStatus, {
     accent: 'border-l-4 border-l-green-500',
   },
 };
-
-function timeAgo(iso: string): string {
-  const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
-  if (diff < 60) return '방금 전';
-  if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
-  return `${Math.floor(diff / 86400)}일 전`;
-}
 
 export default function TargetCard({ target, onClick }: Props) {
   const cfg = STATUS_CONFIG[target.status];

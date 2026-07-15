@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { timeAgo } from '../../utils/date';
 import { deleteTarget } from '../../apis/targets';
 import type { Target } from '../../types/target';
 
@@ -13,18 +14,6 @@ const STATUS_LABEL: Record<string, { label: string; bg: string; text: string; do
   WARNING: { label: '주의', bg: 'bg-yellow-100', text: 'text-yellow-600', dot: 'bg-yellow-500' },
   SAFE:    { label: '안전', bg: 'bg-green-100',  text: 'text-green-600',  dot: 'bg-green-500'  },
 };
-
-function timeAgo(iso: string | null | undefined): string {
-  if (!iso) return '정보 없음';
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return '정보 없음';
-  const diff = Math.floor((Date.now() - d.getTime()) / 1000);
-  if (diff < 0) return '방금 전';
-  if (diff < 60) return '방금 전';
-  if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
-  return `${Math.floor(diff / 86400)}일 전`;
-}
 
 interface SensorRowProps {
   icon: React.ReactNode;

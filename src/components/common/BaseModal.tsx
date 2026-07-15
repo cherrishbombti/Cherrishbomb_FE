@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useModalTransition } from '../../hooks/useModalTransition';
 
 interface BaseModalProps {
   isOpen: boolean;
@@ -16,7 +17,8 @@ const BaseModal: React.FC<BaseModalProps> = ({
   hasCloseButton = true,
 }) => {
   const [render, setRender] = useState(isOpen);
-  const [closing, setClosing] = useState(false);
+  const { setClosing, beginClose, handleAnimationEnd, overlayClass, panelClass } =
+    useModalTransition(() => setRender(false));
 
   // 열림/닫힘 전환. 실제 언마운트는 퇴장 애니메이션이 끝날 때(onAnimationEnd) 처리.
   useEffect(() => {
@@ -24,7 +26,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
       setRender(true);
       setClosing(false);
     } else if (render) {
-      setClosing(true);
+      beginClose();
     }
   }, [isOpen, render]);
 
@@ -47,16 +49,13 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 ${closing ? 'modal-overlay-out' : 'modal-overlay-in'}`}
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 ${overlayClass}`}
       onClick={handleOverlayClick}
     >
       <div
-        className={`bg-white rounded-xl shadow-lg w-full max-w-md mx-4 p-6 flex flex-col gap-4 ${closing ? 'modal-panel-out' : 'modal-panel-in'}`}
+        className={`bg-white rounded-xl shadow-lg w-full max-w-md mx-4 p-6 flex flex-col gap-4 ${panelClass}`}
         onClick={(e) => e.stopPropagation()}
-        onAnimationEnd={(e) => {
-          // 패널 자신의 퇴장 애니메이션이 끝났을 때만 언마운트 (자식 애니메이션 무시)
-          if (closing && e.target === e.currentTarget) setRender(false);
-        }}
+        onAnimationEnd={handleAnimationEnd}
       >
         {(title || hasCloseButton) && (
           <div className="flex items-center justify-between">

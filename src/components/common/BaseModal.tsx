@@ -32,10 +32,17 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
   useEffect(() => {
     if (!render) return;
-    const prev = document.body.style.overflow;
+    // 스크롤바가 사라지며 콘텐츠가 튀지 않도록, 사라진 스크롤바 폭만큼 padding으로 보정
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const prevOverflow = document.body.style.overflow;
+    const prevPaddingRight = document.body.style.paddingRight;
     document.body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
     return () => {
-      document.body.style.overflow = prev || 'unset';
+      document.body.style.overflow = prevOverflow || 'unset';
+      document.body.style.paddingRight = prevPaddingRight;
     };
   }, [render]);
 

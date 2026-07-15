@@ -51,7 +51,11 @@ body {
 .modal-panel-in { animation: modal-panel-in 0.22s cubic-bezier(0.16, 1, 0.3, 1); }
 
 @media (prefers-reduced-motion: reduce) {
-  .modal-overlay-in, .modal-panel-in { animation: none; }
+  /* 모션 최소화: 애니메이션을 끄는 대신 즉시 끝내 onAnimationEnd가 정상 발생하도록 */
+  .modal-overlay-in, .modal-panel-in,
+  .modal-overlay-out, .modal-panel-out {
+    animation-duration: 0.01ms !important;
+  }
 }
 
 /* 새로고침 아이콘 반시계 회전 */

@@ -44,11 +44,8 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
   const [isDeleting, setIsDeleting] = useState(false);
   const [closing, setClosing] = useState(false);
 
-  // 퇴장 애니메이션 후 실제 닫기
-  const requestClose = () => {
-    setClosing(true);
-    setTimeout(() => onClose(), 180);
-  };
+  // 닫기 요청: 퇴장 애니메이션 시작. 실제 onClose는 애니메이션 종료 시(onAnimationEnd).
+  const requestClose = () => setClosing(true);
 
   if (!target) return null;
 
@@ -64,6 +61,9 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
       <div
         className={`bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden ${closing ? 'modal-panel-out' : 'modal-panel-in'}`}
         onClick={(e) => e.stopPropagation()}
+        onAnimationEnd={(e) => {
+          if (closing && e.target === e.currentTarget) onClose();
+        }}
       >
         {/* 헤더 */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">

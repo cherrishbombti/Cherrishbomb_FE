@@ -18,15 +18,13 @@ const BaseModal: React.FC<BaseModalProps> = ({
   const [render, setRender] = useState(isOpen);
   const [closing, setClosing] = useState(false);
 
-  // 닫힐 때 퇴장 애니메이션 후 언마운트
+  // 열림/닫힘 전환. 실제 언마운트는 퇴장 애니메이션이 끝날 때(onAnimationEnd) 처리.
   useEffect(() => {
     if (isOpen) {
       setRender(true);
       setClosing(false);
     } else if (render) {
       setClosing(true);
-      const t = setTimeout(() => setRender(false), 200);
-      return () => clearTimeout(t);
     }
   }, [isOpen, render]);
 
@@ -55,6 +53,10 @@ const BaseModal: React.FC<BaseModalProps> = ({
       <div
         className={`bg-white rounded-xl shadow-lg w-full max-w-md mx-4 p-6 flex flex-col gap-4 ${closing ? 'modal-panel-out' : 'modal-panel-in'}`}
         onClick={(e) => e.stopPropagation()}
+        onAnimationEnd={(e) => {
+          // 패널 자신의 퇴장 애니메이션이 끝났을 때만 언마운트 (자식 애니메이션 무시)
+          if (closing && e.target === e.currentTarget) setRender(false);
+        }}
       >
         {(title || hasCloseButton) && (
           <div className="flex items-center justify-between">

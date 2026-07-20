@@ -37,3 +37,54 @@ body {
 .alert-in {
   animation: alert-in 0.25s ease-out forwards;
 }
+
+/* 모달 등장 애니메이션 */
+@keyframes modal-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes modal-panel-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-overlay-in { animation: modal-overlay-in 0.18s ease-out; }
+.modal-panel-in { animation: modal-panel-in 0.22s cubic-bezier(0.16, 1, 0.3, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  /* 모션 최소화: 애니메이션을 끄는 대신 즉시 끝내 onAnimationEnd가 정상 발생하도록 */
+  .modal-overlay-in, .modal-panel-in,
+  .modal-overlay-out, .modal-panel-out {
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* 새로고침 아이콘 반시계 회전 */
+@keyframes spin-reverse {
+  to { transform: rotate(-360deg); }
+}
+.animate-spin-reverse {
+  animation: spin-reverse 0.8s linear infinite;
+}
+
+/* 모든 버튼 공통 눌림 피드백 (자체 효과 있는 버튼은 우선순위상 유지됨) */
+button:not(:disabled) {
+  transition: transform 0.08s ease-out;
+}
+button:not(:disabled):active {
+  transform: scale(0.96);
+}
+@media (prefers-reduced-motion: reduce) {
+  button:not(:disabled):active { transform: none; }
+}
+
+/* 모달 퇴장 애니메이션 */
+@keyframes modal-overlay-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@keyframes modal-panel-out {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(6px) scale(0.97); }
+}
+.modal-overlay-out { animation: modal-overlay-out 0.16s ease-in forwards; }
+.modal-panel-out { animation: modal-panel-out 0.18s ease-in forwards; }

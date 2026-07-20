@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useModalTransition } from '../../hooks/useModalTransition';
+import { timeAgo } from '../../utils/date';
 import { deleteTarget } from '../../apis/targets';
 import type { Target } from '../../types/target';
 
@@ -13,18 +15,6 @@ const STATUS_LABEL: Record<string, { label: string; bg: string; text: string; do
   WARNING: { label: '주의', bg: 'bg-yellow-100', text: 'text-yellow-600', dot: 'bg-yellow-500' },
   SAFE:    { label: '안전', bg: 'bg-green-100',  text: 'text-green-600',  dot: 'bg-green-500'  },
 };
-
-function timeAgo(iso: string | null | undefined): string {
-  if (!iso) return '정보 없음';
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return '정보 없음';
-  const diff = Math.floor((Date.now() - d.getTime()) / 1000);
-  if (diff < 0) return '방금 전';
-  if (diff < 60) return '방금 전';
-  if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
-  return `${Math.floor(diff / 86400)}일 전`;
-}
 
 interface SensorRowProps {
   icon: React.ReactNode;
@@ -53,6 +43,7 @@ function SensorRow({ icon, label, active, description }: SensorRowProps) {
 export default function TargetDetailModal({ target, onClose, onDelete }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { beginClose, handleAnimationEnd, overlayClass, panelClass } = useModalTransition(onClose);
 
   if (!target) return null;
 
@@ -61,19 +52,20 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
   return (
     /* 오버레이 */
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
-      onClick={onClose}
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 ${overlayClass}`}
+      onClick={beginClose}
     >
       {/* 모달 패널 */}
       <div
-        className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden"
+        className={`bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden ${panelClass}`}
         onClick={(e) => e.stopPropagation()}
+        onAnimationEnd={handleAnimationEnd}
       >
         {/* 헤더 */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <h2 className="font-bold text-gray-800 text-base">피보호자 상세 정보</h2>
           <button
-            onClick={onClose}
+            onClick={beginClose}
             className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -114,7 +106,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
               <svg className="w-4 h-4 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 8V5z" />
               </svg>
-              <span>{target.contact != null ? String(target.contact) : '연락처 없음'}</span>
+              <span>{target.phone ?? '연락처 없음'}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-500 text-xs border-t border-gray-200 pt-2">
               <svg className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -167,7 +159,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
           {!confirmDelete ? (
             <>
               <button
-                onClick={onClose}
+                onClick={beginClose}
                 className="w-full py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold transition-colors"
               >
                 닫기
@@ -199,7 +191,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
                     try {
                       await deleteTarget(target.id);
                       onDelete(target.id);
-                      onClose();
+                      beginClose();
                     } catch {
                       setIsDeleting(false);
                       setConfirmDelete(false);

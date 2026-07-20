@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { isValidMac, isValidPhone } from '../../utils/validation';
+import { formatMac } from '../../utils/format';
 import BaseModal from '../common/BaseModal';
 import InputField from '../common/InputField';
 import BaseButton from '../common/BaseButton';
@@ -30,13 +32,12 @@ export default function AddTargetModal({ isOpen, onClose, onSuccess }: Props) {
     if (!form.address.trim()) e.address = '주소를 입력해주세요.';
     if (!contactStr.trim()) {
       e.contact = '전화번호를 입력해주세요.';
-    } else if (!/^010\d{8}$/.test(contactStr)) {
+    } else if (!isValidPhone(contactStr)) {
       e.contact = '010으로 시작하는 11자리 숫자를 입력해주세요.';
     }
-    const macReg = /^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/;
     if (!form.deviceMac.trim()) {
       e.deviceMac = 'MAC 주소를 입력해주세요.';
-    } else if (!macReg.test(form.deviceMac)) {
+    } else if (!isValidMac(form.deviceMac)) {
       e.deviceMac = 'AA:BB:CC:DD:EE:FF 형식으로 입력해주세요.';
     }
     setErrors(e);
@@ -114,7 +115,7 @@ export default function AddTargetModal({ isOpen, onClose, onSuccess }: Props) {
           type="text"
           placeholder="AA:BB:CC:DD:EE:FF"
           value={form.deviceMac}
-          onChange={(e) => set('deviceMac', e.target.value.toUpperCase())}
+          onChange={(e) => set('deviceMac', formatMac(e.target.value))}
           error={errors.deviceMac}
           required
         />

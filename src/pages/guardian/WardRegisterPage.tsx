@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import Logo from '../../components/common/Logo';
+import { APP_NAME } from '../../constants/app';
 import { useNavigate } from 'react-router-dom';
 import InputField from '../../components/common/InputField';
 import BaseButton from '../../components/common/BaseButton';
@@ -72,17 +74,13 @@ export default function WardRegisterPage() {
   const displayRelationship = form.relationship === '기타' ? customRelationship : form.relationship;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 py-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-50 px-4 py-8">
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-8">
 
         {/* 로고 / 타이틀 */}
         <div className="mb-6 text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-indigo-500 mb-4">
-            <svg className="w-8 h-8 text-pink-300" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-800">낙상감지 핫 라인 시스템</h1>
+          <Logo size="lg" className="mb-4" />
+          <h1 className="text-2xl font-bold text-gray-800">{APP_NAME}</h1>
           <p className="text-sm text-gray-500 mt-1">피보호자 등록</p>
         </div>
 

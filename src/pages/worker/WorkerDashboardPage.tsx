@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import Logo from '../../components/common/Logo';
+import { APP_NAME } from '../../constants/app';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getTargets } from '../../apis/targets'; // API 호출 함수 (경로 확인 필요)
@@ -50,6 +52,9 @@ const STAT_CARDS = [
   {
     key: 'total' as const,
     label: '전체 가구',
+    card: 'bg-white border-gray-100',
+    valueColor: 'text-gray-800',
+    labelColor: 'text-gray-400',
     icon: (
       <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
         <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -57,43 +62,48 @@ const STAT_CARDS = [
         </svg>
       </div>
     ),
-    valueColor: 'text-gray-800',
   },
   {
     key: 'safe' as const,
     label: '안전',
+    card: 'bg-green-50 border-green-200',
+    valueColor: 'text-green-700',
+    labelColor: 'text-green-700',
     icon: (
-      <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+      <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
         <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       </div>
     ),
-    valueColor: 'text-gray-800',
   },
   {
     key: 'warning' as const,
     label: '주의',
+    card: 'bg-yellow-50 border-yellow-200',
+    valueColor: 'text-yellow-800',
+    labelColor: 'text-yellow-700',
     icon: (
-      <div className="w-10 h-10 rounded-xl bg-yellow-50 flex items-center justify-center">
+      <div className="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center">
         <svg className="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
         </svg>
       </div>
     ),
-    valueColor: 'text-gray-800',
   },
   {
     key: 'danger' as const,
     label: '긴급',
+    card: 'bg-red-50 border-red-200',
+    valueColor: 'text-red-600',
+    labelColor: 'text-red-700',
     icon: (
-      <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
-        <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
+        <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
         </svg>
       </div>
     ),
-    valueColor: 'text-gray-800',
   },
 ];
 
@@ -119,11 +129,11 @@ function SkeletonCard() {
 export default function WorkerDashboardPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [_selectedTargetId, setSelectedTargetId] = useState<number | null>(null);
   const [selectedTarget, setSelectedTarget] = useState<Target | null>(null);
   const [dangerAlertNames, setDangerAlertNames] = useState<string[]>([]);
   const prevStatusMapRef = useRef<Record<number, string>>({});
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isSpinning, setIsSpinning] = useState(false);
 
   // ✨ 제네릭을 명시해주면 타입 추론이 더 깔끔하게 됨
   const { data, isLoading, isRefetching, refetch } = useQuery<TargetsResponse>({
@@ -131,6 +141,14 @@ export default function WorkerDashboardPage() {
     queryFn: getTargets,
     refetchInterval: 1000 * 5, // 5초마다 자동 갱신
   });
+
+  // 새로고침: 응답이 빨라도 최소 0.6초는 아이콘이 돌도록
+  const handleRefresh = () => {
+    setIsSpinning(true);
+    Promise.allSettled([refetch(), new Promise((r) => setTimeout(r, 600))]).then(() =>
+      setIsSpinning(false)
+    );
+  };
 
   // DANGER 상태 변화 감지
   useEffect(() => {
@@ -182,12 +200,8 @@ export default function WorkerDashboardPage() {
       {/* 헤더 */}
       <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-indigo-500 flex items-center justify-center">
-            <svg className="w-4 h-4 text-pink-300" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-          </div>
-          <span className="font-bold text-gray-800 text-sm">낙상감지 핫 라인시스템</span>
+          <Logo size="sm" />
+          <span className="font-bold text-gray-800 text-sm">{APP_NAME}</span>
           <span className="text-xs text-gray-400">사회복지사 모드</span>
         </div>
         <div className="flex items-center gap-3 text-sm text-gray-500">
@@ -213,18 +227,18 @@ export default function WorkerDashboardPage() {
 
         {/* ── 상단 요약 카드 4개 ── */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {STAT_CARDS.map(({ key, label, icon, valueColor }) => {
+          {STAT_CARDS.map(({ key, label, icon, card, valueColor, labelColor }) => {
             // ✨ stats 변수를 사용하도록 수정
             const value = stats?.[key];
             return (
-              <div key={key} className="bg-white rounded-xl border border-gray-100 p-5 flex flex-col gap-3 shadow-sm">
+              <div key={key} className={`rounded-xl border p-5 flex flex-col gap-3 shadow-sm ${card}`}>
                 {icon}
                 {isLoading ? (
                   <div className="h-8 w-12 bg-gray-100 rounded animate-pulse" />
                 ) : (
                   <span className={`text-3xl font-bold ${valueColor}`}>{value ?? 0}</span>
                 )}
-                <span className="text-sm text-gray-400">{label}</span>
+                <span className={`text-sm ${labelColor}`}>{label}</span>
               </div>
             );
           })}
@@ -237,11 +251,11 @@ export default function WorkerDashboardPage() {
             <h2 className="font-semibold text-gray-800 text-sm">전체 가구 모니터링</h2>
             <div className="flex items-center gap-2">
               <button
-                onClick={() => refetch()}
-                disabled={isRefetching}
+                onClick={handleRefresh}
+                disabled={isSpinning}
                 className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 border border-gray-200 px-3 py-1.5 rounded-lg transition-colors"
               >
-                <svg className={`w-3.5 h-3.5 ${isRefetching ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className={`w-3.5 h-3.5 ${isSpinning || isRefetching ? 'animate-spin-reverse' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
                 새로고침

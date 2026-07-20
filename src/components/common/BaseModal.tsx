@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useModalTransition } from '../../hooks/useModalTransition';
 
 interface BaseModalProps {
   isOpen: boolean;
@@ -15,19 +16,37 @@ const BaseModal: React.FC<BaseModalProps> = ({
   children,
   hasCloseButton = true,
 }) => {
+  const [render, setRender] = useState(isOpen);
+  const { setClosing, beginClose, handleAnimationEnd, overlayClass, panelClass } =
+    useModalTransition(() => setRender(false));
+
+  // 열림/닫힘 전환. 실제 언마운트는 퇴장 애니메이션이 끝날 때(onAnimationEnd) 처리.
   useEffect(() => {
     if (isOpen) {
-      const prev = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = prev || 'unset';
-      };
+      setRender(true);
+      setClosing(false);
+    } else if (render) {
+      beginClose();
     }
-    // 모달이 닫혀있을 때는 특별히 건드리지 않음
-    return;
-  }, [isOpen]);
+  }, [isOpen, render]);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (!render) return;
+    // 스크롤바가 사라지며 콘텐츠가 튀지 않도록, 사라진 스크롤바 폭만큼 padding으로 보정
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const prevOverflow = document.body.style.overflow;
+    const prevPaddingRight = document.body.style.paddingRight;
+    document.body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+    return () => {
+      document.body.style.overflow = prevOverflow || 'unset';
+      document.body.style.paddingRight = prevPaddingRight;
+    };
+  }, [render]);
+
+  if (!render) return null;
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -37,12 +56,13 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 ${overlayClass}`}
       onClick={handleOverlayClick}
     >
       <div
-        className="bg-white rounded-xl shadow-lg w-full max-w-md mx-4 p-6 flex flex-col gap-4"
+        className={`bg-white rounded-xl shadow-lg w-full max-w-md mx-4 p-6 flex flex-col gap-4 ${panelClass}`}
         onClick={(e) => e.stopPropagation()}
+        onAnimationEnd={handleAnimationEnd}
       >
         {(title || hasCloseButton) && (
           <div className="flex items-center justify-between">

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import Logo from '../../components/common/Logo';
+import { APP_NAME } from '../../constants/app';
 import { useNavigate } from 'react-router-dom';
 import { workerSignup } from '../../apis/auth';
 import InputField from '../../components/common/InputField';
@@ -72,21 +74,17 @@ export default function WorkerSignupPage() {
     form.orgId && form.name && form.password && confirmPassword;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-50 px-4">
+      <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-7">
         {/* 로고 / 타이틀 */}
-        <div className="mb-8 text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-indigo-500 mb-4">
-            <svg className="w-8 h-8 text-pink-300" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-          </div>
+        <div className="mb-6 text-center">
+          <Logo size="lg" className="mb-4" />
           <h1 className="text-2xl font-bold text-gray-800">사회복지사 회원가입</h1>
-          <p className="text-sm text-gray-500 mt-1">낙상감지 핫 라인 시스템</p>
+          <p className="text-sm text-gray-500 mt-1">{APP_NAME}</p>
         </div>
 
         {/* 입력 폼 */}
-        <div className="flex flex-col gap-4" onKeyDown={handleKeyDown}>
+        <div className="flex flex-col gap-1.5" onKeyDown={handleKeyDown}>
           <InputField
             label="아이디"
             type="text"
@@ -150,7 +148,7 @@ export default function WorkerSignupPage() {
             onClick={handleSignup}
             disabled={!isFormFilled || isLoading}
             loading={isLoading}
-            className={`w-full mt-2 !text-white !py-3 !rounded-xl !text-base !font-semibold ${
+            className={`w-full mt-1 !text-white !py-3 !rounded-xl !text-base !font-semibold ${
               isFormFilled
                 ? '!bg-indigo-500 hover:!bg-indigo-600'
                 : '!bg-gray-300'

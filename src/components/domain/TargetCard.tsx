@@ -1,4 +1,5 @@
 import type { Target, TargetStatus } from '../../types/target';
+import { timeAgo } from '../../utils/date';
 
 interface Props {
   target: Target;
@@ -13,6 +14,7 @@ const STATUS_CONFIG: Record<TargetStatus, {
   badgeText: string;
   avatarBg: string;
   dotColor: string;
+  accent: string;
 }> = {
   DANGER: {
     cardBg: 'bg-red-50',
@@ -21,6 +23,7 @@ const STATUS_CONFIG: Record<TargetStatus, {
     badgeText: 'text-red-500',
     avatarBg: 'bg-red-400',
     dotColor: 'bg-red-500',
+    accent: 'border-l-4 border-l-red-500',
   },
   WARNING: {
     cardBg: 'bg-yellow-50',
@@ -29,6 +32,7 @@ const STATUS_CONFIG: Record<TargetStatus, {
     badgeText: 'text-yellow-600',
     avatarBg: 'bg-yellow-400',
     dotColor: 'bg-yellow-500',
+    accent: 'border-l-4 border-l-yellow-500',
   },
   SAFE: {
     cardBg: 'bg-white',
@@ -37,16 +41,9 @@ const STATUS_CONFIG: Record<TargetStatus, {
     badgeText: 'text-green-600',
     avatarBg: 'bg-indigo-400',
     dotColor: 'bg-green-500',
+    accent: 'border-l-4 border-l-green-500',
   },
 };
-
-function timeAgo(iso: string): string {
-  const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
-  if (diff < 60) return '방금 전';
-  if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
-  return `${Math.floor(diff / 86400)}일 전`;
-}
 
 export default function TargetCard({ target, onClick }: Props) {
   const cfg = STATUS_CONFIG[target.status];
@@ -60,7 +57,7 @@ export default function TargetCard({ target, onClick }: Props) {
   return (
     <div
       onClick={() => onClick(target.id)}
-      className={`${cfg.cardBg} border ${cfg.border} rounded-xl p-4 cursor-pointer hover:shadow-md transition-shadow flex flex-col gap-3 ${target.status === 'DANGER' ? 'danger-blink' : ''}`}
+      className={`${cfg.cardBg} border ${cfg.border} ${cfg.accent} rounded-xl p-4 cursor-pointer hover:shadow-md active:scale-[0.98] transition-all duration-200 flex flex-col gap-3 ${target.status === 'DANGER' ? 'danger-blink' : ''}`}
     >
       {/* 상단: 드래그 핸들 + 상태 뱃지 + 전화 버튼 */}
       <div className="flex items-center justify-between">

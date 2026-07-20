@@ -5,6 +5,7 @@ import { APP_NAME } from '../../constants/app';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getTargets } from '../../apis/targets'; // API 호출 함수 (경로 확인 필요)
+import { getMyOrg } from '../../apis/auth';
 import type { Target, TargetsResponse } from '../../types/target';
 import TargetCard from '../../components/domain/TargetCard';
 import AddTargetModal from '../../components/domain/AddTargetModal';
@@ -143,6 +144,9 @@ export default function WorkerDashboardPage() {
     refetchInterval: 1000 * 5, // 5초마다 자동 갱신
   });
 
+  // 로그인한 기관 정보 (헤더 이름 표시)
+  const { data: org } = useQuery({ queryKey: ['org', 'me'], queryFn: getMyOrg });
+
   // 새로고침: 응답이 빨라도 최소 0.6초는 아이콘이 돌도록
   const handleRefresh = () => {
     setIsSpinning(true);
@@ -208,7 +212,7 @@ export default function WorkerDashboardPage() {
           <span className="hidden sm:inline text-xs text-gray-500">사회복지사 모드</span>
         </div>
         <div className="flex items-center gap-3 text-sm text-gray-500">
-          <span className="hidden sm:inline">박사회복지사 님</span>
+          <span className="hidden sm:inline">{org?.name ? `${org.name} 님` : ''}</span>
           <button
             onClick={handleLogout}
             className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-600 transition-colors"

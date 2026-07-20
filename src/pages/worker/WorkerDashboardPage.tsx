@@ -137,7 +137,7 @@ export default function WorkerDashboardPage() {
   const [isSpinning, setIsSpinning] = useState(false);
 
   // ✨ 제네릭을 명시해주면 타입 추론이 더 깔끔하게 됨
-  const { data, isLoading, isRefetching, refetch } = useQuery<TargetsResponse>({
+  const { data, isLoading, isError, isRefetching, refetch } = useQuery<TargetsResponse>({
     queryKey: ['targets'],
     queryFn: getTargets,
     refetchInterval: 1000 * 5, // 5초마다 자동 갱신
@@ -237,7 +237,7 @@ export default function WorkerDashboardPage() {
                 {isLoading ? (
                   <div className="h-8 w-12 bg-gray-100 rounded animate-pulse" />
                 ) : (
-                  <span className={`text-3xl font-bold ${valueColor}`}>{value ?? 0}</span>
+                  <span className={`text-3xl font-bold ${valueColor}`}>{isError ? '—' : (value ?? 0)}</span>
                 )}
                 <span className={`text-sm ${labelColor}`}>{label}</span>
               </div>
@@ -275,7 +275,29 @@ export default function WorkerDashboardPage() {
 
           {/* 상태별 섹션 */}
           <div className="px-5 py-5 flex flex-col gap-8">
-            {isLoading && (
+            {isError && (
+              <div className="flex flex-col items-center justify-center py-12 gap-3 text-center">
+                <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                  </svg>
+                </div>
+                <p className="text-sm font-medium text-gray-700">데이터를 불러오지 못했습니다</p>
+                <p className="text-xs text-gray-400">네트워크 상태를 확인하고 다시 시도해주세요.</p>
+                <button
+                  onClick={handleRefresh}
+                  disabled={isSpinning}
+                  className="mt-1 flex items-center gap-1.5 text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded-lg transition-colors"
+                >
+                  <svg className={`w-3.5 h-3.5 ${isSpinning || isRefetching ? 'animate-spin-reverse' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  다시 시도
+                </button>
+              </div>
+            )}
+
+            {!isError && isLoading && (
               <>
                 {[2, 2, 3].map((count, si) => (
                   <div key={si}>
@@ -291,7 +313,7 @@ export default function WorkerDashboardPage() {
               </>
             )}
 
-            {!isLoading && SECTIONS.map(({ status, label, icon, textColor, emptyMsg }) => {
+            {!isError && !isLoading && SECTIONS.map(({ status, label, icon, textColor, emptyMsg }) => {
               const members = byStatus(status);
               return (
                 <section key={status}>

@@ -1,4 +1,5 @@
 import { Navigate } from 'react-router-dom';
+import { getToken } from '../utils/token';
 
 interface Props {
   children: React.ReactNode;
@@ -6,7 +7,7 @@ interface Props {
 }
 
 export default function PrivateRoute({ children, redirectTo = '/worker/login' }: Props) {
-  const token = localStorage.getItem('accessToken');
+  const token = getToken();
 
   // 토큰 없으면 로그인 페이지로 강제 이동
   if (!token) {

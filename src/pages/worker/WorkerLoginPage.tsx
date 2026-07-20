@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { setToken } from '../../utils/token';
 import Logo from '../../components/common/Logo';
 import { APP_NAME } from '../../constants/app';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -40,7 +41,7 @@ export default function WorkerLoginPage() {
     setIsLoading(true);
     try {
       const res = await workerLogin({ orgId, password });
-      localStorage.setItem('accessToken', res.token);
+      setToken(res.token);
       queryClient.clear(); // 이전 계정 캐시 제거
       navigate('/worker/dashboard');
     } catch (err: any) {

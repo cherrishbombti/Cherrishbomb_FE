@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { clearToken } from '../../utils/token';
 import Logo from '../../components/common/Logo';
 import { APP_NAME } from '../../constants/app';
 import { useNavigate } from 'react-router-dom';
@@ -175,7 +176,7 @@ export default function WorkerDashboardPage() {
   }, [data]);
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
+    clearToken();
     queryClient.clear(); // 다른 계정 로그인 시 이전 캐시 남지 않도록
     navigate('/worker/login');
   };

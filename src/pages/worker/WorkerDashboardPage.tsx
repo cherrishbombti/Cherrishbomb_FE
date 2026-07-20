@@ -55,7 +55,7 @@ const STAT_CARDS = [
     label: '전체 가구',
     card: 'bg-white border-gray-100',
     valueColor: 'text-gray-800',
-    labelColor: 'text-gray-400',
+    labelColor: 'text-gray-500',
     icon: (
       <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
         <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -205,13 +205,13 @@ export default function WorkerDashboardPage() {
         <div className="flex items-center gap-2">
           <Logo size="sm" />
           <span className="font-bold text-gray-800 text-sm">{APP_NAME}</span>
-          <span className="text-xs text-gray-400">사회복지사 모드</span>
+          <span className="text-xs text-gray-500">사회복지사 모드</span>
         </div>
         <div className="flex items-center gap-3 text-sm text-gray-500">
           <span>박사회복지사 님</span>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-600 transition-colors"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -225,7 +225,7 @@ export default function WorkerDashboardPage() {
         {/* ── 페이지 타이틀 ── */}
         <div>
           <h1 className="text-xl font-bold text-gray-800">통합 관제 대시보드</h1>
-          <p className="text-sm text-gray-400 mt-0.5">전체 노인가구 현황 및 긴급 알림 핫라인</p>
+          <p className="text-sm text-gray-500 mt-0.5">전체 노인가구 현황 및 긴급 알림 핫라인</p>
         </div>
 
         {/* ── 상단 요약 카드 4개 ── */}
@@ -285,7 +285,7 @@ export default function WorkerDashboardPage() {
                   </svg>
                 </div>
                 <p className="text-sm font-medium text-gray-700">데이터를 불러오지 못했습니다</p>
-                <p className="text-xs text-gray-400">네트워크 상태를 확인하고 다시 시도해주세요.</p>
+                <p className="text-xs text-gray-500">네트워크 상태를 확인하고 다시 시도해주세요.</p>
                 <button
                   onClick={handleRefresh}
                   disabled={isSpinning}
@@ -323,7 +323,7 @@ export default function WorkerDashboardPage() {
                   </svg>
                 </div>
                 <p className="text-sm font-medium text-gray-700">아직 등록된 가구가 없습니다</p>
-                <p className="text-xs text-gray-400">모니터링할 노인가구를 추가해보세요.</p>
+                <p className="text-xs text-gray-500">모니터링할 노인가구를 추가해보세요.</p>
                 <button
                   onClick={() => setIsAddModalOpen(true)}
                   className="mt-1 flex items-center gap-1.5 text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded-lg transition-colors"
@@ -344,11 +344,11 @@ export default function WorkerDashboardPage() {
                     {icon}
                     <h3 className={`text-sm font-bold ${textColor}`}>
                       {label}
-                      <span className="ml-1.5 font-normal text-gray-400">({members.length})</span>
+                      <span className="ml-1.5 font-normal text-gray-500">({members.length})</span>
                     </h3>
                   </div>
                   {members.length === 0 ? (
-                    <p className="text-sm text-gray-400 py-2">{emptyMsg}</p>
+                    <p className="text-sm text-gray-500 py-2">{emptyMsg}</p>
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       {members.map((member) => (

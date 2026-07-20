@@ -195,6 +195,8 @@ export default function WorkerDashboardPage() {
 
   // ✨ data.summary -> data.stats 로 변경
   const stats = data?.stats;
+  // 조회 성공했지만 등록된 가구가 하나도 없는 경우
+  const isEmpty = !isLoading && !isError && (data?.members?.length ?? 0) === 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -313,7 +315,28 @@ export default function WorkerDashboardPage() {
               </>
             )}
 
-            {!isError && !isLoading && SECTIONS.map(({ status, label, icon, textColor, emptyMsg }) => {
+            {isEmpty && (
+              <div className="flex flex-col items-center justify-center py-12 gap-3 text-center">
+                <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <p className="text-sm font-medium text-gray-700">아직 등록된 가구가 없습니다</p>
+                <p className="text-xs text-gray-400">모니터링할 노인가구를 추가해보세요.</p>
+                <button
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="mt-1 flex items-center gap-1.5 text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded-lg transition-colors"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  대상 추가
+                </button>
+              </div>
+            )}
+
+            {!isError && !isLoading && !isEmpty && SECTIONS.map(({ status, label, icon, textColor, emptyMsg }) => {
               const members = byStatus(status);
               return (
                 <section key={status}>

@@ -201,14 +201,14 @@ export default function WorkerDashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 헤더 */}
-      <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
+      <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-2">
           <Logo size="sm" />
           <span className="font-bold text-gray-800 text-sm">{APP_NAME}</span>
-          <span className="text-xs text-gray-500">사회복지사 모드</span>
+          <span className="hidden sm:inline text-xs text-gray-500">사회복지사 모드</span>
         </div>
         <div className="flex items-center gap-3 text-sm text-gray-500">
-          <span>박사회복지사 님</span>
+          <span className="hidden sm:inline">박사회복지사 님</span>
           <button
             onClick={handleLogout}
             className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-600 transition-colors"
@@ -221,7 +221,7 @@ export default function WorkerDashboardPage() {
         </div>
       </header>
 
-      <main className="px-6 py-6 flex flex-col gap-6 max-w-screen-xl mx-auto">
+      <main className="px-4 sm:px-6 py-6 flex flex-col gap-6 max-w-screen-xl mx-auto">
         {/* ── 페이지 타이틀 ── */}
         <div>
           <h1 className="text-xl font-bold text-gray-800">통합 관제 대시보드</h1>
@@ -250,7 +250,7 @@ export default function WorkerDashboardPage() {
         {/* ── 모니터링 섹션 ── */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
           {/* 섹션 헤더 */}
-          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+          <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-4 border-b border-gray-100">
             <h2 className="font-semibold text-gray-800 text-sm">전체 가구 모니터링</h2>
             <div className="flex items-center gap-2">
               <button

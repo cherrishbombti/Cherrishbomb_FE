@@ -91,9 +91,9 @@ export default function TargetCard({ target, onClick }: Props) {
         </div>
         <div className="min-w-0">
           <p className="font-semibold text-gray-800 text-sm leading-tight">
-            {target.name} <span className="font-normal text-gray-400">({target.age}세)</span>
+            {target.name} <span className="font-normal text-gray-500">({target.age}세)</span>
           </p>
-          <p className="text-xs text-gray-400 truncate mt-0.5">
+          <p className="text-xs text-gray-500 truncate mt-0.5">
             <span className="mr-1">📍</span>{target.address}
           </p>
         </div>

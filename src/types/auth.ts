@@ -25,3 +25,9 @@ export interface WorkerSignupRequest {
 export interface WorkerSignupResponse {
   message?: string;
 }
+
+// 로그인한 기관 정보 (GET /api/org/me)
+export interface OrgProfile {
+  name: string;
+  orgId?: string;
+}

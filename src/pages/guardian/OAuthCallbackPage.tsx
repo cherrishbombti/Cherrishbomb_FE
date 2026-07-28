@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { setToken } from '../../utils/token';
 import { isJwt } from '../../utils/validation';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { axiosInstance } from '../../apis/axiosInstance';
@@ -45,12 +46,12 @@ export default function OAuthCallbackPage() {
     }
 
     if (!jwt) {
-      setErrorMsg('로그인 처리에 실패했습니다. 백엔드 redirect URL 설정을 확인해주세요.\n(token / accessToken 파라미터가 없습니다)');
+      setErrorMsg('로그인에 실패했습니다. 다시 시도해주세요.');
       return;
     }
 
     // ── 2. 토큰 저장 ────────────────────────────────────────────
-    localStorage.setItem('accessToken', jwt);
+    setToken(jwt);
 
     // ── 3. 신규 유저 여부 판별 ───────────────────────────────────
     const isNewUserParam = searchParams.get('isNewUser');

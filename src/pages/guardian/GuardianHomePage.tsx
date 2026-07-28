@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { clearToken } from '../../utils/token';
 import Logo from '../../components/common/Logo';
 import { APP_NAME } from '../../constants/app';
 import { useNavigate } from 'react-router-dom';
@@ -147,7 +148,7 @@ export default function GuardianHomePage() {
         <div className="flex items-center gap-3 text-sm text-gray-500">
           <span>{summary?.wardName ? `${summary.wardName} 보호자 님` : '보호자 님'}</span>
           <button
-            onClick={() => { localStorage.removeItem('accessToken'); navigate('/guardian/login'); }}
+            onClick={() => { clearToken(); navigate('/guardian/login'); }}
             className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

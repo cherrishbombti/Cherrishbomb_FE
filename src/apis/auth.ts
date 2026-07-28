@@ -1,5 +1,5 @@
 import { axiosInstance } from './axiosInstance';
-import type { WorkerLoginRequest, WorkerLoginResponse, OAuthLoginResponse, WorkerSignupRequest, WorkerSignupResponse } from '../types/auth';
+import type { WorkerLoginRequest, WorkerLoginResponse, OAuthLoginResponse, WorkerSignupRequest, WorkerSignupResponse, OrgProfile } from '../types/auth';
 
 const USE_MOCK = false;
 
@@ -34,5 +34,11 @@ export async function exchangeOAuthCode(
 // 사회복지사 회원가입 (POST /api/org/register)
 export async function workerSignup(body: WorkerSignupRequest): Promise<WorkerSignupResponse> {
   const { data } = await axiosInstance.post<WorkerSignupResponse>('/api/org/signup', body);
+  return data;
+}
+
+// 로그인한 기관 정보 조회 (GET /api/org/me)
+export async function getMyOrg(): Promise<OrgProfile> {
+  const { data } = await axiosInstance.get<OrgProfile>('/api/org/me');
   return data;
 }

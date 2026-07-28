@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { setToken } from '../../utils/token';
 import Logo from '../../components/common/Logo';
 import { APP_NAME } from '../../constants/app';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -40,7 +41,7 @@ export default function WorkerLoginPage() {
     setIsLoading(true);
     try {
       const res = await workerLogin({ orgId, password });
-      localStorage.setItem('accessToken', res.token);
+      setToken(res.token);
       queryClient.clear(); // 이전 계정 캐시 제거
       navigate('/worker/dashboard');
     } catch (err: any) {
@@ -133,14 +134,14 @@ export default function WorkerLoginPage() {
 
         {/* 비밀번호 찾기 */}
         <div className="mt-4 text-center">
-          <button className="text-sm text-gray-400 hover:text-gray-600 underline underline-offset-2 transition-colors">
+          <button className="text-sm text-gray-500 hover:text-gray-600 underline underline-offset-2 transition-colors">
             비밀번호를 잊으셨나요?
           </button>
         </div>
 
         {/* 회원가입 링크 */}
         <div className="mt-3 text-center">
-          <span className="text-sm text-gray-400">계정이 없으신가요? </span>
+          <span className="text-sm text-gray-500">계정이 없으신가요? </span>
           <button
             className="text-sm text-indigo-500 font-semibold hover:text-indigo-700 transition-colors"
             onClick={() => navigate('/worker/signup')}

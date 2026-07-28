@@ -31,7 +31,7 @@ function SensorRow({ icon, label, active, description }: SensorRowProps) {
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-gray-800">{label}</p>
-        <p className="text-xs text-gray-400 mt-0.5">{description}</p>
+        <p className="text-xs text-gray-500 mt-0.5">{description}</p>
       </div>
       <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${active ? 'bg-green-100 text-green-600' : 'bg-gray-200 text-gray-500'}`}>
         {active ? '작동 중' : '비활성'}
@@ -66,7 +66,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
           <h2 className="font-bold text-gray-800 text-base">피보호자 상세 정보</h2>
           <button
             onClick={beginClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400"
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -84,7 +84,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <span className="font-bold text-gray-800 text-lg">{target.name}</span>
-                <span className="text-sm text-gray-400">({target.age}세)</span>
+                <span className="text-sm text-gray-500">({target.age}세)</span>
               </div>
               <div className={`inline-flex items-center gap-1.5 mt-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${st.bg} ${st.text}`}>
                 <span className={`w-1.5 h-1.5 rounded-full ${st.dot} ${target.status === 'DANGER' ? 'animate-pulse' : ''}`} />
@@ -96,20 +96,20 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
           {/* 주소 / 연락처 */}
           <div className="bg-gray-50 rounded-xl p-4 flex flex-col gap-2.5 text-sm">
             <div className="flex items-start gap-2 text-gray-600">
-              <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
               <span>{target.address}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
-              <svg className="w-4 h-4 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-4 h-4 flex-shrink-0 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 8V5z" />
               </svg>
               <span>{target.phone ?? '연락처 없음'}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-500 text-xs border-t border-gray-200 pt-2">
-              <svg className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-3.5 h-3.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span>마지막 업데이트: {timeAgo(target.lastUpdated)}</span>
@@ -122,7 +122,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
             <div className="flex flex-col gap-2.5">
               <SensorRow
                 icon={
-                  <svg className={`w-5 h-5 ${target.radar ? 'text-green-500' : 'text-gray-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className={`w-5 h-5 ${target.radar ? 'text-green-500' : 'text-gray-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
                   </svg>
                 }
@@ -132,7 +132,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
               />
               <SensorRow
                 icon={
-                  <svg className={`w-5 h-5 ${target.thermal ? 'text-green-500' : 'text-gray-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className={`w-5 h-5 ${target.thermal ? 'text-green-500' : 'text-gray-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                   </svg>
                 }
@@ -142,7 +142,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
               />
               <SensorRow
                 icon={
-                  <svg className={`w-5 h-5 ${target.vibrator ? 'text-green-500' : 'text-gray-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className={`w-5 h-5 ${target.vibrator ? 'text-green-500' : 'text-gray-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 }
@@ -176,7 +176,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
               <p className="text-sm text-gray-700 font-semibold text-center">
                 <span className="text-red-400">{target.name}</span> 님을 정말 삭제할까요?
               </p>
-              <p className="text-xs text-gray-400 text-center -mt-1">삭제하면 복구할 수 없습니다.</p>
+              <p className="text-xs text-gray-500 text-center -mt-1">삭제하면 복구할 수 없습니다.</p>
               <div className="flex gap-2">
                 <button
                   onClick={() => setConfirmDelete(false)}

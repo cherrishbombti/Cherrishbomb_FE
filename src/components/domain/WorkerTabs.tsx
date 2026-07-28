@@ -16,7 +16,7 @@ export default function WorkerTabs() {
             key={to}
             to={to}
             className={({ isActive }) =>
-              `relative px-4 py-3 text-sm transition-colors ${
+              `relative px-4 py-3 text-sm transition-all duration-300 ease-out ${
                 isActive
                   ? 'text-indigo-600 font-semibold'
                   : 'text-gray-500 hover:text-gray-700'
@@ -26,9 +26,11 @@ export default function WorkerTabs() {
             {({ isActive }) => (
               <>
                 {label}
-                {isActive && (
-                  <span className="absolute left-3 right-3 -bottom-px h-0.5 bg-indigo-500 rounded-full" />
-                )}
+                <span
+                  className={`absolute left-3 right-3 -bottom-px h-0.5 bg-indigo-500 rounded-full origin-left transition-transform duration-300 ease-out motion-reduce:transition-none ${
+                    isActive ? 'scale-x-100' : 'scale-x-0'
+                  }`}
+                />
               </>
             )}
           </NavLink>

@@ -163,7 +163,7 @@ export default function WorkerLogsPage() {
         ) : (
           <>
             {/* 테이블 */}
-            <div className={`overflow-x-auto transition-opacity ${isFetching ? 'opacity-60' : ''}`}>
+            <div className={`overflow-x-auto transition-opacity duration-300 ease-out ${isFetching ? 'opacity-50' : 'opacity-100'}`}>
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-gray-50 text-gray-500 text-xs">
@@ -173,7 +173,7 @@ export default function WorkerLogsPage() {
                     <th className="text-right font-medium px-5 py-3">코드</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody key={page} className="row-stagger">
                   {logs.map((log) => {
                     const cfg = getLogTypeConfig(log.logType);
                     return (

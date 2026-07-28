@@ -59,36 +59,23 @@ export default function WorkerLoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-50 px-4">
+      {/* 브랜드 — 카드 바깥 상단 */}
+      <div className="w-full max-w-sm mb-6">
+        <Logo size="lg" className="mb-4" />
+        <h1 className="text-2xl font-bold text-gray-800">{APP_NAME}</h1>
+        <p className="text-sm text-gray-500 mt-1">어르신의 안전을 지키는 스마트 케어</p>
+      </div>
+
       {/* 카드 */}
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-7">
         {/* 회원가입 성공 메시지 */}
         {signupSuccess && (
           <div className="mb-4 px-4 py-3 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700 text-center">
-            🎉 회원가입이 완료되었습니다! 로그인해주세요.
+            회원가입이 완료되었습니다. 로그인해주세요.
           </div>
         )}
 
-        {/* 로고 / 타이틀 */}
-        <div className="mb-6 text-center">
-          <Logo size="lg" className="mb-4" />
-          <h1 className="text-2xl font-bold text-gray-800">{APP_NAME}</h1>
-          <p className="text-sm text-gray-500 mt-1">관제 시스템</p>
-        </div>
-
-        {/* 탭 */}
-        <div className="flex bg-gray-100 rounded-lg p-1 mb-5">
-          <button
-            className="flex-1 py-2 text-sm font-medium rounded-md bg-white text-indigo-600 shadow-sm transition-all duration-200 ease-out"
-          >
-            사회복지사
-          </button>
-          <button
-            className="flex-1 py-2 text-sm font-medium rounded-md text-gray-500 cursor-pointer hover:text-gray-700 hover:bg-white/60 active:scale-[0.98] transition-all duration-200 ease-out motion-reduce:transition-none"
-            onClick={() => navigate('/guardian/login')}
-          >
-            보호자
-          </button>
-        </div>
+        <h2 className="text-base font-bold text-gray-800 text-center mb-5">사회복지사 로그인</h2>
 
         {/* 입력 폼 */}
         <div className="flex flex-col gap-1.5" onKeyDown={handleKeyDown}>

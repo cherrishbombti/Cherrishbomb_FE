@@ -8,12 +8,6 @@ export interface WorkerLoginResponse {
   token: string;
 }
 
-export interface OAuthLoginResponse {
-  accessToken: string;
-  tokenType: string;
-  isNewUser: boolean;
-}
-
 // 사회복지사 회원가입 요청
 export interface WorkerSignupRequest {
   orgId: string;    // 아이디

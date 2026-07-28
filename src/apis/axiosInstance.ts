@@ -24,9 +24,7 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       clearToken();
-      // 현재 위치 기준으로 역할에 맞는 로그인 페이지로
-      const isGuardian = window.location.pathname.startsWith('/guardian');
-      window.location.href = isGuardian ? '/guardian/login' : '/worker/login';
+      window.location.href = '/worker/login';
     }
     return Promise.reject(error);
   }

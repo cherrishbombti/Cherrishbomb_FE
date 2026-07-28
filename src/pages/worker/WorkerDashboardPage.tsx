@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { clearToken } from '../../utils/token';
 import { useNavigate } from 'react-router-dom';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getTargets } from '../../apis/targets'; // API 호출 함수 (경로 확인 필요)
-import { getMyOrg } from '../../apis/auth';
-import type { Target, TargetsResponse } from '../../types/target';
+import { useQueryClient } from '@tanstack/react-query';
+import { useTargets } from '../../hooks/queries/useTargets';
+import { queryKeys } from '../../hooks/queries/queryKeys';
+import { useMyOrg } from '../../hooks/queries/useMyOrg';
+import type { Target } from '../../types/target';
 import TargetCard from '../../components/domain/TargetCard';
 import AddTargetModal from '../../components/domain/AddTargetModal';
 import TargetDetailModal from '../../components/domain/TargetDetailModal';
@@ -25,20 +26,9 @@ export default function WorkerDashboardPage() {
   const [isSpinning, setIsSpinning] = useState(false);
 
   // ✨ 제네릭을 명시해주면 타입 추론이 더 깔끔하게 됨
-  const { data, isLoading, isError, isRefetching, refetch } = useQuery<TargetsResponse>({
-    queryKey: ['targets'],
-    queryFn: getTargets,
-    refetchInterval: 1000 * 5, // 5초마다 자동 갱신
-  });
+  const { data, isLoading, isError, isRefetching, refetch } = useTargets();
 
-  // 로그인한 기관 정보 — 세션 중 변하지 않으므로 재요청 최소화
-  const { data: org } = useQuery({
-    queryKey: ['org', 'me'],
-    queryFn: getMyOrg,
-    staleTime: Infinity,
-    gcTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-  });
+  const { data: org } = useMyOrg();
 
   // 새로고침: 응답이 빨라도 최소 0.6초는 아이콘이 돌도록
   const handleRefresh = () => {
@@ -79,11 +69,11 @@ export default function WorkerDashboardPage() {
   };
 
   const handleAddSuccess = () => {
-    queryClient.invalidateQueries({ queryKey: ['targets'] });
+    queryClient.invalidateQueries({ queryKey: queryKeys.targets });
   };
 
   const handleDeleteSuccess = () => {
-    queryClient.invalidateQueries({ queryKey: ['targets'] });
+    queryClient.invalidateQueries({ queryKey: queryKeys.targets });
   };
 
   // ✨ data.targets -> data.members 로 변경

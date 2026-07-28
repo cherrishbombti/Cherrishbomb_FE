@@ -1,23 +1,18 @@
 import { useState, useRef, useEffect } from 'react';
-import { clearToken } from '../../utils/token';
-import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTargets } from '../../hooks/queries/useTargets';
 import { queryKeys } from '../../hooks/queries/queryKeys';
-import { useMyOrg } from '../../hooks/queries/useMyOrg';
 import type { Target } from '../../types/target';
 import TargetCard from '../../components/domain/TargetCard';
 import AddTargetModal from '../../components/domain/AddTargetModal';
 import TargetDetailModal from '../../components/domain/TargetDetailModal';
 import DangerAlert from '../../components/domain/DangerAlert';
 import SkeletonCard from '../../components/domain/SkeletonCard';
-import DashboardHeader from '../../components/domain/DashboardHeader';
 import StateMessage from '../../components/common/StateMessage';
 import { SECTIONS, STAT_CARDS } from './dashboardConfig';
 
 
 export default function WorkerDashboardPage() {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [selectedTarget, setSelectedTarget] = useState<Target | null>(null);
   const [dangerAlertNames, setDangerAlertNames] = useState<string[]>([]);
@@ -28,7 +23,6 @@ export default function WorkerDashboardPage() {
   // ✨ 제네릭을 명시해주면 타입 추론이 더 깔끔하게 됨
   const { data, isLoading, isError, isRefetching, refetch } = useTargets();
 
-  const { data: org } = useMyOrg();
 
   // 새로고침: 응답이 빨라도 최소 0.6초는 아이콘이 돌도록
   const handleRefresh = () => {
@@ -62,12 +56,6 @@ export default function WorkerDashboardPage() {
     }
   }, [data]);
 
-  const handleLogout = () => {
-    clearToken();
-    queryClient.clear(); // 다른 계정 로그인 시 이전 캐시 남지 않도록
-    navigate('/worker/login');
-  };
-
   const handleAddSuccess = () => {
     queryClient.invalidateQueries({ queryKey: queryKeys.targets });
   };
@@ -90,10 +78,7 @@ export default function WorkerDashboardPage() {
   const isEmpty = !isLoading && !isError && (data?.members?.length ?? 0) === 0;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* 헤더 */}
-      <DashboardHeader orgName={org?.name} onLogout={handleLogout} />
-
+    <>
       <main className="px-4 sm:px-6 py-6 flex flex-col gap-6 max-w-screen-xl mx-auto">
         {/* ── 페이지 타이틀 ── */}
         <div>
@@ -269,6 +254,6 @@ export default function WorkerDashboardPage() {
         onClose={() => setIsAddModalOpen(false)}
         onSuccess={handleAddSuccess}
       />
-    </div>
+    </>
   );
 }

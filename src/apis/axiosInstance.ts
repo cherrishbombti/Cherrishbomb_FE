@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { getToken, clearToken } from '../utils/token';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
@@ -11,7 +10,7 @@ export const axiosInstance = axios.create({
 
 // 요청 인터셉터 — JWT 자동 첨부
 axiosInstance.interceptors.request.use((config) => {
-  const token = getToken();
+  const token = localStorage.getItem('accessToken');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -23,10 +22,8 @@ axiosInstance.interceptors.response.use(
   (res) => res,
   (error) => {
     if (error.response?.status === 401) {
-      clearToken();
-      // 현재 위치 기준으로 역할에 맞는 로그인 페이지로
-      const isGuardian = window.location.pathname.startsWith('/guardian');
-      window.location.href = isGuardian ? '/guardian/login' : '/worker/login';
+      localStorage.removeItem('accessToken');
+      window.location.href = '/worker/login';
     }
     return Promise.reject(error);
   }

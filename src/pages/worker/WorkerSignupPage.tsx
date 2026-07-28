@@ -160,7 +160,7 @@ export default function WorkerSignupPage() {
 
         {/* 로그인으로 이동 */}
         <div className="mt-5 text-center">
-          <span className="text-sm text-gray-500">이미 계정이 있으신가요? </span>
+          <span className="text-sm text-gray-400">이미 계정이 있으신가요? </span>
           <button
             className="text-sm text-indigo-500 font-semibold hover:text-indigo-700 transition-colors"
             onClick={() => navigate('/worker/login')}

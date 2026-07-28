@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { clearToken } from '../../utils/token';
 import Logo from '../../components/common/Logo';
 import { APP_NAME } from '../../constants/app';
 import { useNavigate } from 'react-router-dom';
@@ -263,7 +262,7 @@ export default function WardRegisterPage() {
         <div className="mt-4 text-center">
           <button
             className="text-sm text-gray-400 hover:text-gray-600 underline underline-offset-2 transition-colors"
-            onClick={() => { clearToken(); navigate('/guardian/login'); }}
+            onClick={() => { localStorage.removeItem('accessToken'); navigate('/guardian/login'); }}
           >
             로그아웃
           </button>

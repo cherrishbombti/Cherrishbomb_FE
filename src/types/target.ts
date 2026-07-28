@@ -38,3 +38,35 @@ export interface AddTargetRequest {
   contact: number;      // Long (전화번호 숫자, 예: 1012345678)
   deviceMac: string;    // 디바이스 MAC 주소 (예: AA:BB:CC:DD:EE:FF)
 }
+// ── 낙상 이력 ────────────────────────────────────────────────
+export type LogType =
+  | 'FALL_EVENT'      // 낙상 감지
+  | 'SENSOR_FAILURE'  // 센서 이상 (sensorDetail에 대상 센서)
+  | 'EMERGENCY_CALL'  // 119 신고 (백엔드 예정)
+  | 'DEVICE_OFFLINE'  // 기기 연결 끊김 (백엔드 예정)
+  | 'ACTIVE';         // 정상 활동 (백엔드 예정)
+
+export interface FallLog {
+  id: number;
+  detectedAt: string;          // 발생 시각
+  status: TargetStatus;
+  logType: LogType;
+  sensorDetail: string | null; // vibrator / radar / thermal
+}
+
+// 공통 페이지네이션 응답
+export interface PageResponse<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+}
+
+export interface FallLogParams {
+  page?: number;
+  size?: number;
+  from?: string; // YYYY-MM-DD
+  to?: string;   // YYYY-MM-DD
+}

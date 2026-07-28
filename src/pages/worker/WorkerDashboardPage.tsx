@@ -1,11 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { clearToken } from '../../utils/token';
 import Logo from '../../components/common/Logo';
 import { APP_NAME } from '../../constants/app';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getTargets } from '../../apis/targets'; // API 호출 함수 (경로 확인 필요)
-import { getMyOrg } from '../../apis/auth';
 import type { Target, TargetsResponse } from '../../types/target';
 import TargetCard from '../../components/domain/TargetCard';
 import AddTargetModal from '../../components/domain/AddTargetModal';
@@ -56,7 +54,7 @@ const STAT_CARDS = [
     label: '전체 가구',
     card: 'bg-white border-gray-100',
     valueColor: 'text-gray-800',
-    labelColor: 'text-gray-500',
+    labelColor: 'text-gray-400',
     icon: (
       <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
         <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -138,14 +136,11 @@ export default function WorkerDashboardPage() {
   const [isSpinning, setIsSpinning] = useState(false);
 
   // ✨ 제네릭을 명시해주면 타입 추론이 더 깔끔하게 됨
-  const { data, isLoading, isError, isRefetching, refetch } = useQuery<TargetsResponse>({
+  const { data, isLoading, isRefetching, refetch } = useQuery<TargetsResponse>({
     queryKey: ['targets'],
     queryFn: getTargets,
     refetchInterval: 1000 * 5, // 5초마다 자동 갱신
   });
-
-  // 로그인한 기관 정보 (헤더 이름 표시)
-  const { data: org } = useQuery({ queryKey: ['org', 'me'], queryFn: getMyOrg });
 
   // 새로고침: 응답이 빨라도 최소 0.6초는 아이콘이 돌도록
   const handleRefresh = () => {
@@ -180,7 +175,7 @@ export default function WorkerDashboardPage() {
   }, [data]);
 
   const handleLogout = () => {
-    clearToken();
+    localStorage.removeItem('accessToken');
     queryClient.clear(); // 다른 계정 로그인 시 이전 캐시 남지 않도록
     navigate('/worker/login');
   };
@@ -199,23 +194,21 @@ export default function WorkerDashboardPage() {
 
   // ✨ data.summary -> data.stats 로 변경
   const stats = data?.stats;
-  // 조회 성공했지만 등록된 가구가 하나도 없는 경우
-  const isEmpty = !isLoading && !isError && (data?.members?.length ?? 0) === 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 헤더 */}
-      <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-10">
+      <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-2">
           <Logo size="sm" />
           <span className="font-bold text-gray-800 text-sm">{APP_NAME}</span>
-          <span className="hidden sm:inline text-xs text-gray-500">사회복지사 모드</span>
+          <span className="text-xs text-gray-400">사회복지사 모드</span>
         </div>
         <div className="flex items-center gap-3 text-sm text-gray-500">
-          <span className="hidden sm:inline">{org?.name ? `${org.name} 님` : ''}</span>
+          <span>박사회복지사 님</span>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-600 transition-colors"
+            className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -225,11 +218,11 @@ export default function WorkerDashboardPage() {
         </div>
       </header>
 
-      <main className="px-4 sm:px-6 py-6 flex flex-col gap-6 max-w-screen-xl mx-auto">
+      <main className="px-6 py-6 flex flex-col gap-6 max-w-screen-xl mx-auto">
         {/* ── 페이지 타이틀 ── */}
         <div>
           <h1 className="text-xl font-bold text-gray-800">통합 관제 대시보드</h1>
-          <p className="text-sm text-gray-500 mt-0.5">전체 노인가구 현황 및 긴급 알림 핫라인</p>
+          <p className="text-sm text-gray-400 mt-0.5">전체 노인가구 현황 및 긴급 알림 핫라인</p>
         </div>
 
         {/* ── 상단 요약 카드 4개 ── */}
@@ -243,7 +236,7 @@ export default function WorkerDashboardPage() {
                 {isLoading ? (
                   <div className="h-8 w-12 bg-gray-100 rounded animate-pulse" />
                 ) : (
-                  <span className={`text-3xl font-bold ${valueColor}`}>{isError ? '—' : (value ?? 0)}</span>
+                  <span className={`text-3xl font-bold ${valueColor}`}>{value ?? 0}</span>
                 )}
                 <span className={`text-sm ${labelColor}`}>{label}</span>
               </div>
@@ -254,7 +247,7 @@ export default function WorkerDashboardPage() {
         {/* ── 모니터링 섹션 ── */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
           {/* 섹션 헤더 */}
-          <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-4 border-b border-gray-100">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <h2 className="font-semibold text-gray-800 text-sm">전체 가구 모니터링</h2>
             <div className="flex items-center gap-2">
               <button
@@ -281,29 +274,7 @@ export default function WorkerDashboardPage() {
 
           {/* 상태별 섹션 */}
           <div className="px-5 py-5 flex flex-col gap-8">
-            {isError && (
-              <div className="flex flex-col items-center justify-center py-12 gap-3 text-center">
-                <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                  </svg>
-                </div>
-                <p className="text-sm font-medium text-gray-700">데이터를 불러오지 못했습니다</p>
-                <p className="text-xs text-gray-500">네트워크 상태를 확인하고 다시 시도해주세요.</p>
-                <button
-                  onClick={handleRefresh}
-                  disabled={isSpinning}
-                  className="mt-1 flex items-center gap-1.5 text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded-lg transition-colors"
-                >
-                  <svg className={`w-3.5 h-3.5 ${isSpinning || isRefetching ? 'animate-spin-reverse' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  다시 시도
-                </button>
-              </div>
-            )}
-
-            {!isError && isLoading && (
+            {isLoading && (
               <>
                 {[2, 2, 3].map((count, si) => (
                   <div key={si}>
@@ -319,28 +290,7 @@ export default function WorkerDashboardPage() {
               </>
             )}
 
-            {isEmpty && (
-              <div className="flex flex-col items-center justify-center py-12 gap-3 text-center">
-                <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <p className="text-sm font-medium text-gray-700">아직 등록된 가구가 없습니다</p>
-                <p className="text-xs text-gray-500">모니터링할 노인가구를 추가해보세요.</p>
-                <button
-                  onClick={() => setIsAddModalOpen(true)}
-                  className="mt-1 flex items-center gap-1.5 text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded-lg transition-colors"
-                >
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                  대상 추가
-                </button>
-              </div>
-            )}
-
-            {!isError && !isLoading && !isEmpty && SECTIONS.map(({ status, label, icon, textColor, emptyMsg }) => {
+            {!isLoading && SECTIONS.map(({ status, label, icon, textColor, emptyMsg }) => {
               const members = byStatus(status);
               return (
                 <section key={status}>
@@ -348,11 +298,11 @@ export default function WorkerDashboardPage() {
                     {icon}
                     <h3 className={`text-sm font-bold ${textColor}`}>
                       {label}
-                      <span className="ml-1.5 font-normal text-gray-500">({members.length})</span>
+                      <span className="ml-1.5 font-normal text-gray-400">({members.length})</span>
                     </h3>
                   </div>
                   {members.length === 0 ? (
-                    <p className="text-sm text-gray-500 py-2">{emptyMsg}</p>
+                    <p className="text-sm text-gray-400 py-2">{emptyMsg}</p>
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       {members.map((member) => (

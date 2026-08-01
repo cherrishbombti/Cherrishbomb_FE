@@ -12,7 +12,8 @@ export interface Target {
   radar: boolean;              // 새로 추가된 센서 정보
   thermal: boolean;            // 새로 추가된 센서 정보
   vibrator: boolean;           // 새로 추가된 센서 정보
-  lastUpdated: string;         // lastUpdatedAt -> lastUpdated
+  deviceOnline: boolean;       // 기기 연결 여부 (서버 계산값, 최근 5분 기준)
+  deviceLastSeen: string | null; // 마지막 기기 신호 수신 시각. 수신 이력 없으면 null
 }
 
 // 3. 요약 통계 (백엔드의 stats 객체)s

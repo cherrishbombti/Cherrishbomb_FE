@@ -112,7 +112,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
               <svg className="w-3.5 h-3.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>마지막 업데이트: {timeAgo(target.lastUpdated)}</span>
+              <span>마지막 수신: {timeAgo(target.deviceLastSeen)}</span>
             </div>
           </div>
 

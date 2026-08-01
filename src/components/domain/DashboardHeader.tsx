@@ -11,9 +11,8 @@ export default function DashboardHeader({ orgName, onLogout }: Props) {
   return (
     <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-10">
       <div className="flex items-center gap-2">
-        <Logo size="sm" />
+        <Logo size="sm" variant="inverted" />
         <span className="font-bold text-gray-800 text-sm">{APP_NAME}</span>
-        <span className="hidden sm:inline text-xs text-gray-500">사회복지사 모드</span>
       </div>
       <div className="flex items-center gap-3 text-sm text-gray-500">
         <span className="hidden sm:inline">{orgName ? `${orgName} 님` : ''}</span>

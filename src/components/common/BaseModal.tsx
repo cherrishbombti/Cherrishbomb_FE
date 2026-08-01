@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useModalTransition } from '../../hooks/useModalTransition';
 
 interface BaseModalProps {
@@ -54,7 +55,8 @@ const BaseModal: React.FC<BaseModalProps> = ({
     }
   };
 
-  return (
+  // 부모에 transform이 걸리면 fixed 기준이 바뀌므로 body 직속으로 렌더
+  return createPortal(
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 ${overlayClass}`}
       onClick={handleOverlayClick}
@@ -92,7 +94,8 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
         <div className="text-sm text-gray-600">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

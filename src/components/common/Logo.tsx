@@ -14,7 +14,7 @@ const SIZES = {
 
 const VARIANTS = {
   solid: { box: 'bg-indigo-500', icon: 'text-white' },
-  inverted: { box: 'bg-white ring-1 ring-indigo-100', icon: 'text-indigo-500' },
+  inverted: { box: 'bg-white ring-1 ring-indigo-200', icon: 'text-indigo-500' },
 } as const;
 
 export default function Logo({ size = 'lg', variant = 'solid', className = '' }: LogoProps) {

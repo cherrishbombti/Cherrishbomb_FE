@@ -13,7 +13,9 @@ export default function WorkerLoginPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const location = useLocation();
-  const signupSuccess = (location.state as any)?.signupSuccess ?? false;
+  // 회원가입 완료 후 navigate state로 전달되는 값 (없을 수 있으므로 좁혀서 사용)
+  const locationState = location.state as { signupSuccess?: boolean } | null;
+  const signupSuccess = locationState?.signupSuccess ?? false;
   const [orgId, setLoginId] = useState('');
   const [password, setPassword] = useState('');
   const [idError, setIdError] = useState('');

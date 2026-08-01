@@ -1,5 +1,7 @@
 import type { Target, TargetStatus } from '../../types/target';
 import { timeAgo } from '../../utils/date';
+import { getDeviceState, isStatusStale } from '../../utils/deviceStatus';
+import DeviceStateBadge from './DeviceStateBadge';
 
 interface Props {
   target: Target;
@@ -48,6 +50,9 @@ const STATUS_CONFIG: Record<TargetStatus, {
 export default function TargetCard({ target, onClick }: Props) {
   const cfg = STATUS_CONFIG[target.status];
   const firstChar = target.name[0];
+  const deviceState = getDeviceState(target);
+  // 기기가 연결돼 있지 않으면 status는 마지막 수신값이라 현재 상태가 아님
+  const staleStatus = isStatusStale(deviceState);
 
   const handleCall = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -57,7 +62,7 @@ export default function TargetCard({ target, onClick }: Props) {
   return (
     <div
       onClick={() => onClick(target.id)}
-      className={`${cfg.cardBg} border ${cfg.border} ${cfg.accent} rounded-xl p-4 cursor-pointer hover:shadow-md active:scale-[0.98] transition-all duration-200 flex flex-col gap-3 ${target.status === 'DANGER' ? 'danger-blink' : ''}`}
+      className={`${cfg.cardBg} border ${cfg.border} ${cfg.accent} rounded-xl p-4 cursor-pointer hover:shadow-md active:scale-[0.98] transition-all duration-200 flex flex-col gap-3 ${target.status === 'DANGER' && !staleStatus ? 'danger-blink' : ''}`}
     >
       {/* 상단: 드래그 핸들 + 상태 뱃지 + 전화 버튼 */}
       <div className="flex items-center justify-between">
@@ -67,8 +72,13 @@ export default function TargetCard({ target, onClick }: Props) {
             <path d="M8 6a2 2 0 100-4 2 2 0 000 4zm0 8a2 2 0 100-4 2 2 0 000 4zm0 8a2 2 0 100-4 2 2 0 000 4zm8-16a2 2 0 100-4 2 2 0 000 4zm0 8a2 2 0 100-4 2 2 0 000 4zm0 8a2 2 0 100-4 2 2 0 000 4z" />
           </svg>
           {/* 상태 점 + 뱃지 */}
-          <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${cfg.badgeBg} ${cfg.badgeText}`}>
-            <span className={`w-1.5 h-1.5 rounded-full ${cfg.dotColor} ${target.status === 'DANGER' ? 'animate-pulse' : ''}`} />
+          <div
+            className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${cfg.badgeBg} ${cfg.badgeText} ${
+              staleStatus ? 'opacity-50' : ''
+            }`}
+            title={staleStatus ? '기기가 연결되지 않아 마지막으로 수신된 상태입니다.' : undefined}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full ${cfg.dotColor} ${target.status === 'DANGER' && !staleStatus ? 'animate-pulse' : ''}`} />
             {target.status}
           </div>
         </div>
@@ -99,18 +109,9 @@ export default function TargetCard({ target, onClick }: Props) {
         </div>
       </div>
 
-      {/* 하단: 활동상태 + 배터리 */}
+      {/* 하단: 기기 연결 상태 + 최종 수신 */}
       <div className="flex items-center justify-between text-xs text-gray-500 border-t border-gray-100 pt-2">
-        <div className="flex items-center gap-3">
-          {/* 활동 상태 */}
-          <span className="flex items-center gap-1">
-            <svg className="w-3 h-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-            </svg>
-            {target.status ? '활동 중' : '비활동'}
-          </span>
-          
-        </div>
+        <DeviceStateBadge state={deviceState} />
         {/* 마지막 업데이트 */}
         <span className="flex items-center gap-1">
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

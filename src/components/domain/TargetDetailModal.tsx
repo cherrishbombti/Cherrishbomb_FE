@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useModalTransition } from '../../hooks/useModalTransition';
 import { timeAgo } from '../../utils/date';
+import { getDeviceState, isStatusStale, DEVICE_STATE_CONFIG } from '../../utils/deviceStatus';
+import DeviceStateBadge from './DeviceStateBadge';
 import { deleteTarget } from '../../apis/targets';
 import type { Target } from '../../types/target';
 
@@ -48,6 +50,8 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
   if (!target) return null;
 
   const st = STATUS_LABEL[target.status] ?? STATUS_LABEL.SAFE;
+  const deviceState = getDeviceState(target);
+  const staleStatus = isStatusStale(deviceState);
 
   return (
     /* 오버레이 */
@@ -86,9 +90,14 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
                 <span className="font-bold text-gray-800 text-lg">{target.name}</span>
                 <span className="text-sm text-gray-500">({target.age}세)</span>
               </div>
-              <div className={`inline-flex items-center gap-1.5 mt-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${st.bg} ${st.text}`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${st.dot} ${target.status === 'DANGER' ? 'animate-pulse' : ''}`} />
-                {st.label}
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
+                <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${st.bg} ${st.text} ${
+                  staleStatus ? 'opacity-50' : ''
+                }`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${st.dot} ${target.status === 'DANGER' && !staleStatus ? 'animate-pulse' : ''}`} />
+                  {st.label}
+                </div>
+                <DeviceStateBadge state={deviceState} />
               </div>
             </div>
           </div>
@@ -112,14 +121,23 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
               <svg className="w-3.5 h-3.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>마지막 수신: {timeAgo(target.deviceLastSeen)}</span>
+              <span>기기 {DEVICE_STATE_CONFIG[deviceState].label} · 마지막 수신 {timeAgo(target.deviceLastSeen)}</span>
             </div>
           </div>
 
-          {/* 센서 상태 */}
+          {/* 센서 상태 — 기기 미연결 시 마지막 수신값이므로 흐리게 표시 */}
           <div>
-            <h3 className="text-sm font-bold text-gray-700 mb-3">센서 상태</h3>
-            <div className="flex flex-col gap-2.5">
+            <div className="flex items-baseline gap-2 mb-3 flex-wrap">
+              <h3 className="text-sm font-bold text-gray-700">센서 상태</h3>
+              {staleStatus && (
+                <span className="text-xs text-gray-500">
+                  {deviceState === 'PENDING'
+                    ? '아직 기기 신호를 받지 못했습니다.'
+                    : '기기 연결이 끊겨 마지막으로 수신된 값입니다.'}
+                </span>
+              )}
+            </div>
+            <div className={`flex flex-col gap-2.5 ${staleStatus ? 'opacity-50' : ''}`}>
               <SensorRow
                 icon={
                   <svg className={`w-5 h-5 ${target.radar ? 'text-green-500' : 'text-gray-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

@@ -18,3 +18,12 @@ export function useInvalidateTargets() {
   const queryClient = useQueryClient();
   return () => queryClient.invalidateQueries({ queryKey: queryKeys.targets });
 }
+
+// 폴링이 필요 없는 화면(예: 이력 조회의 대상자 선택)에서 사용
+export function useTargetsOnce() {
+  return useQuery<TargetsResponse>({
+    queryKey: queryKeys.targets,
+    queryFn: getTargets,
+    staleTime: 1000 * 60,
+  });
+}

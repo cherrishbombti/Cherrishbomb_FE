@@ -66,7 +66,8 @@ export default function WorkerLoginPage() {
       </div>
 
       {/* 카드 */}
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-md px-8 py-9 min-h-[372px] flex flex-col justify-center">
+      {/* 에러 문구가 나타나도 카드가 커지지 않도록 최소 높이를 확보하고 내용은 세로 중앙 정렬 */}
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-md px-8 py-9 min-h-[23rem] flex flex-col justify-center">
         {/* 회원가입 성공 메시지 */}
         {signupSuccess && (
           <div className="mb-4 px-4 py-3 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700 text-center">

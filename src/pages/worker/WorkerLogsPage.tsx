@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useTargetsOnce } from '../../hooks/queries/useTargets';
 import { useTargetLogs } from '../../hooks/queries/useTargetLogs';
 import LogSearchForm from '../../components/domain/LogSearchForm';
@@ -9,8 +10,10 @@ import StateMessage from '../../components/common/StateMessage';
 const PAGE_SIZE = 20;
 
 export default function WorkerLogsPage() {
-  const { data: targetsData } = useTargetsOnce();
+  const { data: targetsData, isLoading: loadingMembers } = useTargetsOnce();
   const members = targetsData?.members ?? [];
+  // 조회할 대상 자체가 없는 경우 (등록된 가구 0건)
+  const noMembers = !loadingMembers && members.length === 0;
 
   const [targetId, setTargetId] = useState<number | null>(null);
   const [from, setFrom] = useState('');
@@ -62,7 +65,26 @@ export default function WorkerLogsPage() {
       />
 
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        {targetId == null ? (
+        {noMembers ? (
+          <StateMessage
+            iconBg="bg-indigo-50"
+            icon={
+              <svg className="w-6 h-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            }
+            title="등록된 가구가 없습니다"
+            description="모니터링 대상을 먼저 등록하면 이곳에서 이력을 확인할 수 있습니다."
+            action={
+              <Link
+                to="/worker/dashboard"
+                className="mt-1 inline-flex items-center gap-1.5 text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded-lg transition-colors"
+              >
+                대상 등록하러 가기
+              </Link>
+            }
+          />
+        ) : targetId == null ? (
           <StateMessage
             iconBg="bg-indigo-50"
             icon={
@@ -71,7 +93,7 @@ export default function WorkerLogsPage() {
               </svg>
             }
             title="대상자를 선택해주세요"
-            description="선택한 대상자의 낙상·센서 이벤트 기록을 확인할 수 있습니다."
+            description="위에서 대상자를 선택하면 낙상·센서 이벤트 기록을 확인할 수 있습니다."
           />
         ) : isLoading ? (
           <div className="p-5 flex flex-col gap-3">

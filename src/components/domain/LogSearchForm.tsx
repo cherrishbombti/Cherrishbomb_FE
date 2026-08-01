@@ -27,9 +27,12 @@ export default function LogSearchForm({
         <select
           value={targetId ?? ''}
           onChange={(e) => onTargetChange(e.target.value ? Number(e.target.value) : null)}
-          className={FIELD}
+          disabled={members.length === 0}
+          className={`${FIELD} disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed`}
         >
-          <option value="">대상자를 선택하세요</option>
+          <option value="">
+            {members.length === 0 ? '등록된 대상자가 없습니다' : '대상자를 선택하세요'}
+          </option>
           {members.map((m) => (
             <option key={m.id} value={m.id}>
               {m.name} ({m.age}세)

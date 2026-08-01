@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getErrorMessage } from '../../utils/apiError';
 import { setToken } from '../../utils/token';
 import Logo from '../../components/common/Logo';
 import { APP_NAME } from '../../constants/app';
@@ -44,10 +45,8 @@ export default function WorkerLoginPage() {
       setToken(res.token);
       queryClient.clear(); // 이전 계정 캐시 제거
       navigate('/worker/dashboard');
-    } catch (err: any) {
-      const msg =
-        err?.response?.data?.message || '아이디 또는 비밀번호가 일치하지 않습니다.';
-      setServerError(msg);
+    } catch (err) {
+      setServerError(getErrorMessage(err, '아이디 또는 비밀번호를 확인해주세요.'));
     } finally {
       setIsLoading(false);
     }
@@ -60,14 +59,14 @@ export default function WorkerLoginPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-50 px-4">
       {/* 브랜드 — 카드 바깥 상단 */}
-      <div className="w-full max-w-sm mb-6">
-        <Logo size="lg" className="mb-4" />
-        <h1 className="text-2xl font-bold text-gray-800">{APP_NAME}</h1>
-        <p className="text-sm text-gray-500 mt-1">어르신의 안전을 지키는 스마트 케어</p>
+      <div className="w-full max-w-md mb-8 flex flex-col items-center text-center">
+        <Logo size="xl" variant="inverted" className="shadow-lg shadow-indigo-500/10 mb-5" />
+        <h1 className="text-3xl leading-tight font-extrabold text-gray-900 tracking-tight">{APP_NAME}</h1>
+        <p className="text-base text-gray-600 mt-2">어르신의 안전을 지키는 스마트 케어</p>
       </div>
 
       {/* 카드 */}
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-7">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-md px-8 py-9 min-h-[372px] flex flex-col justify-center">
         {/* 회원가입 성공 메시지 */}
         {signupSuccess && (
           <div className="mb-4 px-4 py-3 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700 text-center">
@@ -75,10 +74,13 @@ export default function WorkerLoginPage() {
           </div>
         )}
 
-        <h2 className="text-base font-bold text-gray-800 text-center mb-5">사회복지사 로그인</h2>
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-bold text-gray-900">사회복지사 로그인</h2>
+          <span className="mt-2.5 block w-28 h-0.5 bg-indigo-500 rounded-full mx-auto" />
+        </div>
 
         {/* 입력 폼 */}
-        <div className="flex flex-col gap-1.5" onKeyDown={handleKeyDown}>
+        <div className="flex flex-col gap-3" onKeyDown={handleKeyDown}>
           <InputField
             label="아이디"
             type="text"

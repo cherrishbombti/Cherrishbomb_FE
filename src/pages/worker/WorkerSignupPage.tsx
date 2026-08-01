@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getErrorMessage } from '../../utils/apiError';
 import Logo from '../../components/common/Logo';
 import { APP_NAME } from '../../constants/app';
 import { useNavigate } from 'react-router-dom';
@@ -57,10 +58,8 @@ export default function WorkerSignupPage() {
       await workerSignup(form);
       // 회원가입 성공 → 로그인 페이지로 이동
       navigate('/worker/login', { state: { signupSuccess: true } });
-    } catch (err: any) {
-      const msg =
-        err?.response?.data?.message || '회원가입에 실패했습니다. 다시 시도해주세요.';
-      setServerError(msg);
+    } catch (err) {
+      setServerError(getErrorMessage(err, '회원가입에 실패했습니다. 다시 시도해주세요.'));
     } finally {
       setIsLoading(false);
     }

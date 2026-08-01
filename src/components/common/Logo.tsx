@@ -1,5 +1,7 @@
 interface LogoProps {
-  size?: 'sm' | 'lg';
+  size?: 'sm' | 'lg' | 'xl';
+  /** solid: 인디고 배경 + 흰 아이콘 / inverted: 흰 배경 + 인디고 아이콘 */
+  variant?: 'solid' | 'inverted';
   className?: string;
 }
 
@@ -7,14 +9,21 @@ interface LogoProps {
 const SIZES = {
   sm: { box: 'w-7 h-7 rounded-lg', icon: 'w-4 h-4' },
   lg: { box: 'w-14 h-14 rounded-xl', icon: 'w-8 h-8' },
+  xl: { box: 'w-[68px] h-[68px] rounded-2xl', icon: 'w-10 h-10' },
 } as const;
 
-export default function Logo({ size = 'lg', className = '' }: LogoProps) {
+const VARIANTS = {
+  solid: { box: 'bg-indigo-500', icon: 'text-white' },
+  inverted: { box: 'bg-white ring-1 ring-indigo-100', icon: 'text-indigo-500' },
+} as const;
+
+export default function Logo({ size = 'lg', variant = 'solid', className = '' }: LogoProps) {
   const s = SIZES[size];
+  const v = VARIANTS[variant];
   return (
-    <div className={`inline-flex items-center justify-center bg-indigo-500 ${s.box} ${className}`}>
+    <div className={`inline-flex items-center justify-center ${v.box} ${s.box} ${className}`}>
       <svg
-        className={`${s.icon} text-white`}
+        className={`${s.icon} ${v.icon}`}
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"

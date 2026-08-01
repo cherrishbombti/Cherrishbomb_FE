@@ -73,13 +73,14 @@ const InputField: React.FC<InputFieldProps> = ({
         `}
       />
 
-      {/* 에러 자리 항상 확보 → 문구 나타날 때 레이아웃 밀림 방지 */}
-      <span
-        className="text-xs text-red-500 min-h-[15px] leading-tight transition-opacity duration-200 motion-reduce:transition-none"
-        style={{ opacity: error ? 1 : 0 }}
+      {/* 에러가 있을 때만 자리를 차지하며 부드럽게 펼쳐짐 */}
+      <div
+        className={`grid transition-all duration-200 ease-out motion-reduce:transition-none ${
+          error ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+        }`}
       >
-        {error || '\u00A0'}
-      </span>
+        <span className="overflow-hidden text-xs text-red-500 leading-tight">{error}</span>
+      </div>
     </div>
   );
 };

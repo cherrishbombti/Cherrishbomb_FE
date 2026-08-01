@@ -12,7 +12,8 @@ export interface Target {
   radar: boolean;              // 새로 추가된 센서 정보
   thermal: boolean;            // 새로 추가된 센서 정보
   vibrator: boolean;           // 새로 추가된 센서 정보
-  lastUpdated: string;         // lastUpdatedAt -> lastUpdated
+  deviceOnline: boolean;       // 기기 연결 여부 (서버 계산값, 최근 5분 기준)
+  deviceLastSeen: string | null; // 마지막 기기 신호 수신 시각. 수신 이력 없으면 null
 }
 
 // 3. 요약 통계 (백엔드의 stats 객체)s
@@ -37,4 +38,36 @@ export interface AddTargetRequest {
   address: string;
   contact: number;      // Long (전화번호 숫자, 예: 1012345678)
   deviceMac: string;    // 디바이스 MAC 주소 (예: AA:BB:CC:DD:EE:FF)
+}
+// ── 낙상 이력 ────────────────────────────────────────────────
+export type LogType =
+  | 'FALL_EVENT'      // 낙상 감지
+  | 'SENSOR_FAILURE'  // 센서 이상 (sensorDetail에 대상 센서)
+  | 'EMERGENCY_CALL'  // 119 신고 (백엔드 예정)
+  | 'DEVICE_OFFLINE'  // 기기 연결 끊김 (백엔드 예정)
+  | 'ACTIVE';         // 정상 활동 (백엔드 예정)
+
+export interface FallLog {
+  id: number;
+  detectedAt: string;          // 발생 시각
+  status: TargetStatus;
+  logType: LogType;
+  sensorDetail: string | null; // vibrator / radar / thermal
+}
+
+// 공통 페이지네이션 응답
+export interface PageResponse<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+}
+
+export interface FallLogParams {
+  page?: number;
+  size?: number;
+  from?: string; // YYYY-MM-DD
+  to?: string;   // YYYY-MM-DD
 }

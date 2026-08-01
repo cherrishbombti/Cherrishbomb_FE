@@ -88,3 +88,30 @@ button:not(:disabled):active {
 }
 .modal-overlay-out { animation: modal-overlay-out 0.16s ease-in forwards; }
 .modal-panel-out { animation: modal-panel-out 0.18s ease-in forwards; }
+
+/* 페이지·행 등장 애니메이션 */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up {
+  animation: fade-in-up 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* 테이블 행 순차 등장 (stagger) */
+.row-stagger > * {
+  animation: fade-in-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.row-stagger > *:nth-child(1) { animation-delay: 0.02s; }
+.row-stagger > *:nth-child(2) { animation-delay: 0.04s; }
+.row-stagger > *:nth-child(3) { animation-delay: 0.06s; }
+.row-stagger > *:nth-child(4) { animation-delay: 0.08s; }
+.row-stagger > *:nth-child(5) { animation-delay: 0.10s; }
+.row-stagger > *:nth-child(6) { animation-delay: 0.12s; }
+.row-stagger > *:nth-child(7) { animation-delay: 0.14s; }
+.row-stagger > *:nth-child(8) { animation-delay: 0.16s; }
+.row-stagger > *:nth-child(n+9) { animation-delay: 0.18s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-up, .row-stagger > * { animation: none; }
+}

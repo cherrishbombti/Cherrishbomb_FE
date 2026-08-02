@@ -77,7 +77,7 @@ export default function WorkerSignupPage() {
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-7">
         {/* 로고 / 타이틀 */}
         <div className="mb-6 text-center">
-          <Logo size="lg" className="mb-4" />
+          <Logo size="xl" variant="inverted" className="shadow-lg shadow-indigo-500/10 mb-4" />
           <h1 className="text-2xl font-bold text-gray-800">사회복지사 회원가입</h1>
           <p className="text-sm text-gray-500 mt-1">{APP_NAME}</p>
         </div>

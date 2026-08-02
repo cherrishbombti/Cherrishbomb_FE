@@ -9,9 +9,10 @@ export interface Target {
   address: string;
   phone: string;             // 연락처 (문자열, 예: 010-1234-5678)
   status: TargetStatus;
-  radar: boolean;              // 새로 추가된 센서 정보
-  thermal: boolean;            // 새로 추가된 센서 정보
-  vibrator: boolean;           // 새로 추가된 센서 정보
+  // 센서 정상 여부. 아직 수신 이력이 없으면 null (고장(false)과 구분)
+  radar: boolean | null;
+  thermal: boolean | null;
+  vibrator: boolean | null;
   deviceOnline: boolean;       // 기기 연결 여부 (서버 계산값, 최근 5분 기준)
   deviceLastSeen: string | null; // 마지막 기기 신호 수신 시각. 수신 이력 없으면 null
 }

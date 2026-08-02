@@ -1,6 +1,6 @@
 import type { Target, TargetStatus } from '../../types/target';
 import { timeAgo } from '../../utils/date';
-import { getDeviceState, isStatusStale } from '../../utils/deviceStatus';
+import { getDeviceState, isStatusStale, isStatusUnknown } from '../../utils/deviceStatus';
 import DeviceStateBadge from './DeviceStateBadge';
 
 interface Props {
@@ -53,6 +53,8 @@ export default function TargetCard({ target, onClick }: Props) {
   const deviceState = getDeviceState(target);
   // 기기가 연결돼 있지 않으면 status는 마지막 수신값이라 현재 상태가 아님
   const staleStatus = isStatusStale(deviceState);
+  // 수신 이력이 없으면 상태를 '안전'으로 오해하지 않도록 값 자체를 숨긴다
+  const unknownStatus = isStatusUnknown(deviceState);
 
   const handleCall = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -72,15 +74,25 @@ export default function TargetCard({ target, onClick }: Props) {
             <path d="M8 6a2 2 0 100-4 2 2 0 000 4zm0 8a2 2 0 100-4 2 2 0 000 4zm0 8a2 2 0 100-4 2 2 0 000 4zm8-16a2 2 0 100-4 2 2 0 000 4zm0 8a2 2 0 100-4 2 2 0 000 4zm0 8a2 2 0 100-4 2 2 0 000 4z" />
           </svg>
           {/* 상태 점 + 뱃지 */}
-          <div
-            className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${cfg.badgeBg} ${cfg.badgeText} ${
-              staleStatus ? 'opacity-50' : ''
-            }`}
-            title={staleStatus ? '기기가 연결되지 않아 마지막으로 수신된 상태입니다.' : undefined}
-          >
-            <span className={`w-1.5 h-1.5 rounded-full ${cfg.dotColor} ${target.status === 'DANGER' && !staleStatus ? 'animate-pulse' : ''}`} />
-            {target.status}
-          </div>
+          {unknownStatus ? (
+            <div
+              className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500"
+              title="아직 기기 신호를 받지 못해 상태를 알 수 없습니다."
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+              －
+            </div>
+          ) : (
+            <div
+              className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${cfg.badgeBg} ${cfg.badgeText} ${
+                staleStatus ? 'opacity-50' : ''
+              }`}
+              title={staleStatus ? '기기 연결이 끊겨 마지막으로 수신된 상태입니다.' : undefined}
+            >
+              <span className={`w-1.5 h-1.5 rounded-full ${cfg.dotColor} ${target.status === 'DANGER' && !staleStatus ? 'animate-pulse' : ''}`} />
+              {target.status}
+            </div>
+          )}
         </div>
         {/* 전화 버튼 */}
         <button

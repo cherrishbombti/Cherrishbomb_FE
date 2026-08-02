@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useModalTransition } from '../../hooks/useModalTransition';
 import { timeAgo } from '../../utils/date';
-import { getDeviceState, isStatusStale, DEVICE_STATE_CONFIG } from '../../utils/deviceStatus';
+import { getDeviceState, isStatusStale, isStatusUnknown, DEVICE_STATE_CONFIG } from '../../utils/deviceStatus';
 import DeviceStateBadge from './DeviceStateBadge';
 import { deleteTarget } from '../../apis/targets';
 import type { Target } from '../../types/target';
@@ -19,26 +19,45 @@ const STATUS_LABEL: Record<string, { label: string; bg: string; text: string; do
   SAFE:    { label: '안전', bg: 'bg-green-100',  text: 'text-green-600',  dot: 'bg-green-500'  },
 };
 
+/** 센서 아이콘 색 — null(모름) 회색 / false(이상) 빨강 / true(정상) 초록 */
+function sensorIconColor(active: boolean | null): string {
+  if (active == null) return 'text-gray-500';
+  return active ? 'text-green-500' : 'text-red-500';
+}
+
 interface SensorRowProps {
   icon: React.ReactNode;
   label: string;
-  active: boolean;
+  /** true: 정상 / false: 이상 / null: 아직 수신된 값이 없어 알 수 없음 */
+  active: boolean | null;
   description: string;
 }
 
 function SensorRow({ icon, label, active, description }: SensorRowProps) {
+  const unknown = active == null;
+  const box = unknown
+    ? 'border-gray-200 bg-gray-50'
+    : active
+      ? 'border-green-200 bg-green-50'
+      : 'border-red-200 bg-red-50';
+  const iconBox = unknown ? 'bg-gray-200' : active ? 'bg-green-100' : 'bg-red-100';
+  const badge = unknown
+    ? 'bg-gray-200 text-gray-500'
+    : active
+      ? 'bg-green-100 text-green-600'
+      : 'bg-red-100 text-red-600';
+  const badgeLabel = unknown ? '확인 불가' : active ? '정상' : '이상';
+
   return (
-    <div className={`flex items-center gap-4 p-4 rounded-xl border ${active ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-gray-50'}`}>
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${active ? 'bg-green-100' : 'bg-gray-200'}`}>
+    <div className={`flex items-center gap-4 p-4 rounded-xl border ${box}`}>
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${iconBox}`}>
         {icon}
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-gray-800">{label}</p>
         <p className="text-xs text-gray-500 mt-0.5">{description}</p>
       </div>
-      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${active ? 'bg-green-100 text-green-600' : 'bg-gray-200 text-gray-500'}`}>
-        {active ? '작동 중' : '비활성'}
-      </span>
+      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${badge}`}>{badgeLabel}</span>
     </div>
   );
 }
@@ -53,6 +72,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
   const st = STATUS_LABEL[target.status] ?? STATUS_LABEL.SAFE;
   const deviceState = getDeviceState(target);
   const staleStatus = isStatusStale(deviceState);
+  const unknownStatus = isStatusUnknown(deviceState);
 
   // 부모 transform 영향을 받지 않도록 body 직속으로 렌더
   return createPortal(
@@ -93,12 +113,22 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
                 <span className="text-sm text-gray-500">({target.age}세)</span>
               </div>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${st.bg} ${st.text} ${
-                  staleStatus ? 'opacity-50' : ''
-                }`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${st.dot} ${target.status === 'DANGER' && !staleStatus ? 'animate-pulse' : ''}`} />
-                  {st.label}
-                </div>
+                {unknownStatus ? (
+                  <div
+                    className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-500"
+                    title="아직 기기 신호를 받지 못해 상태를 알 수 없습니다."
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+                    －
+                  </div>
+                ) : (
+                  <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${st.bg} ${st.text} ${
+                    staleStatus ? 'opacity-50' : ''
+                  }`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${st.dot} ${target.status === 'DANGER' && !staleStatus ? 'animate-pulse' : ''}`} />
+                    {st.label}
+                  </div>
+                )}
                 <DeviceStateBadge state={deviceState} />
               </div>
             </div>
@@ -142,7 +172,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
             <div className={`flex flex-col gap-2.5 ${staleStatus ? 'opacity-50' : ''}`}>
               <SensorRow
                 icon={
-                  <svg className={`w-5 h-5 ${target.radar ? 'text-green-500' : 'text-gray-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className={`w-5 h-5 ${sensorIconColor(target.radar)}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
                   </svg>
                 }
@@ -152,7 +182,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
               />
               <SensorRow
                 icon={
-                  <svg className={`w-5 h-5 ${target.thermal ? 'text-green-500' : 'text-gray-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className={`w-5 h-5 ${sensorIconColor(target.thermal)}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                   </svg>
                 }
@@ -162,7 +192,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
               />
               <SensorRow
                 icon={
-                  <svg className={`w-5 h-5 ${target.vibrator ? 'text-green-500' : 'text-gray-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className={`w-5 h-5 ${sensorIconColor(target.vibrator)}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 }

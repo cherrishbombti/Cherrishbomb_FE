@@ -32,3 +32,11 @@ export const DEVICE_STATE_CONFIG: Record<
 export function isStatusStale(state: DeviceState): boolean {
   return state !== 'ONLINE';
 }
+
+/**
+ * 수신 이력이 아예 없는 경우(PENDING)는 '안전'이 아니라 '아직 모름'이다.
+ * 이때는 status 배지를 표시하지 않고 '-'로 대체한다.
+ */
+export function isStatusUnknown(state: DeviceState): boolean {
+  return state === 'PENDING';
+}

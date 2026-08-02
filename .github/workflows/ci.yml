@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths-ignore: [ '**.md', '.gitignore' ]
+  pull_request:
+    branches: [ main, develop ]
+    paths-ignore: [ '**.md', '.gitignore' ]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: 타입 · 린트 · 빌드
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 체크아웃
+        uses: actions/checkout@v7
+
+      - name: 자격증명 커밋 여부 확인
+        run: |
+          leaked=$(git ls-files | grep -E '(^|/)\.env$|(^|/)\.env\.(local|development|production)' || true)
+          if [ -n "$leaked" ]; then
+            echo "::error::.env 파일이 커밋돼 있습니다."
+            echo "$leaked"
+            exit 1
+          fi
+          echo ".env 미커밋 확인 완료"
+
+      # Vite 8 · @types/node 24 기준. package.json 에 engines 를 넣으면 그 값을 쓰도록 바꿔도 된다.
+      - name: Node 22 설치
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+
+      # package-lock.json 기준으로 정확히 재현 설치한다 (npm install 아님)
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: 린트
+        run: npm run lint
+
+      # package.json 의 build 스크립트가 "tsc -b && vite build" 이므로
+      # 타입 검사와 번들 빌드를 이 한 스텝이 함께 커버한다.
+      - name: 타입 검사 및 빌드
+        run: npm run build
+        env:
+          # 빌드 시점에 주입되는 값. 실제 배포 URL 은 저장소 Variables 로 옮기는 것을 권장한다.
+          # (Settings → Secrets and variables → Actions → Variables 에 VITE_API_BASE_URL 등록)
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL || 'http://localhost:8080' }}
+
+      - name: 빌드 산출물 업로드
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist
+          retention-days: 3
+          if-no-files-found: ignore
+
+  # ─────────────────────────────────────────────────────────────
+  # 선택 잡 — 실패시키지 않고 경고만 남긴다.
+  # Refactor/frontendrefactor PR 이 커서 리뷰되지 못하고
+  # revert → revert of revert 로 이어진 이력이 있어 추가했다.
+  # 불필요하면 이 잡만 지우면 된다.
+  # ─────────────────────────────────────────────────────────────
+  pr-size:
+    name: PR 크기 확인
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 체크아웃
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: 변경 규모 측정
+        run: |
+          BASE="origin/${{ github.base_ref }}"
+          FILES=$(git diff --name-only "$BASE"...HEAD -- . \
+                  ':(exclude)**.md' ':(exclude)package-lock.json' | wc -l)
+          LINES=$(git diff --numstat "$BASE"...HEAD -- . \
+                  ':(exclude)**.md' ':(exclude)package-lock.json' \
+                  | awk '{a+=$1; d+=$2} END {print a+d+0}')
+          echo "변경 파일 ${FILES}개 / 변경 줄 ${LINES}줄"
+          if [ "$FILES" -gt 10 ] || [ "$LINES" -gt 300 ]; then
+            echo "::warning::PR 이 큽니다 (파일 ${FILES}개, ${LINES}줄). 기준은 파일 10개 / 300줄입니다. 나눌 수 있는지 검토해주세요."
+          else
+            echo "적정 크기입니다."
+          fi

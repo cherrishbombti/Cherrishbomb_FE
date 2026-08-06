@@ -7,6 +7,7 @@ import type {
   FallLogParams,
   PageResponse,
 } from '../types/target';
+import type { HealthInfo, HealthInfoPatch } from '../types/health';
 
 // [GET] 대시보드 전체 피보호자 및 통계 조회
 export const getTargets = async (): Promise<TargetsResponse> => {
@@ -32,5 +33,20 @@ export const getTargetLogs = async (
     `/api/targets/${targetId}/logs`,
     { params }
   );
+  return data;
+};
+
+// [GET] 피보호자 건강 정보 조회 (미등록 시에도 200 + 빈 값)
+export const getTargetHealth = async (targetId: number): Promise<HealthInfo> => {
+  const { data } = await axiosInstance.get<HealthInfo>(`/api/targets/${targetId}/health`);
+  return data;
+};
+
+// [PATCH] 건강 정보 부분 수정 — 보내지 않은 필드는 유지, ""는 값 비우기
+export const patchTargetHealth = async (
+  targetId: number,
+  body: HealthInfoPatch
+): Promise<HealthInfo> => {
+  const { data } = await axiosInstance.patch<HealthInfo>(`/api/targets/${targetId}/health`, body);
   return data;
 };

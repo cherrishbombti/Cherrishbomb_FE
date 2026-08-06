@@ -4,6 +4,7 @@ import type { FallLogParams } from '../../types/target';
 export const queryKeys = {
   targets: ['targets'] as const,
   myOrg: ['org', 'me'] as const,
+  targetHealth: (targetId: number | null) => ['targets', targetId, 'health'] as const,
   targetLogs: (targetId: number | null, params: FallLogParams) =>
     ['targets', targetId, 'logs', params] as const,
 };

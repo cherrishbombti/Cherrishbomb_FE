@@ -11,7 +11,7 @@ export interface HealthInfo {
   disease: string | null;      // 기저질환
   medication: string | null;   // 복용약
   memo: string | null;         // 병력·메모
-  updatedBy: string | null;    // 최종 수정자 표시명
+  updatedByName: string | null; // 최종 수정자 표시명 (BE: updated_by_name)
   updatedByType: UpdatedByType | null;
   updatedAt: string | null;
 }

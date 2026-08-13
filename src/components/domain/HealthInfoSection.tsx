@@ -139,7 +139,7 @@ export default function HealthInfoSection({ targetId }: Props) {
 
           {data?.updatedAt && (
             <p className="text-xs text-gray-500 border-t border-gray-200 pt-2">
-              최종 수정: {data.updatedBy ?? '알 수 없음'}
+              최종 수정: {data.updatedByName ?? '알 수 없음'}
               {data.updatedByType && ` (${UPDATED_BY_LABEL[data.updatedByType] ?? data.updatedByType})`}
               {' · '}
               {formatDateTime(data.updatedAt)}

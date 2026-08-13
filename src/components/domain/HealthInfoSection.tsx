@@ -54,7 +54,10 @@ export default function HealthInfoSection({ targetId }: Props) {
     setSaveError('');
   };
 
-  const isEmpty = !!data && !data.disease && !data.medication && !data.memo;
+  const hasNoContent = !!data && !data.disease && !data.medication && !data.memo;
+  // 수정 이력(updatedAt)이 있으면 '등록했다가 비운' 상태 — 감사 기록을 남겨야 하므로 구분한다
+  const neverRegistered = hasNoContent && !data?.updatedAt;
+  const clearedByUser = hasNoContent && !!data?.updatedAt;
 
   const handleSave = () => {
     if (!baseline) return;
@@ -89,7 +92,7 @@ export default function HealthInfoSection({ targetId }: Props) {
             onClick={startEditing}
             className="text-xs font-medium text-indigo-500 hover:text-indigo-600 transition-colors"
           >
-            {isEmpty ? '등록' : '수정'}
+            {neverRegistered ? '등록' : '수정'}
           </button>
         )}
       </div>
@@ -138,19 +141,24 @@ export default function HealthInfoSection({ targetId }: Props) {
             </button>
           </div>
         </div>
-      ) : isEmpty ? (
+      ) : neverRegistered ? (
         <p className="text-xs text-gray-500 bg-gray-50 rounded-xl p-4">
           등록된 건강 정보가 없습니다. 기저질환·복용약·병력을 기록해두면 응급 상황에 도움이 됩니다.
         </p>
       ) : (
         <div className="bg-gray-50 rounded-xl p-4 flex flex-col gap-2.5 text-sm">
-          {FIELDS.map(({ key, label }) => (
-            <div key={key} className="flex gap-3">
-              <span className="text-gray-500 w-20 flex-shrink-0">{label}</span>
-              <span className="text-gray-700 whitespace-pre-line break-words">{data?.[key] || '-'}</span>
-            </div>
-          ))}
+          {clearedByUser ? (
+            <p className="text-xs text-gray-500">기록된 내용이 없습니다. (모든 항목이 비워짐)</p>
+          ) : (
+            FIELDS.map(({ key, label }) => (
+              <div key={key} className="flex gap-3">
+                <span className="text-gray-500 w-20 flex-shrink-0">{label}</span>
+                <span className="text-gray-700 whitespace-pre-line break-words">{data?.[key] || '-'}</span>
+              </div>
+            ))
+          )}
 
+          {/* 내용이 비어 있어도 감사 기록은 유지해 노출한다 */}
           {data?.updatedAt && (
             <p className="text-xs text-gray-500 border-t border-gray-200 pt-2">
               최종 수정: {data.updatedByName ?? '알 수 없음'}

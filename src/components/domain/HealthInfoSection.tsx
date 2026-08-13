@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTargetHealth, useUpdateTargetHealth } from '../../hooks/queries/useTargetHealth';
-import type { HealthInfoPatch } from '../../types/health';
+import type { HealthInfo, HealthInfoPatch } from '../../types/health';
 import { formatDateTime } from '../../utils/date';
 import { getErrorMessage } from '../../utils/apiError';
 
@@ -29,36 +29,50 @@ export default function HealthInfoSection({ targetId }: Props) {
   const [form, setForm] = useState<Record<FieldKey, string>>({ disease: '', medication: '', memo: '' });
   const [saveError, setSaveError] = useState('');
 
-  // 편집 시작 시 현재 값을 폼에 채운다 (null은 빈 문자열로)
-  useEffect(() => {
-    if (editing && data) {
-      setForm({
-        disease: data.disease ?? '',
-        medication: data.medication ?? '',
-        memo: data.memo ?? '',
-      });
-    }
-  }, [editing, data]);
+  /**
+   * 편집 시작 시점의 서버 값을 스냅샷으로 잡아둔다.
+   * data를 계속 구독하면 편집 중 백그라운드 조회로 입력값이 덮어써지므로,
+   * 폼 초기화와 변경 비교 기준을 모두 이 스냅샷으로 고정한다.
+   */
+  const [baseline, setBaseline] = useState<HealthInfo | null>(null);
+
+  const startEditing = () => {
+    if (!data) return;
+    setBaseline(data);
+    setForm({
+      disease: data.disease ?? '',
+      medication: data.medication ?? '',
+      memo: data.memo ?? '',
+    });
+    setSaveError('');
+    setEditing(true);
+  };
+
+  const cancelEditing = () => {
+    setEditing(false);
+    setBaseline(null);
+    setSaveError('');
+  };
 
   const isEmpty = !!data && !data.disease && !data.medication && !data.memo;
 
   const handleSave = () => {
-    if (!data) return;
-    // 실제로 바뀐 필드만 전송 — 보내지 않은 필드는 서버가 기존 값을 유지한다
+    if (!baseline) return;
+    // 편집 시작 시점 값과 비교해 바뀐 필드만 전송 (미전송 필드는 서버가 기존 값 유지)
     const patch: HealthInfoPatch = {};
     FIELDS.forEach(({ key }) => {
-      const original = data[key] ?? '';
+      const original = baseline[key] ?? '';
       if (form[key] !== original) patch[key] = form[key]; // 빈 문자열이면 값 비우기
     });
 
     if (Object.keys(patch).length === 0) {
-      setEditing(false);
+      cancelEditing();
       return;
     }
 
     setSaveError('');
     mutate(patch, {
-      onSuccess: () => setEditing(false),
+      onSuccess: () => cancelEditing(),
       onError: (err) => setSaveError(getErrorMessage(err, '저장하지 못했습니다. 다시 시도해주세요.')),
     });
   };
@@ -72,7 +86,7 @@ export default function HealthInfoSection({ targetId }: Props) {
         </div>
         {!isLoading && !isError && !editing && (
           <button
-            onClick={() => setEditing(true)}
+            onClick={startEditing}
             className="text-xs font-medium text-indigo-500 hover:text-indigo-600 transition-colors"
           >
             {isEmpty ? '등록' : '수정'}
@@ -109,7 +123,7 @@ export default function HealthInfoSection({ targetId }: Props) {
 
           <div className="flex gap-2">
             <button
-              onClick={() => { setEditing(false); setSaveError(''); }}
+              onClick={cancelEditing}
               disabled={isPending}
               className="flex-1 h-9 rounded-lg text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
             >

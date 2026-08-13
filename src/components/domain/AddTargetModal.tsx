@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getErrorMessage } from '../../utils/apiError';
 import { isValidMac, isValidPhone } from '../../utils/validation';
 import { formatMac } from '../../utils/format';
 import BaseModal from '../common/BaseModal';
@@ -13,11 +14,10 @@ interface Props {
   onSuccess: () => void; // 등록 성공 시 부모에서 목록 새로고침
 }
 
-const INITIAL: AddTargetRequest = { name: '', age: 0, address: '', contact: 0, deviceMac: '' };
+const INITIAL: AddTargetRequest = { name: '', age: 0, address: '', contact: '', deviceMac: '' };
 
 export default function AddTargetModal({ isOpen, onClose, onSuccess }: Props) {
   const [form, setForm] = useState(INITIAL);
-  const [contactStr, setContactStr] = useState(''); // 전화번호 입력용 문자열
   const [errors, setErrors] = useState<Partial<Record<keyof AddTargetRequest, string>>>({});
   const [serverError, setServerError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -30,9 +30,9 @@ export default function AddTargetModal({ isOpen, onClose, onSuccess }: Props) {
     if (!form.name.trim()) e.name = '이름을 입력해주세요.';
     if (!form.age || form.age <= 0) e.age = '올바른 나이를 입력해주세요.';
     if (!form.address.trim()) e.address = '주소를 입력해주세요.';
-    if (!contactStr.trim()) {
+    if (!form.contact.trim()) {
       e.contact = '전화번호를 입력해주세요.';
-    } else if (!isValidPhone(contactStr)) {
+    } else if (!isValidPhone(form.contact)) {
       e.contact = '010으로 시작하는 11자리 숫자를 입력해주세요.';
     }
     if (!form.deviceMac.trim()) {
@@ -52,8 +52,8 @@ export default function AddTargetModal({ isOpen, onClose, onSuccess }: Props) {
       await addTarget(form);
       onSuccess();
       handleClose();
-    } catch {
-      setServerError('등록에 실패했습니다. 다시 시도해주세요.');
+    } catch (err) {
+      setServerError(getErrorMessage(err, '등록에 실패했습니다. 다시 시도해주세요.'));
     } finally {
       setIsLoading(false);
     }
@@ -61,13 +61,12 @@ export default function AddTargetModal({ isOpen, onClose, onSuccess }: Props) {
 
   const handleClose = () => {
     setForm(INITIAL);
-    setContactStr('');
     setErrors({});
     setServerError('');
     onClose();
   };
 
-  const isFormFilled = form.name && form.age > 0 && form.address && contactStr.length > 0 && form.deviceMac;
+  const isFormFilled = form.name && form.age > 0 && form.address && form.contact.length > 0 && form.deviceMac;
 
   return (
     <BaseModal isOpen={isOpen} onClose={handleClose} title="모니터링 대상 추가">
@@ -101,12 +100,8 @@ export default function AddTargetModal({ isOpen, onClose, onSuccess }: Props) {
           label="전화번호"
           type="tel"
           placeholder="01012345678 (숫자만)"
-          value={contactStr}
-          onChange={(e) => {
-            const digits = e.target.value.replace(/\D/g, '');
-            setContactStr(digits);
-            set('contact', digits ? Number(digits) : 0);
-          }}
+          value={form.contact}
+          onChange={(e) => set('contact', e.target.value.replace(/\D/g, ''))}
           error={errors.contact}
           required
         />

@@ -37,7 +37,8 @@ export interface AddTargetRequest {
   name: string;
   age: number;          // Long
   address: string;
-  contact: number;      // Long (전화번호 숫자, 예: 1012345678)
+  contact: string;      // 전화번호. 숫자만 문자열로 전송 (예: '01012345678')
+                        // number로 보내면 앞자리 0이 사라지므로 반드시 string
   deviceMac: string;    // 디바이스 MAC 주소 (예: AA:BB:CC:DD:EE:FF)
 }
 // ── 낙상 이력 ────────────────────────────────────────────────

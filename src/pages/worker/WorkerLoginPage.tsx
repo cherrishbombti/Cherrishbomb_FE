@@ -124,15 +124,10 @@ export default function WorkerLoginPage() {
           </BaseButton>
         </div>
 
-        {/* 비밀번호 찾기 */}
-        <div className="mt-4 text-center">
-          <button className="text-sm text-gray-500 hover:text-gray-600 underline underline-offset-2 transition-colors">
-            비밀번호를 잊으셨나요?
-          </button>
-        </div>
+        {/* 비밀번호 찾기 — 백엔드 미구현이라 노출하지 않음 (이슈 #22) */}
 
         {/* 회원가입 링크 */}
-        <div className="mt-3 text-center">
+        <div className="mt-5 text-center">
           <span className="text-sm text-gray-500">계정이 없으신가요? </span>
           <button
             className="text-sm text-indigo-500 font-semibold hover:text-indigo-700 transition-colors"

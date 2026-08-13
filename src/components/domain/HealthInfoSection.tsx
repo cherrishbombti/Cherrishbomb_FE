@@ -8,10 +8,11 @@ interface Props {
   targetId: number;
 }
 
+// maxLength는 BE 컬럼 정의 기준 (disease/medication: VARCHAR(255), memo: TEXT)
 const FIELDS = [
-  { key: 'disease', label: '기저질환', placeholder: '예: 고혈압, 당뇨' },
-  { key: 'medication', label: '복용약', placeholder: '예: 메트포르민, 암로디핀' },
-  { key: 'memo', label: '병력·메모', placeholder: '예: 2024년 낙상 이력 있음. 왼쪽 고관절 수술.' },
+  { key: 'disease', label: '기저질환', placeholder: '예: 고혈압, 당뇨', maxLength: 255 },
+  { key: 'medication', label: '복용약', placeholder: '예: 메트포르민, 암로디핀', maxLength: 255 },
+  { key: 'memo', label: '병력·메모', placeholder: '예: 2024년 낙상 이력 있음. 왼쪽 고관절 수술.', maxLength: 1000 },
 ] as const;
 
 type FieldKey = (typeof FIELDS)[number]['key'];
@@ -109,13 +110,19 @@ export default function HealthInfoSection({ targetId }: Props) {
         </p>
       ) : editing ? (
         <div className="flex flex-col gap-3">
-          {FIELDS.map(({ key, label, placeholder }) => (
+          {FIELDS.map(({ key, label, placeholder, maxLength }) => (
             <label key={key} className="flex flex-col gap-1">
-              <span className="text-xs text-gray-500">{label}</span>
+              <div className="flex items-baseline justify-between">
+                <span className="text-xs text-gray-500">{label}</span>
+                <span className={`text-xs ${form[key].length >= maxLength ? 'text-red-500' : 'text-gray-400'}`}>
+                  {form[key].length}/{maxLength}
+                </span>
+              </div>
               <textarea
                 value={form[key]}
                 onChange={(e) => setForm((prev) => ({ ...prev, [key]: e.target.value }))}
                 placeholder={placeholder}
+                maxLength={maxLength}
                 rows={key === 'memo' ? 3 : 2}
                 className="border border-gray-300 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all"
               />

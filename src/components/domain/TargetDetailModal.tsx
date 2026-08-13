@@ -4,6 +4,7 @@ import { useModalTransition } from '../../hooks/useModalTransition';
 import { timeAgo } from '../../utils/date';
 import { getDeviceState, isStatusStale, isStatusUnknown, DEVICE_STATE_CONFIG } from '../../utils/deviceStatus';
 import DeviceStateBadge from './DeviceStateBadge';
+import HealthInfoSection from './HealthInfoSection';
 import { deleteTarget } from '../../apis/targets';
 import type { Target } from '../../types/target';
 
@@ -202,6 +203,9 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
               />
             </div>
           </div>
+
+          {/* 건강 정보 (민감정보) */}
+          <HealthInfoSection targetId={target.id} />
         </div>
 
         {/* 하단 버튼 */}

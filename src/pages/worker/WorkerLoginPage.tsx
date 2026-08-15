@@ -61,10 +61,12 @@ export default function WorkerLoginPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-50 px-4">
       {/* 브랜드 — 카드 바깥 상단 */}
-      <div className="w-full max-w-md mb-8 flex flex-col items-center text-center">
-        <Logo size="xl" variant="inverted" className="shadow-lg shadow-indigo-500/10 mb-5" />
-        <h1 className="text-3xl leading-tight font-extrabold text-gray-900 tracking-tight">{APP_NAME}</h1>
-        <p className="text-base text-gray-600 mt-2">어르신의 안전을 지키는 스마트 케어</p>
+      <div className="w-full max-w-md mb-8 flex items-center gap-4">
+        <Logo size="xl" variant="inverted" className="shadow-sm flex-shrink-0" />
+        <div>
+          <h1 className="text-[26px] leading-tight font-extrabold text-gray-900 tracking-tight">{APP_NAME}</h1>
+          <p className="text-sm text-gray-700 mt-1.5">어르신의 안전을 지키는 스마트 케어</p>
+        </div>
       </div>
 
       {/* 카드 */}

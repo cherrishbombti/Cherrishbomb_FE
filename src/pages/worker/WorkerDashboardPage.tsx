@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTargets } from '../../hooks/queries/useTargets';
 import { queryKeys } from '../../hooks/queries/queryKeys';
@@ -14,6 +15,8 @@ import { SECTIONS, STAT_CARDS } from './dashboardConfig';
 
 export default function WorkerDashboardPage() {
   const queryClient = useQueryClient();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [selectedTarget, setSelectedTarget] = useState<Target | null>(null);
   const [dangerAlertNames, setDangerAlertNames] = useState<string[]>([]);
   const prevStatusMapRef = useRef<Record<number, string>>({});
@@ -55,6 +58,16 @@ export default function WorkerDashboardPage() {
       setDangerAlertNames(newDangerNames);
     }
   }, [data]);
+
+  // 알림함에서 넘어온 경우 해당 피보호자 상세를 자동으로 연다
+  const focusTargetId = (location.state as { focusTargetId?: number } | null)?.focusTargetId;
+  useEffect(() => {
+    if (focusTargetId == null || !data?.members) return;
+    const target = data.members.find((m) => m.id === focusTargetId);
+    if (target) setSelectedTarget(target);
+    // 새로고침·뒤로가기 시 다시 열리지 않도록 state 제거
+    navigate(location.pathname, { replace: true });
+  }, [focusTargetId, data, navigate, location.pathname]);
 
   const handleAddSuccess = () => {
     queryClient.invalidateQueries({ queryKey: queryKeys.targets });

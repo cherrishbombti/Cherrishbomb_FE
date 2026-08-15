@@ -1,5 +1,6 @@
 import Logo from '../common/Logo';
 import { APP_NAME } from '../../constants/app';
+import NotificationBell from './NotificationBell';
 
 interface Props {
   orgName?: string;
@@ -15,6 +16,7 @@ export default function DashboardHeader({ orgName, onLogout }: Props) {
         <span className="font-bold text-gray-800 text-sm">{APP_NAME}</span>
       </div>
       <div className="flex items-center gap-3 text-sm text-gray-500">
+        <NotificationBell />
         <span className="hidden sm:inline">{orgName ? `${orgName} 님` : ''}</span>
         <button
           onClick={onLogout}

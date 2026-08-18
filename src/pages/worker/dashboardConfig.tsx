@@ -53,15 +53,15 @@ export const STAT_CARDS = [
     ),
   },
   {
-    key: 'safe' as const,
-    label: '안전',
-    card: 'bg-green-50 border-green-200',
-    valueColor: 'text-green-700',
-    labelColor: 'text-green-700',
+    key: 'danger' as const,
+    label: '긴급',
+    card: 'bg-red-50 border-red-200',
+    valueColor: 'text-red-600',
+    labelColor: 'text-red-700',
     icon: (
-      <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
-        <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
+        <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
         </svg>
       </div>
     ),
@@ -81,15 +81,15 @@ export const STAT_CARDS = [
     ),
   },
   {
-    key: 'danger' as const,
-    label: '긴급',
-    card: 'bg-red-50 border-red-200',
-    valueColor: 'text-red-600',
-    labelColor: 'text-red-700',
+    key: 'safe' as const,
+    label: '안전',
+    card: 'bg-green-50 border-green-200',
+    valueColor: 'text-green-700',
+    labelColor: 'text-green-700',
     icon: (
-      <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
-        <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+      <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
+        <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       </div>
     ),

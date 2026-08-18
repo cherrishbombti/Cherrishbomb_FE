@@ -90,7 +90,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
       >
         {/* 헤더 */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-          <h2 className="font-bold text-gray-800 text-base">피보호자 상세 정보</h2>
+          <h2 className="text-lg font-semibold text-gray-800">피보호자 상세 정보</h2>
           <button
             onClick={beginClose}
             className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500"

@@ -22,7 +22,7 @@ export default function LogSearchForm({
   onTargetChange, onFromChange, onToChange, onSearch,
 }: Props) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex flex-wrap items-end gap-x-3 gap-y-4">
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex flex-wrap items-end gap-x-6 gap-y-4">
       <label className="flex flex-col gap-1 w-full sm:w-56">
         <span className="text-xs text-gray-500">대상자</span>
         <select
@@ -42,25 +42,27 @@ export default function LogSearchForm({
         </select>
       </label>
 
-      <label className="flex flex-col gap-1">
-        <span className="text-xs text-gray-500">시작일</span>
-        <input type="date" value={from} max={to || undefined} onChange={(e) => onFromChange(e.target.value)} className={`${FIELD} w-40`} />
-      </label>
+      <div className="flex flex-wrap items-end gap-x-3 gap-y-4">
+        <label className="flex flex-col gap-1">
+          <span className="text-xs text-gray-500">시작일</span>
+          <input type="date" value={from} max={to || undefined} onChange={(e) => onFromChange(e.target.value)} className={`${FIELD} w-40`} />
+        </label>
 
-      <span className="h-10 flex items-center text-gray-400">~</span>
+        <span className="h-10 flex items-center text-gray-400">~</span>
 
-      <label className="flex flex-col gap-1">
-        <span className="text-xs text-gray-500">종료일</span>
-        <input type="date" value={to} min={from || undefined} onChange={(e) => onToChange(e.target.value)} className={`${FIELD} w-40`} />
-      </label>
+        <label className="flex flex-col gap-1">
+          <span className="text-xs text-gray-500">종료일</span>
+          <input type="date" value={to} min={from || undefined} onChange={(e) => onToChange(e.target.value)} className={`${FIELD} w-40`} />
+        </label>
 
-      <button
-        onClick={onSearch}
-        disabled={targetId == null || invalidRange}
-        className="h-10 px-5 rounded-lg text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-      >
-        조회
-      </button>
+        <button
+          onClick={onSearch}
+          disabled={targetId == null || invalidRange}
+          className="h-10 px-5 rounded-lg text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+        >
+          조회
+        </button>
+      </div>
 
       {invalidRange && (
         <span className="w-full text-xs text-red-500">시작일이 종료일보다 늦을 수 없습니다.</span>

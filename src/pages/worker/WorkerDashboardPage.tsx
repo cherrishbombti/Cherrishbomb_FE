@@ -100,7 +100,7 @@ export default function WorkerDashboardPage() {
         </div>
 
         {/* ── 상단 요약 카드 4개 ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {STAT_CARDS.map(({ key, label, icon, card, valueColor, labelColor }) => {
             // ✨ stats 변수를 사용하도록 수정
             const value = stats?.[key];
@@ -110,7 +110,7 @@ export default function WorkerDashboardPage() {
                 {isLoading ? (
                   <div className="h-8 w-12 bg-gray-100 rounded animate-pulse" />
                 ) : (
-                  <span className={`text-3xl font-bold ${valueColor}`}>{showErrorScreen ? '—' : (value ?? 0)}</span>
+                  <span className={`text-3xl font-bold tabular-nums ${valueColor}`}>{showErrorScreen ? '—' : (value ?? 0)}</span>
                 )}
                 <span className={`text-sm ${labelColor}`}>{label}</span>
               </div>
@@ -122,7 +122,7 @@ export default function WorkerDashboardPage() {
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
           {/* 섹션 헤더 */}
           <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-4 border-b border-gray-100">
-            <h2 className="font-semibold text-gray-800 text-sm">전체 가구 모니터링</h2>
+            <h2 className="font-semibold text-gray-800 text-base">전체 가구 모니터링</h2>
             <div className="flex items-center gap-2">
               <button
                 onClick={handleRefresh}
@@ -187,7 +187,7 @@ export default function WorkerDashboardPage() {
                       <div className="w-4 h-4 bg-gray-100 rounded animate-pulse" />
                       <div className="w-16 h-4 bg-gray-100 rounded animate-pulse" />
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                       {Array.from({ length: count }).map((_, i) => <SkeletonCard key={i} />)}
                     </div>
                   </div>
@@ -230,7 +230,7 @@ export default function WorkerDashboardPage() {
                   {members.length === 0 ? (
                     <p className="text-sm text-gray-500 py-2">{emptyMsg}</p>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                       {members.map((member) => (
                         <TargetCard
                           // ✨ 백엔드 PK 이름인 id로 변경

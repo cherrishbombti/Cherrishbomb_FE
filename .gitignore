@@ -175,3 +175,11 @@ sketch
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,react,java,visualstudiocode
+
+# 로컬 개발 도구 설정 (impeccable, 에이전트 스킬 등) — 공유하지 않음
+.impeccable/
+.claude/
+.github/agents/
+.github/hooks/
+.github/skills/
+PRODUCT.md

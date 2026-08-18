@@ -74,16 +74,24 @@ export default function WorkerSignupPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-50 px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-7">
-        {/* 로고 / 타이틀 */}
-        <div className="mb-6 text-center">
-          <Logo size="xl" variant="inverted" className="shadow-sm mb-4" />
-          <h1 className="text-2xl font-bold text-gray-800">사회복지사 회원가입</h1>
-          <p className="text-sm text-gray-500 mt-1">{APP_NAME}</p>
+      {/* 브랜드 — 카드 바깥 상단 */}
+      <div className="w-full max-w-md mb-8 flex items-center gap-4">
+        <Logo size="xl" variant="inverted" className="shadow-sm flex-shrink-0" />
+        <div>
+          <h1 className="text-[26px] leading-tight font-extrabold text-gray-900 tracking-tight">{APP_NAME}</h1>
+          <p className="text-sm text-gray-700 mt-1.5">어르신의 안전을 지키는 스마트 케어</p>
+        </div>
+      </div>
+
+      {/* 카드 */}
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-md px-8 py-9">
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-bold text-gray-900">사회복지사 회원가입</h2>
+          <span className="mt-2.5 block w-28 h-0.5 bg-indigo-500 rounded-full mx-auto" />
         </div>
 
         {/* 입력 폼 */}
-        <div className="flex flex-col gap-1.5" onKeyDown={handleKeyDown}>
+        <div className="flex flex-col gap-3" onKeyDown={handleKeyDown}>
           <InputField
             label="아이디"
             type="text"

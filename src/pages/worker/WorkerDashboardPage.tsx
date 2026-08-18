@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTargets } from '../../hooks/queries/useTargets';
 import { queryKeys } from '../../hooks/queries/queryKeys';
@@ -15,9 +15,9 @@ import { SECTIONS, STAT_CARDS } from './dashboardConfig';
 
 export default function WorkerDashboardPage() {
   const queryClient = useQueryClient();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [selectedTarget, setSelectedTarget] = useState<Target | null>(null);
+  // 선택된 피보호자를 URL 쿼리로 관리 — 새로고침·공유 시에도 유지되고
+  // 목록이 갱신되면 모달 내용도 함께 최신화된다
+  const [searchParams, setSearchParams] = useSearchParams();
   const [dangerAlertNames, setDangerAlertNames] = useState<string[]>([]);
   const prevStatusMapRef = useRef<Record<number, string>>({});
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -59,16 +59,6 @@ export default function WorkerDashboardPage() {
     }
   }, [data]);
 
-  // 알림함에서 넘어온 경우 해당 피보호자 상세를 자동으로 연다
-  const focusTargetId = (location.state as { focusTargetId?: number } | null)?.focusTargetId;
-  useEffect(() => {
-    if (focusTargetId == null || !data?.members) return;
-    const target = data.members.find((m) => m.id === focusTargetId);
-    if (target) setSelectedTarget(target);
-    // 새로고침·뒤로가기 시 다시 열리지 않도록 state 제거
-    navigate(location.pathname, { replace: true });
-  }, [focusTargetId, data, navigate, location.pathname]);
-
   const handleAddSuccess = () => {
     queryClient.invalidateQueries({ queryKey: queryKeys.targets });
   };
@@ -83,6 +73,21 @@ export default function WorkerDashboardPage() {
 
   // ✨ data.summary -> data.stats 로 변경
   const stats = data?.stats;
+  // 객체를 복사해두지 않고 매 렌더마다 최신 목록에서 찾으므로,
+  // 폴링으로 상태·기기 정보가 바뀌면 열려 있는 모달에도 즉시 반영된다
+  const selectedIdParam = searchParams.get('target');
+  const selectedTarget =
+    selectedIdParam != null
+      ? (data?.members.find((m) => m.id === Number(selectedIdParam)) ?? null)
+      : null;
+
+  const openTarget = (id: number) => {
+    setSearchParams({ target: String(id) });
+  };
+  const closeTarget = () => {
+    searchParams.delete('target');
+    setSearchParams(searchParams, { replace: true });
+  };
   // 폴링 중 일시적 실패로 기존 목록이 사라지지 않도록, 데이터가 없을 때만 전체 에러 화면
   const hasData = !!data;
   const showErrorScreen = isError && !hasData;
@@ -236,7 +241,7 @@ export default function WorkerDashboardPage() {
                           // ✨ 백엔드 PK 이름인 id로 변경
                           key={member.id} 
                           target={member} 
-                          onClick={(id) => setSelectedTarget(data?.members.find((m) => m.id === id) ?? null)}
+                          onClick={openTarget}
                         />
                       ))}
                     </div>
@@ -252,7 +257,7 @@ export default function WorkerDashboardPage() {
       <TargetDetailModal
         key={selectedTarget?.id ?? 'none'}
         target={selectedTarget}
-        onClose={() => setSelectedTarget(null)}
+        onClose={closeTarget}
         onDelete={handleDeleteSuccess}
       />
 

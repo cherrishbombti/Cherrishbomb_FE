@@ -25,9 +25,12 @@ function getTypeConfig(type: NotificationType) {
 export default function NotificationBell() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  // '더 보기'로 확장한 페이지 수 — 20건을 넘는 알림도 이어서 볼 수 있게 한다
+  const [page, setPage] = useState(0);
+  const [actionError, setActionError] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { data, isLoading, isError } = useNotifications(0);
+  const { data, isLoading, isError, isFetching } = useNotifications(page);
   const { mutate: markRead } = useMarkNotificationRead();
   const { mutate: markAllRead, isPending: markingAll } = useMarkAllNotificationsRead();
 
@@ -52,16 +55,27 @@ export default function NotificationBell() {
   }, [open]);
 
   const handleClick = (item: AppNotification) => {
-    if (!item.isRead) markRead(item.id);
+    if (!item.isRead) {
+      // 읽음 처리는 부수 동작이므로 이동은 막지 않되, 실패는 사용자에게 알린다
+      markRead(item.id, {
+        onError: (err) => {
+          console.error('알림 읽음 처리 실패', err);
+          setActionError('읽음 처리에 실패했습니다.');
+        },
+      });
+    }
     setOpen(false);
-    // 대상 상세는 대시보드의 모달로 열리므로 선택할 대상 id를 함께 전달
-    navigate('/worker/dashboard', { state: { focusTargetId: item.memberId } });
+    // 선택된 대상은 URL 쿼리로 전달 — 새로고침·공유 시에도 상세가 유지된다
+    navigate(`/worker/dashboard?target=${item.memberId}`);
   };
 
   return (
     <div ref={containerRef} className="relative">
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          setOpen((v) => !v);
+          setActionError('');
+        }}
         aria-label={unreadCount > 0 ? `알림 ${unreadCount}건` : '알림'}
         className="relative w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
       >
@@ -83,7 +97,14 @@ export default function NotificationBell() {
             </span>
             {unreadCount > 0 && (
               <button
-                onClick={() => markAllRead()}
+                onClick={() =>
+                  markAllRead(undefined, {
+                    onError: (err) => {
+                      console.error('전체 읽음 처리 실패', err);
+                      setActionError('전체 읽음 처리에 실패했습니다.');
+                    },
+                  })
+                }
                 disabled={markingAll}
                 className="text-xs text-indigo-500 hover:text-indigo-600 disabled:text-gray-400 transition-colors"
               >
@@ -91,6 +112,10 @@ export default function NotificationBell() {
               </button>
             )}
           </div>
+
+          {actionError && (
+            <p className="px-4 py-2 text-xs text-red-500 bg-red-50 border-b border-red-100">{actionError}</p>
+          )}
 
           <div className="max-h-96 overflow-y-auto">
             {isLoading ? (
@@ -128,6 +153,17 @@ export default function NotificationBell() {
                   </button>
                 );
               })
+            )}
+
+            {/* 알림이 20건을 넘는 경우 이어서 조회 */}
+            {data && !data.last && (
+              <button
+                onClick={() => setPage((p) => p + 1)}
+                disabled={isFetching}
+                className="w-full py-3 text-xs text-indigo-500 hover:bg-gray-50 disabled:text-gray-400 transition-colors"
+              >
+                {isFetching ? '불러오는 중…' : '더 보기'}
+              </button>
             )}
           </div>
         </div>

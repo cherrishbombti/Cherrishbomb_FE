@@ -1,6 +1,7 @@
 import type { FallLog } from '../../types/target';
 import { formatDateTime } from '../../utils/date';
-import LogTypeBadge, { getLogTypeConfig } from './LogTypeBadge';
+import LogTypeBadge from './LogTypeBadge';
+import { getLogTypeConfig } from '../../utils/logType';
 
 const SENSOR_LABEL: Record<string, string> = {
   radar: '레이더 센서',

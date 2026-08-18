@@ -21,15 +21,22 @@ const BaseModal: React.FC<BaseModalProps> = ({
   const { setClosing, beginClose, handleAnimationEnd, overlayClass, panelClass } =
     useModalTransition(() => setRender(false));
 
-  // 열림/닫힘 전환. 실제 언마운트는 퇴장 애니메이션이 끝날 때(onAnimationEnd) 처리.
-  useEffect(() => {
+  /**
+   * isOpen 변화를 effect가 아니라 렌더 중에 처리한다.
+   * effect에서 setState를 호출하면 연쇄 렌더가 발생하므로,
+   * 이전 값과 비교해 곧바로 상태를 조정한다.
+   * 실제 언마운트는 퇴장 애니메이션 종료 시(onAnimationEnd) 이뤄진다.
+   */
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (prevIsOpen !== isOpen) {
+    setPrevIsOpen(isOpen);
     if (isOpen) {
       setRender(true);
       setClosing(false);
     } else if (render) {
       beginClose();
     }
-  }, [isOpen, render]);
+  }
 
   useEffect(() => {
     if (!render) return;

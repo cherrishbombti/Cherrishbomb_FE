@@ -1,6 +1,7 @@
 import type { FallLog } from '../../types/target';
 import { formatDateTime } from '../../utils/date';
-import LogTypeBadge, { getLogTypeConfig } from './LogTypeBadge';
+import LogTypeBadge from './LogTypeBadge';
+import { getLogTypeConfig } from '../../utils/logType';
 
 const SENSOR_LABEL: Record<string, string> = {
   radar: '레이더 센서',
@@ -32,7 +33,7 @@ export default function LogTable({ logs, page, isFetching }: Props) {
             const cfg = getLogTypeConfig(log.logType);
             return (
               <tr key={log.id} className="border-t border-gray-100 hover:bg-gray-50 transition-colors">
-                <td className="px-5 py-3 text-gray-600 whitespace-nowrap">{formatDateTime(log.detectedAt)}</td>
+                <td className="px-5 py-3 text-gray-600 whitespace-nowrap tabular-nums">{formatDateTime(log.detectedAt)}</td>
                 <td className="px-5 py-3">
                   <span className="flex items-center gap-2 font-medium text-gray-800 whitespace-nowrap">
                     <span className={`w-2 h-2 rounded-full ${cfg.dot}`} />

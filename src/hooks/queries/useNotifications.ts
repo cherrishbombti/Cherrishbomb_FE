@@ -5,13 +5,20 @@ import {
   markNotificationRead,
 } from '../../apis/notifications';
 import { queryKeys } from './queryKeys';
+import { POLL_INTERVAL_MS } from '../../constants/polling';
 
-/** 알림 목록 — 헤더 뱃지에 쓰이므로 주기적으로 갱신 */
+const NOTIFICATION_POLL_MS = POLL_INTERVAL_MS;
+
+/**
+ * 알림 목록.
+ * 대상 목록(useTargets)과 같은 5초 주기로 갱신한다.
+ * 주기가 다르면 카드 색이 먼저 바뀌고 종 아이콘이 뒤늦게 반응해 사용자가 혼란스럽다.
+ */
 export function useNotifications(page = 0) {
   return useQuery({
     queryKey: queryKeys.notifications(page),
     queryFn: () => getNotifications(page),
-    refetchInterval: 1000 * 30,
+    refetchInterval: NOTIFICATION_POLL_MS,
     refetchIntervalInBackground: false,
     placeholderData: keepPreviousData,
   });

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTargets } from '../../hooks/queries/useTargets';
 import { queryKeys } from '../../hooks/queries/queryKeys';
@@ -15,9 +15,9 @@ import { SECTIONS, STAT_CARDS } from './dashboardConfig';
 
 export default function WorkerDashboardPage() {
   const queryClient = useQueryClient();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [selectedTarget, setSelectedTarget] = useState<Target | null>(null);
+  // 선택된 피보호자를 URL 쿼리로 관리 — 새로고침·공유 시에도 유지되고
+  // 목록이 갱신되면 모달 내용도 함께 최신화된다
+  const [searchParams, setSearchParams] = useSearchParams();
   const [dangerAlertNames, setDangerAlertNames] = useState<string[]>([]);
   const prevStatusMapRef = useRef<Record<number, string>>({});
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -59,16 +59,6 @@ export default function WorkerDashboardPage() {
     }
   }, [data]);
 
-  // 알림함에서 넘어온 경우 해당 피보호자 상세를 자동으로 연다
-  const focusTargetId = (location.state as { focusTargetId?: number } | null)?.focusTargetId;
-  useEffect(() => {
-    if (focusTargetId == null || !data?.members) return;
-    const target = data.members.find((m) => m.id === focusTargetId);
-    if (target) setSelectedTarget(target);
-    // 새로고침·뒤로가기 시 다시 열리지 않도록 state 제거
-    navigate(location.pathname, { replace: true });
-  }, [focusTargetId, data, navigate, location.pathname]);
-
   const handleAddSuccess = () => {
     queryClient.invalidateQueries({ queryKey: queryKeys.targets });
   };
@@ -83,6 +73,21 @@ export default function WorkerDashboardPage() {
 
   // ✨ data.summary -> data.stats 로 변경
   const stats = data?.stats;
+  // 객체를 복사해두지 않고 매 렌더마다 최신 목록에서 찾으므로,
+  // 폴링으로 상태·기기 정보가 바뀌면 열려 있는 모달에도 즉시 반영된다
+  const selectedIdParam = searchParams.get('target');
+  const selectedTarget =
+    selectedIdParam != null
+      ? (data?.members.find((m) => m.id === Number(selectedIdParam)) ?? null)
+      : null;
+
+  const openTarget = (id: number) => {
+    setSearchParams({ target: String(id) });
+  };
+  const closeTarget = () => {
+    searchParams.delete('target');
+    setSearchParams(searchParams, { replace: true });
+  };
   // 폴링 중 일시적 실패로 기존 목록이 사라지지 않도록, 데이터가 없을 때만 전체 에러 화면
   const hasData = !!data;
   const showErrorScreen = isError && !hasData;
@@ -100,7 +105,7 @@ export default function WorkerDashboardPage() {
         </div>
 
         {/* ── 상단 요약 카드 4개 ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {STAT_CARDS.map(({ key, label, icon, card, valueColor, labelColor }) => {
             // ✨ stats 변수를 사용하도록 수정
             const value = stats?.[key];
@@ -110,7 +115,7 @@ export default function WorkerDashboardPage() {
                 {isLoading ? (
                   <div className="h-8 w-12 bg-gray-100 rounded animate-pulse" />
                 ) : (
-                  <span className={`text-3xl font-bold ${valueColor}`}>{showErrorScreen ? '—' : (value ?? 0)}</span>
+                  <span className={`text-3xl font-bold tabular-nums ${valueColor}`}>{showErrorScreen ? '—' : (value ?? 0)}</span>
                 )}
                 <span className={`text-sm ${labelColor}`}>{label}</span>
               </div>
@@ -122,7 +127,7 @@ export default function WorkerDashboardPage() {
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
           {/* 섹션 헤더 */}
           <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-4 border-b border-gray-100">
-            <h2 className="font-semibold text-gray-800 text-sm">전체 가구 모니터링</h2>
+            <h2 className="font-semibold text-gray-800 text-base">전체 가구 모니터링</h2>
             <div className="flex items-center gap-2">
               <button
                 onClick={handleRefresh}
@@ -187,7 +192,7 @@ export default function WorkerDashboardPage() {
                       <div className="w-4 h-4 bg-gray-100 rounded animate-pulse" />
                       <div className="w-16 h-4 bg-gray-100 rounded animate-pulse" />
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                       {Array.from({ length: count }).map((_, i) => <SkeletonCard key={i} />)}
                     </div>
                   </div>
@@ -230,13 +235,13 @@ export default function WorkerDashboardPage() {
                   {members.length === 0 ? (
                     <p className="text-sm text-gray-500 py-2">{emptyMsg}</p>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                       {members.map((member) => (
                         <TargetCard
                           // ✨ 백엔드 PK 이름인 id로 변경
                           key={member.id} 
                           target={member} 
-                          onClick={(id) => setSelectedTarget(data?.members.find((m) => m.id === id) ?? null)}
+                          onClick={openTarget}
                         />
                       ))}
                     </div>
@@ -252,7 +257,7 @@ export default function WorkerDashboardPage() {
       <TargetDetailModal
         key={selectedTarget?.id ?? 'none'}
         target={selectedTarget}
-        onClose={() => setSelectedTarget(null)}
+        onClose={closeTarget}
         onDelete={handleDeleteSuccess}
       />
 

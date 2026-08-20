@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { getErrorMessage } from '../../utils/apiError';
 import { setToken } from '../../utils/token';
+import { registerPushNotifications } from '../../utils/pushToken';
 import Logo from '../../components/common/Logo';
 import { APP_NAME } from '../../constants/app';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -46,6 +47,7 @@ export default function WorkerLoginPage() {
       const res = await workerLogin({ orgId, password });
       setToken(res.token);
       queryClient.clear(); // 이전 계정 캐시 제거
+      void registerPushNotifications(); // 실패해도 로그인 흐름은 막지 않음
       navigate('/worker/dashboard');
     } catch (err) {
       setServerError(getErrorMessage(err, '아이디 또는 비밀번호를 확인해주세요.'));

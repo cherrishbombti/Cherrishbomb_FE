@@ -15,6 +15,26 @@ export interface Target {
   vibrator: boolean | null;
   deviceOnline: boolean;       // 기기 연결 여부 (서버 계산값, 최근 5분 기준)
   deviceLastSeen: string | null; // 마지막 기기 신호 수신 시각. 수신 이력 없으면 null
+  /**
+   * 이 기관이 직접 등록해 관리 권한을 가진 대상인지 여부.
+   * false면 보호자가 등록하고 기관번호로 연동만 된 대상이라 삭제·건강정보 수정이 불가하다(서버가 404 M001 반환).
+   * 백엔드 배포 전에는 필드가 없으므로, 값이 없을 때는 기존처럼 관리 가능으로 본다(isManageable 참고).
+   */
+  manageable?: boolean;
+}
+
+// 비상연락망 — 보호자가 앱에서 등록한 연락처. 기관이 직접 등록한 무연고자는 보통 빈 배열
+export interface Contact {
+  contactId: number;
+  name: string;
+  phone: string;
+  relationship: string;
+  priority: number;
+}
+
+/** 피보호자 상세 (GET /api/targets/{id}) — 목록 항목에 비상연락망이 더해진 형태 */
+export interface TargetDetail extends Target {
+  contacts?: Contact[];
 }
 
 // 3. 요약 통계 (백엔드의 stats 객체)s

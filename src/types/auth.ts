@@ -24,4 +24,9 @@ export interface WorkerSignupResponse {
 export interface OrgProfile {
   name: string;
   orgId?: string;
+  /**
+   * 기관번호 — 보호자가 앱에서 입력해 소속 기관과 연동하는 번호.
+   * 자동 부여 전에 만들어진 계정은 null일 수 있고, 백엔드 배포 전에는 필드 자체가 없다.
+   */
+  orgCode?: number | null;
 }

@@ -6,6 +6,11 @@ import { getErrorMessage } from '../../utils/apiError';
 
 interface Props {
   targetId: number;
+  /**
+   * 수정 가능 여부. 보호자가 등록해 연동만 된 대상은 이 기관에 수정 권한이 없어
+   * PATCH 호출 시 서버가 404를 반환하므로 편집 버튼을 노출하지 않는다.
+   */
+  editable?: boolean;
 }
 
 // maxLength는 BE 컬럼 정의 기준 (disease/medication: VARCHAR(255), memo: TEXT)
@@ -22,7 +27,7 @@ const UPDATED_BY_LABEL: Record<string, string> = {
   ORGANIZATION: '기관',
 };
 
-export default function HealthInfoSection({ targetId }: Props) {
+export default function HealthInfoSection({ targetId, editable = true }: Props) {
   const { data, isLoading, isError } = useTargetHealth(targetId);
   const { mutate, isPending } = useUpdateTargetHealth(targetId);
 
@@ -88,7 +93,7 @@ export default function HealthInfoSection({ targetId }: Props) {
           <h3 className="text-sm font-bold text-gray-700">건강 정보</h3>
           <span className="text-xs text-gray-500">민감정보</span>
         </div>
-        {!isLoading && !isError && !editing && (
+        {editable && !isLoading && !isError && !editing && (
           <button
             onClick={startEditing}
             className="text-xs font-medium text-indigo-500 hover:text-indigo-600 transition-colors"
@@ -150,7 +155,9 @@ export default function HealthInfoSection({ targetId }: Props) {
         </div>
       ) : neverRegistered ? (
         <p className="text-xs text-gray-500 bg-gray-50 rounded-xl p-4">
-          등록된 건강 정보가 없습니다. 기저질환·복용약·병력을 기록해두면 응급 상황에 도움이 됩니다.
+          {editable
+            ? '등록된 건강 정보가 없습니다. 기저질환·복용약·병력을 기록해두면 응급 상황에 도움이 됩니다.'
+            : '등록된 건강 정보가 없습니다. 보호자가 등록하면 이곳에 표시됩니다.'}
         </p>
       ) : (
         <div className="bg-gray-50 rounded-xl p-4 flex flex-col gap-2.5 text-sm">

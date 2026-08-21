@@ -1,3 +1,4 @@
+
 name: CI
 
 on:
@@ -16,6 +17,38 @@ permissions:
   contents: read
 
 jobs:
+  # ─────────────────────────────────────────────────────────────
+  # 1) 포맷 검사
+  # ─────────────────────────────────────────────────────────────
+  format:
+    name: 포맷 검사
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 체크아웃
+        uses: actions/checkout@v7
+
+      - name: Node 22 설치
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: Prettier 검사
+        run: npm run format:check
+
+      - name: 실패 시 안내
+        if: failure()
+        run: |
+          echo "::error::포맷 규칙에 어긋난 파일이 있습니다."
+          echo "  로컬에서 npm run format 실행 후 커밋하세요."
+
+  # ─────────────────────────────────────────────────────────────
+  # 2) 타입 · 린트 · 빌드
+  # ─────────────────────────────────────────────────────────────
   check:
     name: 타입 · 린트 · 빌드
     runs-on: ubuntu-latest
@@ -24,6 +57,7 @@ jobs:
       - name: 체크아웃
         uses: actions/checkout@v7
 
+      # FE 는 VITE_FIREBASE_VAPID_KEY 등이 .env 로 들어온다. (FE #32)
       - name: 자격증명 커밋 여부 확인
         run: |
           leaked=$(git ls-files | grep -E '(^|/)\.env$|(^|/)\.env\.(local|development|production)' || true)
@@ -54,8 +88,11 @@ jobs:
         run: npm run build
         env:
           # 빌드 시점에 주입되는 값. 실제 배포 URL 은 저장소 Variables 로 옮기는 것을 권장한다.
-          # (Settings → Secrets and variables → Actions → Variables 에 VITE_API_BASE_URL 등록)
+          # (Settings → Secrets and variables → Actions → Variables 에 등록)
           VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL || 'http://localhost:8080' }}
+          # VAPID 키가 비면 푸시가 조용히 꺼진다(FE #32 💬). CI 빌드에는 없어도 되지만,
+          # 배포 워크플로에는 반드시 넣어야 한다.
+          VITE_FIREBASE_VAPID_KEY: ${{ vars.VITE_FIREBASE_VAPID_KEY }}
 
       - name: 빌드 산출물 업로드
         if: ${{ !cancelled() }}
@@ -67,10 +104,10 @@ jobs:
           if-no-files-found: ignore
 
   # ─────────────────────────────────────────────────────────────
-  # 선택 잡 — 실패시키지 않고 경고만 남긴다.
-  # Refactor/frontendrefactor PR 이 커서 리뷰되지 못하고
-  # revert → revert of revert 로 이어진 이력이 있어 추가했다.
-  # 불필요하면 이 잡만 지우면 된다.
+  # 4) PR 크기 확인 — 실패시키지 않고 경고만 남긴다.
+  #    Refactor/frontendrefactor PR 이 커서 리뷰되지 못하고
+  #    revert → revert of revert 로 이어진 이력이 있어 추가했다.
+  #    불필요하면 이 잡만 지우면 된다.
   # ─────────────────────────────────────────────────────────────
   pr-size:
     name: PR 크기 확인

@@ -10,6 +10,9 @@ export function formatTel(raw: string): string {
 
 /** MAC 주소: 16진수(0-9, A-F)만 남기고 두 자리마다 콜론 자동 삽입 */
 export function formatMac(raw: string): string {
-  const hex = raw.replace(/[^0-9a-fA-F]/g, '').toUpperCase().slice(0, 12);
+  const hex = raw
+    .replace(/[^0-9a-fA-F]/g, '')
+    .toUpperCase()
+    .slice(0, 12);
   return hex.match(/.{1,2}/g)?.join(':') ?? '';
 }

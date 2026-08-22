@@ -105,9 +105,7 @@ export default function HealthInfoSection({ targetId }: Props) {
           ))}
         </div>
       ) : isError ? (
-        <p className="text-xs text-gray-500 bg-gray-50 rounded-xl p-4">
-          건강 정보를 불러오지 못했습니다.
-        </p>
+        <p className="text-xs text-gray-500 bg-gray-50 rounded-xl p-4">건강 정보를 불러오지 못했습니다.</p>
       ) : editing ? (
         <div className="flex flex-col gap-3">
           {FIELDS.map(({ key, label, placeholder, maxLength }) => (

@@ -22,8 +22,7 @@ export default function WorkerSignupPage() {
   const [serverError, setServerError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const set = (field: keyof WorkerSignupRequest, value: string) =>
-    setForm((prev) => ({ ...prev, [field]: value }));
+  const set = (field: keyof WorkerSignupRequest, value: string) => setForm((prev) => ({ ...prev, [field]: value }));
 
   const validate = () => {
     const e: typeof errors = {};
@@ -69,8 +68,7 @@ export default function WorkerSignupPage() {
     if (e.key === 'Enter') handleSignup();
   };
 
-  const isFormFilled =
-    form.orgId && form.name && form.password && confirmPassword;
+  const isFormFilled = form.orgId && form.name && form.password && confirmPassword;
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-50 px-4">
@@ -156,9 +154,7 @@ export default function WorkerSignupPage() {
             disabled={!isFormFilled || isLoading}
             loading={isLoading}
             className={`w-full mt-1 !text-white !py-3 !rounded-xl !text-base !font-semibold ${
-              isFormFilled
-                ? '!bg-indigo-500 hover:!bg-indigo-600'
-                : '!bg-gray-300'
+              isFormFilled ? '!bg-indigo-500 hover:!bg-indigo-600' : '!bg-gray-300'
             }`}
           >
             회원가입

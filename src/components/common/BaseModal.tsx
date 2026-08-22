@@ -10,16 +10,11 @@ interface BaseModalProps {
   hasCloseButton?: boolean;
 }
 
-const BaseModal: React.FC<BaseModalProps> = ({
-  isOpen,
-  onClose,
-  title,
-  children,
-  hasCloseButton = true,
-}) => {
+const BaseModal: React.FC<BaseModalProps> = ({ isOpen, onClose, title, children, hasCloseButton = true }) => {
   const [render, setRender] = useState(isOpen);
-  const { setClosing, beginClose, handleAnimationEnd, overlayClass, panelClass } =
-    useModalTransition(() => setRender(false));
+  const { setClosing, beginClose, handleAnimationEnd, overlayClass, panelClass } = useModalTransition(() =>
+    setRender(false),
+  );
 
   /**
    * isOpen 변화를 effect가 아니라 렌더 중에 처리한다.

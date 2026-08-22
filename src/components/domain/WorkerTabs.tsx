@@ -17,9 +17,7 @@ export default function WorkerTabs() {
             to={to}
             className={({ isActive }) =>
               `relative px-4 py-3 text-sm transition-all duration-300 ease-out ${
-                isActive
-                  ? 'text-indigo-600 font-semibold'
-                  : 'text-gray-500 hover:text-gray-700'
+                isActive ? 'text-indigo-600 font-semibold' : 'text-gray-500 hover:text-gray-700'
               }`
             }
           >

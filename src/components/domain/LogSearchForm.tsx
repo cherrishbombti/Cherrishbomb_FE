@@ -18,8 +18,15 @@ const FIELD =
 
 // 낙상 이력 조회 조건 (대상자 · 기간)
 export default function LogSearchForm({
-  members, targetId, from, to, invalidRange,
-  onTargetChange, onFromChange, onToChange, onSearch,
+  members,
+  targetId,
+  from,
+  to,
+  invalidRange,
+  onTargetChange,
+  onFromChange,
+  onToChange,
+  onSearch,
 }: Props) {
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex flex-wrap items-end gap-x-6 gap-y-4">
@@ -31,9 +38,7 @@ export default function LogSearchForm({
           disabled={members.length === 0}
           className={`${FIELD} disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed`}
         >
-          <option value="">
-            {members.length === 0 ? '등록된 대상자가 없습니다' : '대상자를 선택하세요'}
-          </option>
+          <option value="">{members.length === 0 ? '등록된 대상자가 없습니다' : '대상자를 선택하세요'}</option>
           {members.map((m) => (
             <option key={m.id} value={m.id}>
               {m.name} ({m.age}세)
@@ -45,14 +50,26 @@ export default function LogSearchForm({
       <div className="flex flex-wrap items-end gap-x-3 gap-y-4">
         <label className="flex flex-col gap-1">
           <span className="text-xs text-gray-500">시작일</span>
-          <input type="date" value={from} max={to || undefined} onChange={(e) => onFromChange(e.target.value)} className={`${FIELD} w-40`} />
+          <input
+            type="date"
+            value={from}
+            max={to || undefined}
+            onChange={(e) => onFromChange(e.target.value)}
+            className={`${FIELD} w-40`}
+          />
         </label>
 
         <span className="h-10 flex items-center text-gray-400">~</span>
 
         <label className="flex flex-col gap-1">
           <span className="text-xs text-gray-500">종료일</span>
-          <input type="date" value={to} min={from || undefined} onChange={(e) => onToChange(e.target.value)} className={`${FIELD} w-40`} />
+          <input
+            type="date"
+            value={to}
+            min={from || undefined}
+            onChange={(e) => onToChange(e.target.value)}
+            className={`${FIELD} w-40`}
+          />
         </label>
 
         <button
@@ -64,9 +81,7 @@ export default function LogSearchForm({
         </button>
       </div>
 
-      {invalidRange && (
-        <span className="w-full text-xs text-red-500">시작일이 종료일보다 늦을 수 없습니다.</span>
-      )}
+      {invalidRange && <span className="w-full text-xs text-red-500">시작일이 종료일보다 늦을 수 없습니다.</span>}
     </div>
   );
 }

@@ -8,9 +8,9 @@ export type UpdatedByType = 'USER' | 'ORGANIZATION';
  * 아직 등록 전이어도 404가 아닌 200 + 빈 값이 오므로 모든 필드가 null일 수 있다.
  */
 export interface HealthInfo {
-  disease: string | null;      // 기저질환
-  medication: string | null;   // 복용약
-  memo: string | null;         // 병력·메모
+  disease: string | null; // 기저질환
+  medication: string | null; // 복용약
+  memo: string | null; // 병력·메모
   updatedByName: string | null; // 최종 수정자 표시명 (BE: updated_by_name)
   updatedByType: UpdatedByType | null;
   updatedAt: string | null;

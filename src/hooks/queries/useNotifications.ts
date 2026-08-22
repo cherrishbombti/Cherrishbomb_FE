@@ -1,9 +1,5 @@
 import { useMutation, useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query';
-import {
-  getNotifications,
-  markAllNotificationsRead,
-  markNotificationRead,
-} from '../../apis/notifications';
+import { getNotifications, markAllNotificationsRead, markNotificationRead } from '../../apis/notifications';
 import { queryKeys } from './queryKeys';
 import { POLL_INTERVAL_MS } from '../../constants/polling';
 

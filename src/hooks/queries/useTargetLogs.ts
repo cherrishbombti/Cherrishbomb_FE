@@ -15,10 +15,7 @@ import { queryKeys } from './queryKeys';
 export function useTargetLogs(targetId: number | null, params: FallLogParams) {
   return useQuery({
     queryKey: queryKeys.targetLogs(targetId, params),
-    queryFn:
-      targetId == null
-        ? skipToken
-        : () => getTargetLogs(targetId, params), // 이 분기에서 targetId는 number로 좁혀짐
+    queryFn: targetId == null ? skipToken : () => getTargetLogs(targetId, params), // 이 분기에서 targetId는 number로 좁혀짐
     placeholderData: keepPreviousData,
   });
 }

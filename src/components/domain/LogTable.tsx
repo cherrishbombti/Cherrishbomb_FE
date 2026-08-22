@@ -11,14 +11,16 @@ const SENSOR_LABEL: Record<string, string> = {
 
 interface Props {
   logs: FallLog[];
-  page: number;      // 페이지가 바뀔 때 등장 애니메이션 재실행용 key
+  page: number; // 페이지가 바뀔 때 등장 애니메이션 재실행용 key
   isFetching: boolean;
 }
 
 // 낙상·센서 이력 테이블
 export default function LogTable({ logs, page, isFetching }: Props) {
   return (
-    <div className={`overflow-x-auto transition-opacity duration-300 ease-out ${isFetching ? 'opacity-50' : 'opacity-100'}`}>
+    <div
+      className={`overflow-x-auto transition-opacity duration-300 ease-out ${isFetching ? 'opacity-50' : 'opacity-100'}`}
+    >
       <table className="w-full text-sm">
         <thead>
           <tr className="bg-gray-50 text-gray-500 text-xs">
@@ -33,7 +35,9 @@ export default function LogTable({ logs, page, isFetching }: Props) {
             const cfg = getLogTypeConfig(log.logType);
             return (
               <tr key={log.id} className="border-t border-gray-100 hover:bg-gray-50 transition-colors">
-                <td className="px-5 py-3 text-gray-600 whitespace-nowrap tabular-nums">{formatDateTime(log.detectedAt)}</td>
+                <td className="px-5 py-3 text-gray-600 whitespace-nowrap tabular-nums">
+                  {formatDateTime(log.detectedAt)}
+                </td>
                 <td className="px-5 py-3">
                   <span className="flex items-center gap-2 font-medium text-gray-800 whitespace-nowrap">
                     <span className={`w-2 h-2 rounded-full ${cfg.dot}`} />

@@ -1,13 +1,12 @@
-
 name: CI
 
 on:
   push:
-    branches: [ main, develop ]
-    paths-ignore: [ '**.md', '.gitignore' ]
+    branches: [main, develop]
+    paths-ignore: ['**.md', '.gitignore']
   pull_request:
-    branches: [ main, develop ]
-    paths-ignore: [ '**.md', '.gitignore' ]
+    branches: [main, develop]
+    paths-ignore: ['**.md', '.gitignore']
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}

@@ -1,5 +1,5 @@
 interface Props {
-  page: number;        // 0-based
+  page: number; // 0-based
   totalPages: number;
   isLast: boolean;
   onChange: (page: number) => void;
@@ -21,7 +21,8 @@ export default function Pagination({ page, totalPages, isLast, onChange }: Props
   const range = getPageRange(page, totalPages);
 
   const btn = 'w-8 h-8 rounded text-sm transition-colors';
-  const nav = 'px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors';
+  const nav =
+    'px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors';
 
   return (
     <nav className="flex items-center justify-center gap-1 px-5 py-4 border-t border-gray-100" aria-label="페이지 이동">
@@ -31,7 +32,9 @@ export default function Pagination({ page, totalPages, isLast, onChange }: Props
 
       {range[0] > 0 && (
         <>
-          <button onClick={() => onChange(0)} className={`${btn} text-gray-500 hover:bg-gray-100`}>1</button>
+          <button onClick={() => onChange(0)} className={`${btn} text-gray-500 hover:bg-gray-100`}>
+            1
+          </button>
           {range[0] > 1 && <span className="px-1 text-gray-400">…</span>}
         </>
       )}

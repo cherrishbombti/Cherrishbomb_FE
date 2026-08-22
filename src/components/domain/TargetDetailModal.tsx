@@ -15,9 +15,9 @@ interface Props {
 }
 
 const STATUS_LABEL: Record<string, { label: string; bg: string; text: string; dot: string }> = {
-  DANGER:  { label: '긴급', bg: 'bg-red-100',    text: 'text-red-600',    dot: 'bg-red-500'    },
+  DANGER: { label: '긴급', bg: 'bg-red-100', text: 'text-red-600', dot: 'bg-red-500' },
   WARNING: { label: '주의', bg: 'bg-yellow-100', text: 'text-yellow-600', dot: 'bg-yellow-500' },
-  SAFE:    { label: '안전', bg: 'bg-green-100',  text: 'text-green-600',  dot: 'bg-green-500'  },
+  SAFE: { label: '안전', bg: 'bg-green-100', text: 'text-green-600', dot: 'bg-green-500' },
 };
 
 /** 센서 아이콘 색 — null(모름) 회색 / false(이상) 빨강 / true(정상) 초록 */
@@ -51,9 +51,7 @@ function SensorRow({ icon, label, active, description }: SensorRowProps) {
 
   return (
     <div className={`flex items-center gap-4 p-4 rounded-xl border ${box}`}>
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${iconBox}`}>
-        {icon}
-      </div>
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${iconBox}`}>{icon}</div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-gray-800">{label}</p>
         <p className="text-xs text-gray-500 mt-0.5">{description}</p>
@@ -104,8 +102,10 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
         <div className="px-5 py-5 flex flex-col gap-5 max-h-[80vh] overflow-y-auto">
           {/* 기본 정보 카드 */}
           <div className="flex items-center gap-4">
-            <div className={`w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0
-              ${target.status === 'DANGER' ? 'bg-red-400' : target.status === 'WARNING' ? 'bg-yellow-400' : 'bg-indigo-400'}`}>
+            <div
+              className={`w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0
+              ${target.status === 'DANGER' ? 'bg-red-400' : target.status === 'WARNING' ? 'bg-yellow-400' : 'bg-indigo-400'}`}
+            >
               {target.name[0]}
             </div>
             <div className="flex-1">
@@ -119,14 +119,17 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
                     className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-500"
                     title="아직 기기 신호를 받지 못해 상태를 알 수 없습니다."
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
-                    －
+                    <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />－
                   </div>
                 ) : (
-                  <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${st.bg} ${st.text} ${
-                    staleStatus ? 'opacity-50' : ''
-                  }`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${st.dot} ${target.status === 'DANGER' && !staleStatus ? 'animate-pulse' : ''}`} />
+                  <div
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${st.bg} ${st.text} ${
+                      staleStatus ? 'opacity-50' : ''
+                    }`}
+                  >
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${st.dot} ${target.status === 'DANGER' && !staleStatus ? 'animate-pulse' : ''}`}
+                    />
                     {st.label}
                   </div>
                 )}
@@ -138,23 +141,51 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
           {/* 주소 / 연락처 */}
           <div className="bg-gray-50 rounded-xl p-4 flex flex-col gap-2.5 text-sm">
             <div className="flex items-start gap-2 text-gray-600">
-              <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <svg
+                className="w-4 h-4 mt-0.5 flex-shrink-0 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
               <span>{target.address}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
-              <svg className="w-4 h-4 flex-shrink-0 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 8V5z" />
+              <svg
+                className="w-4 h-4 flex-shrink-0 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 8V5z"
+                />
               </svg>
               <span>{target.phone ?? '연락처 없음'}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-500 text-xs border-t border-gray-200 pt-2">
-              <svg className="w-3.5 h-3.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg
+                className="w-3.5 h-3.5 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>기기 {DEVICE_STATE_CONFIG[deviceState].label} · 마지막 수신 {timeAgo(target.deviceLastSeen)}</span>
+              <span>
+                기기 {DEVICE_STATE_CONFIG[deviceState].label} · 마지막 수신 {timeAgo(target.deviceLastSeen)}
+              </span>
             </div>
           </div>
 
@@ -173,8 +204,18 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
             <div className={`flex flex-col gap-2.5 ${staleStatus ? 'opacity-50' : ''}`}>
               <SensorRow
                 icon={
-                  <svg className={`w-5 h-5 ${sensorIconColor(target.radar)}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+                  <svg
+                    className={`w-5 h-5 ${sensorIconColor(target.radar)}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"
+                    />
                   </svg>
                 }
                 label="레이더 센서"
@@ -183,8 +224,18 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
               />
               <SensorRow
                 icon={
-                  <svg className={`w-5 h-5 ${sensorIconColor(target.thermal)}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                  <svg
+                    className={`w-5 h-5 ${sensorIconColor(target.thermal)}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+                    />
                   </svg>
                 }
                 label="열화상 센서"
@@ -193,7 +244,13 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
               />
               <SensorRow
                 icon={
-                  <svg className={`w-5 h-5 ${sensorIconColor(target.vibrator)}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg
+                    className={`w-5 h-5 ${sensorIconColor(target.vibrator)}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 }

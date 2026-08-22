@@ -3,17 +3,17 @@ export type TargetStatus = 'SAFE' | 'WARNING' | 'DANGER';
 
 // 2. 개별 피보호자 정보 (백엔드의 members 배열 안의 객체)
 export interface Target {
-  id: number;                  // targetId -> id
+  id: number; // targetId -> id
   name: string;
   age: number;
   address: string;
-  phone: string;             // 연락처 (문자열, 예: 010-1234-5678)
+  phone: string; // 연락처 (문자열, 예: 010-1234-5678)
   status: TargetStatus;
   // 센서 정상 여부. 아직 수신 이력이 없으면 null (고장(false)과 구분)
   radar: boolean | null;
   thermal: boolean | null;
   vibrator: boolean | null;
-  deviceOnline: boolean;       // 기기 연결 여부 (서버 계산값, 최근 5분 기준)
+  deviceOnline: boolean; // 기기 연결 여부 (서버 계산값, 최근 5분 기준)
   deviceLastSeen: string | null; // 마지막 기기 신호 수신 시각. 수신 이력 없으면 null
 }
 
@@ -22,36 +22,36 @@ export interface TargetSummary {
   total: number;
   safe: number;
   warning: number;
-  danger: number;              // emergency -> danger
+  danger: number; // emergency -> danger
 }
 
 // 4. 전체 API 응답 구조
 export interface TargetsResponse {
-  stats: TargetSummary;        // summary -> stats
-  members: Target[];           // targets -> members
+  stats: TargetSummary; // summary -> stats
+  members: Target[]; // targets -> members
 }
 
-// 5. 대상 추가 요청 데이터 
+// 5. 대상 추가 요청 데이터
 // (이전 백엔드 코드를 보면 deviceMac이 필수로 들어갔었으므로 추가함)
 export interface AddTargetRequest {
   name: string;
-  age: number;          // Long
+  age: number; // Long
   address: string;
-  contact: string;      // 전화번호. 숫자만 문자열로 전송 (예: '01012345678')
-                        // number로 보내면 앞자리 0이 사라지므로 반드시 string
-  deviceMac: string;    // 디바이스 MAC 주소 (예: AA:BB:CC:DD:EE:FF)
+  contact: string; // 전화번호. 숫자만 문자열로 전송 (예: '01012345678')
+  // number로 보내면 앞자리 0이 사라지므로 반드시 string
+  deviceMac: string; // 디바이스 MAC 주소 (예: AA:BB:CC:DD:EE:FF)
 }
 // ── 낙상 이력 ────────────────────────────────────────────────
 export type LogType =
-  | 'FALL_EVENT'      // 낙상 감지
-  | 'SENSOR_FAILURE'  // 센서 이상 (sensorDetail에 대상 센서)
-  | 'EMERGENCY_CALL'  // 119 신고 (백엔드 예정)
-  | 'DEVICE_OFFLINE'  // 기기 연결 끊김 (백엔드 예정)
-  | 'ACTIVE';         // 정상 활동 (백엔드 예정)
+  | 'FALL_EVENT' // 낙상 감지
+  | 'SENSOR_FAILURE' // 센서 이상 (sensorDetail에 대상 센서)
+  | 'EMERGENCY_CALL' // 119 신고 (백엔드 예정)
+  | 'DEVICE_OFFLINE' // 기기 연결 끊김 (백엔드 예정)
+  | 'ACTIVE'; // 정상 활동 (백엔드 예정)
 
 export interface FallLog {
   id: number;
-  detectedAt: string;          // 발생 시각
+  detectedAt: string; // 발생 시각
   status: TargetStatus;
   logType: LogType;
   sensorDetail: string | null; // vibrator / radar / thermal
@@ -71,5 +71,5 @@ export interface FallLogParams {
   page?: number;
   size?: number;
   from?: string; // YYYY-MM-DD
-  to?: string;   // YYYY-MM-DD
+  to?: string; // YYYY-MM-DD
 }

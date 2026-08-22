@@ -9,20 +9,15 @@ export type DeviceState = 'PENDING' | 'OFFLINE' | 'ONLINE';
  * - OFFLINE: 신호 이력은 있으나 현재 끊김 (deviceOnline === false)
  * - ONLINE : 정상 연결
  */
-export function getDeviceState(
-  target: Pick<Target, 'deviceOnline' | 'deviceLastSeen'>
-): DeviceState {
+export function getDeviceState(target: Pick<Target, 'deviceOnline' | 'deviceLastSeen'>): DeviceState {
   if (target.deviceLastSeen == null) return 'PENDING';
   return target.deviceOnline ? 'ONLINE' : 'OFFLINE';
 }
 
-export const DEVICE_STATE_CONFIG: Record<
-  DeviceState,
-  { label: string; dot: string; text: string }
-> = {
-  ONLINE:  { label: '온라인',      dot: 'bg-green-500', text: 'text-green-600' },
-  OFFLINE: { label: '오프라인',    dot: 'bg-gray-400',  text: 'text-gray-500' },
-  PENDING: { label: '연결 대기 중', dot: 'bg-gray-300',  text: 'text-gray-400' },
+export const DEVICE_STATE_CONFIG: Record<DeviceState, { label: string; dot: string; text: string }> = {
+  ONLINE: { label: '온라인', dot: 'bg-green-500', text: 'text-green-600' },
+  OFFLINE: { label: '오프라인', dot: 'bg-gray-400', text: 'text-gray-500' },
+  PENDING: { label: '연결 대기 중', dot: 'bg-gray-300', text: 'text-gray-400' },
 };
 
 /**

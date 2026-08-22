@@ -31,7 +31,10 @@ const STATUS_MESSAGE: Record<number, string> = {
 };
 
 /** API 에러를 사용자용 문구로 변환 */
-export function getErrorMessage(error: unknown, fallback = '요청을 처리하지 못했습니다. 잠시 후 다시 시도해주세요.'): string {
+export function getErrorMessage(
+  error: unknown,
+  fallback = '요청을 처리하지 못했습니다. 잠시 후 다시 시도해주세요.',
+): string {
   if (!axios.isAxiosError(error)) return fallback;
 
   // 네트워크 단절 · 타임아웃

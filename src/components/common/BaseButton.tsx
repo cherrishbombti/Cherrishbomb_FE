@@ -60,15 +60,12 @@ const BaseButton: React.FC<BaseButtonProps> = ({
       ? 'opacity-50 cursor-not-allowed'
       : 'cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97]',
     className,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
-    <button
-      type={type}
-      className={baseStyle}
-      onClick={handleClick}
-      disabled={disabled || loading}
-    >
+    <button type={type} className={baseStyle} onClick={handleClick} disabled={disabled || loading}>
       {loading ? (
         <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
       ) : iconPosition === 'left' ? (

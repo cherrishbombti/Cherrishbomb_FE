@@ -12,7 +12,6 @@ import SkeletonCard from '../../components/domain/SkeletonCard';
 import StateMessage from '../../components/common/StateMessage';
 import { SECTIONS, STAT_CARDS } from './dashboardConfig';
 
-
 export default function WorkerDashboardPage() {
   const queryClient = useQueryClient();
   // 선택된 피보호자를 URL 쿼리로 관리 — 새로고침·공유 시에도 유지되고
@@ -26,13 +25,10 @@ export default function WorkerDashboardPage() {
   // ✨ 제네릭을 명시해주면 타입 추론이 더 깔끔하게 됨
   const { data, isLoading, isError, isRefetching, refetch } = useTargets();
 
-
   // 새로고침: 응답이 빨라도 최소 0.6초는 아이콘이 돌도록
   const handleRefresh = () => {
     setIsSpinning(true);
-    Promise.allSettled([refetch(), new Promise((r) => setTimeout(r, 600))]).then(() =>
-      setIsSpinning(false)
-    );
+    Promise.allSettled([refetch(), new Promise((r) => setTimeout(r, 600))]).then(() => setIsSpinning(false));
   };
 
   // DANGER 상태 변화 감지
@@ -68,8 +64,7 @@ export default function WorkerDashboardPage() {
   };
 
   // ✨ data.targets -> data.members 로 변경
-  const byStatus = (status: Target['status']) =>
-    data?.members.filter((m) => m.status === status) ?? [];
+  const byStatus = (status: Target['status']) => data?.members.filter((m) => m.status === status) ?? [];
 
   // ✨ data.summary -> data.stats 로 변경
   const stats = data?.stats;
@@ -77,9 +72,7 @@ export default function WorkerDashboardPage() {
   // 폴링으로 상태·기기 정보가 바뀌면 열려 있는 모달에도 즉시 반영된다
   const selectedIdParam = searchParams.get('target');
   const selectedTarget =
-    selectedIdParam != null
-      ? (data?.members.find((m) => m.id === Number(selectedIdParam)) ?? null)
-      : null;
+    selectedIdParam != null ? (data?.members.find((m) => m.id === Number(selectedIdParam)) ?? null) : null;
 
   const openTarget = (id: number) => {
     setSearchParams({ target: String(id) });
@@ -115,7 +108,9 @@ export default function WorkerDashboardPage() {
                 {isLoading ? (
                   <div className="h-8 w-12 bg-gray-100 rounded animate-pulse" />
                 ) : (
-                  <span className={`text-3xl font-bold tabular-nums ${valueColor}`}>{showErrorScreen ? '—' : (value ?? 0)}</span>
+                  <span className={`text-3xl font-bold tabular-nums ${valueColor}`}>
+                    {showErrorScreen ? '—' : (value ?? 0)}
+                  </span>
                 )}
                 <span className={`text-sm ${labelColor}`}>{label}</span>
               </div>
@@ -134,8 +129,18 @@ export default function WorkerDashboardPage() {
                 disabled={isSpinning}
                 className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 border border-gray-200 px-3 py-1.5 rounded-lg transition-colors"
               >
-                <svg className={`w-3.5 h-3.5 ${isSpinning || isRefetching ? 'animate-spin-reverse' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                <svg
+                  className={`w-3.5 h-3.5 ${isSpinning || isRefetching ? 'animate-spin-reverse' : ''}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
                 </svg>
                 새로고침
               </button>
@@ -144,7 +149,11 @@ export default function WorkerDashboardPage() {
                 className="flex items-center gap-1.5 text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 px-3 py-1.5 rounded-lg transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
                 </svg>
                 대상 추가
               </button>
@@ -154,10 +163,22 @@ export default function WorkerDashboardPage() {
           {/* 갱신 실패 경고 — 기존 목록은 유지하고 최신이 아님만 알림 */}
           {showStaleWarning && (
             <div className="mx-5 mt-4 flex items-center gap-2 rounded-lg bg-yellow-50 border border-yellow-200 px-3 py-2">
-              <svg className="w-4 h-4 text-yellow-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+              <svg
+                className="w-4 h-4 text-yellow-600 flex-shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                />
               </svg>
-              <span className="text-xs text-yellow-800">최신 정보를 불러오지 못했습니다. 아래 목록은 마지막으로 확인된 상태입니다.</span>
+              <span className="text-xs text-yellow-800">
+                최신 정보를 불러오지 못했습니다. 아래 목록은 마지막으로 확인된 상태입니다.
+              </span>
             </div>
           )}
 
@@ -167,16 +188,40 @@ export default function WorkerDashboardPage() {
               <StateMessage
                 iconBg="bg-red-50"
                 icon={
-                  <svg className="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                  <svg
+                    className="w-6 h-6 text-red-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                    />
                   </svg>
                 }
                 title="데이터를 불러오지 못했습니다"
                 description="네트워크 상태를 확인하고 다시 시도해주세요."
                 action={
-                  <button onClick={handleRefresh} disabled={isSpinning} className="mt-1 flex items-center gap-1.5 text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded-lg transition-colors">
-                    <svg className={`w-3.5 h-3.5 ${isSpinning || isRefetching ? 'animate-spin-reverse' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  <button
+                    onClick={handleRefresh}
+                    disabled={isSpinning}
+                    className="mt-1 flex items-center gap-1.5 text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded-lg transition-colors"
+                  >
+                    <svg
+                      className={`w-3.5 h-3.5 ${isSpinning || isRefetching ? 'animate-spin-reverse' : ''}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
                     </svg>
                     다시 시도
                   </button>
@@ -193,7 +238,9 @@ export default function WorkerDashboardPage() {
                       <div className="w-16 h-4 bg-gray-100 rounded animate-pulse" />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                      {Array.from({ length: count }).map((_, i) => <SkeletonCard key={i} />)}
+                      {Array.from({ length: count }).map((_, i) => (
+                        <SkeletonCard key={i} />
+                      ))}
                     </div>
                   </div>
                 ))}
@@ -204,16 +251,39 @@ export default function WorkerDashboardPage() {
               <StateMessage
                 iconBg="bg-indigo-50"
                 icon={
-                  <svg className="w-6 h-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <svg
+                    className="w-6 h-6 text-indigo-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={1.8}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
                   </svg>
                 }
                 title="아직 등록된 가구가 없습니다"
                 description="모니터링할 노인가구를 추가해보세요."
                 action={
-                  <button onClick={() => setIsAddModalOpen(true)} className="mt-1 flex items-center gap-1.5 text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded-lg transition-colors">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  <button
+                    onClick={() => setIsAddModalOpen(true)}
+                    className="mt-1 flex items-center gap-1.5 text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded-lg transition-colors"
+                  >
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
                     </svg>
                     대상 추가
                   </button>
@@ -221,34 +291,37 @@ export default function WorkerDashboardPage() {
               />
             )}
 
-            {!showErrorScreen && !isLoading && !isEmpty && SECTIONS.map(({ status, label, icon, textColor, emptyMsg }) => {
-              const members = byStatus(status);
-              return (
-                <section key={status}>
-                  <div className="flex items-center gap-2 mb-4">
-                    {icon}
-                    <h3 className={`text-sm font-bold ${textColor}`}>
-                      {label}
-                      <span className="ml-1.5 font-normal text-gray-500">({members.length})</span>
-                    </h3>
-                  </div>
-                  {members.length === 0 ? (
-                    <p className="text-sm text-gray-500 py-2">{emptyMsg}</p>
-                  ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                      {members.map((member) => (
-                        <TargetCard
-                          // ✨ 백엔드 PK 이름인 id로 변경
-                          key={member.id} 
-                          target={member} 
-                          onClick={openTarget}
-                        />
-                      ))}
+            {!showErrorScreen &&
+              !isLoading &&
+              !isEmpty &&
+              SECTIONS.map(({ status, label, icon, textColor, emptyMsg }) => {
+                const members = byStatus(status);
+                return (
+                  <section key={status}>
+                    <div className="flex items-center gap-2 mb-4">
+                      {icon}
+                      <h3 className={`text-sm font-bold ${textColor}`}>
+                        {label}
+                        <span className="ml-1.5 font-normal text-gray-500">({members.length})</span>
+                      </h3>
                     </div>
-                  )}
-                </section>
-              );
-            })}
+                    {members.length === 0 ? (
+                      <p className="text-sm text-gray-500 py-2">{emptyMsg}</p>
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {members.map((member) => (
+                          <TargetCard
+                            // ✨ 백엔드 PK 이름인 id로 변경
+                            key={member.id}
+                            target={member}
+                            onClick={openTarget}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </section>
+                );
+              })}
           </div>
         </div>
       </main>
@@ -262,16 +335,9 @@ export default function WorkerDashboardPage() {
       />
 
       {/* 위급 알림 */}
-      <DangerAlert
-        names={dangerAlertNames}
-        onClose={() => setDangerAlertNames([])}
-      />
+      <DangerAlert names={dangerAlertNames} onClose={() => setDangerAlertNames([])} />
 
-      <AddTargetModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onSuccess={handleAddSuccess}
-      />
+      <AddTargetModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onSuccess={handleAddSuccess} />
     </>
   );
 }

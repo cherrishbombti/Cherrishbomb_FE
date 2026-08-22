@@ -25,7 +25,7 @@ export default function WorkerLayout() {
     <div className="min-h-screen bg-gray-50">
       <PushToastListener />
       <div className="sticky top-0 z-10">
-        <DashboardHeader orgName={org?.name} onLogout={handleLogout} />
+        <DashboardHeader orgName={org?.name} orgCode={org?.orgCode} onLogout={handleLogout} />
         <WorkerTabs />
       </div>
       {/* key를 경로로 두어 탭 전환마다 등장 애니메이션이 다시 실행되도록 */}

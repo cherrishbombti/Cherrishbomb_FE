@@ -184,7 +184,7 @@ sketch
 .github/skills/
 PRODUCT.md
 
-# 환경 변수 (VAPID 키 등) — .env.example만 공유
+# 환경 변수 — .env.example만 공유
 .env
 .env.local
 .env.*.local

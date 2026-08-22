@@ -299,9 +299,7 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
                   피보호자 삭제
                 </button>
               ) : (
-                <p className="text-xs text-gray-500 text-center px-2">
-                  보호자가 등록한 대상이라 조회만 가능합니다.
-                </p>
+                <p className="text-xs text-gray-500 text-center px-2">보호자가 등록한 대상이라 조회만 가능합니다.</p>
               )}
             </>
           ) : (

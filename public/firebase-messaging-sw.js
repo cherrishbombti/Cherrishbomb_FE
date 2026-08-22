@@ -3,14 +3,9 @@
 importScripts('https://www.gstatic.com/firebasejs/12.17.1/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/12.17.1/firebase-messaging-compat.js');
 
-firebase.initializeApp({
-  apiKey: 'AIzaSyByT6BRp-57zdOe7gGabBwQNADOklKLgMs',
-  authDomain: 'cherry-alarm.firebaseapp.com',
-  projectId: 'cherry-alarm',
-  storageBucket: 'cherry-alarm.firebasestorage.app',
-  messagingSenderId: '958775262029',
-  appId: '1:958775262029:web:c07f23004b442baa229504',
-});
+// 설정은 src/lib/firebase.ts가 등록 시 쿼리스트링으로 넘겨준다.
+// (여기에 복붙해두면 한쪽만 바뀌었을 때 백그라운드 알림만 조용히 죽는다)
+firebase.initializeApp(Object.fromEntries(new URL(self.location).searchParams));
 
 const messaging = firebase.messaging();
 
@@ -33,11 +28,15 @@ self.addEventListener('notificationclick', (event) => {
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
       for (const client of windowClients) {
         if ('focus' in client) {
-          client.navigate(url);
-          return client.focus();
+          // navigate()는 이 워커가 통제하지 않는 탭에서 거부된다.
+          // 포커스를 먼저 확실히 잡고, 이동이 실패하면 새 창으로 대체한다.
+          return client
+            .focus()
+            .then((focused) => focused.navigate(url))
+            .catch(() => clients.openWindow(url));
         }
       }
-      if (clients.openWindow) return clients.openWindow(url);
+      return clients.openWindow(url);
     })
   );
 });

@@ -114,9 +114,7 @@ export default function WorkerLoginPage() {
           />
 
           {/* 서버 에러 — 있을 때만 표시 (드문 상황이라 예약 대신 조건부) */}
-          {serverError && (
-            <p className="text-sm text-red-500 text-center">{serverError}</p>
-          )}
+          {serverError && <p className="text-sm text-red-500 text-center">{serverError}</p>}
 
           <BaseButton
             onClick={handleLogin}
@@ -140,8 +138,6 @@ export default function WorkerLoginPage() {
             회원가입
           </button>
         </div>
-
-
       </div>
     </div>
   );

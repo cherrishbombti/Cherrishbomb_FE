@@ -19,32 +19,37 @@
 
 ## 기술 스택
 
-| 구분 | 사용 |
-|------|------|
-| 프레임워크 | React 19 + TypeScript |
-| 빌드 | Vite 8 |
-| 스타일 | Tailwind CSS 4 |
-| 라우팅 | React Router 7 |
-| 서버 상태 | TanStack Query (React Query) 5 |
-| HTTP | Axios |
+| 구분       | 사용                           |
+| ---------- | ------------------------------ |
+| 프레임워크 | React 19 + TypeScript          |
+| 빌드       | Vite 8                         |
+| 스타일     | Tailwind CSS 4                 |
+| 라우팅     | React Router 7                 |
+| 서버 상태  | TanStack Query (React Query) 5 |
+| HTTP       | Axios                          |
 
 ---
 
 ## 시작하기
 
 ### 1. 설치
+
 ```bash
 npm install
 ```
 
 ### 2. 환경 변수
+
 루트에 `.env` 파일을 만들고 API 서버 주소를 지정합니다.
+
 ```
 VITE_API_BASE_URL=http://localhost:8080
 ```
+
 > 미설정 시 기본값 `http://localhost:8080` 을 사용합니다.
 
 ### 3. 실행
+
 ```bash
 npm run dev       # 개발 서버 (HMR)
 npm run build     # 타입 체크 + 프로덕션 빌드
@@ -76,13 +81,13 @@ src/
 
 ## 라우팅
 
-| 경로 | 화면 | 접근 |
-|------|------|------|
-| `/worker/login` `/worker/signup` | 사회복지사 로그인·회원가입 | 공개 |
-| `/worker/dashboard` | 통합 관제 대시보드 | 인증 필요 |
-| `/guardian/login` `/guardian/signup` | 보호자 로그인·회원가입 | 공개 |
-| `/guardian/home` | 보호자 홈 | 인증 필요 |
-| `/oauth/callback` | 소셜 로그인 콜백 처리 | 공개 |
+| 경로                                 | 화면                       | 접근      |
+| ------------------------------------ | -------------------------- | --------- |
+| `/worker/login` `/worker/signup`     | 사회복지사 로그인·회원가입 | 공개      |
+| `/worker/dashboard`                  | 통합 관제 대시보드         | 인증 필요 |
+| `/guardian/login` `/guardian/signup` | 보호자 로그인·회원가입     | 공개      |
+| `/guardian/home`                     | 보호자 홈                  | 인증 필요 |
+| `/oauth/callback`                    | 소셜 로그인 콜백 처리      | 공개      |
 
 ---
 
@@ -99,8 +104,8 @@ src/
 
 대상자 상태는 세 가지로 통일되어 있습니다.
 
-| 값 | 의미 |
-|----|------|
-| `SAFE` | 안전 |
-| `WARNING` | 주의 |
-| `DANGER` | 긴급 (낙상 감지 등) |
+| 값        | 의미                |
+| --------- | ------------------- |
+| `SAFE`    | 안전                |
+| `WARNING` | 주의                |
+| `DANGER`  | 긴급 (낙상 감지 등) |

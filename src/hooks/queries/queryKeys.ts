@@ -7,6 +7,5 @@ export const queryKeys = {
   notifications: (page: number) => ['org', 'notifications', page] as const,
   targetDetail: (targetId: number | null) => ['targets', targetId, 'detail'] as const,
   targetHealth: (targetId: number | null) => ['targets', targetId, 'health'] as const,
-  targetLogs: (targetId: number | null, params: FallLogParams) =>
-    ['targets', targetId, 'logs', params] as const,
+  targetLogs: (targetId: number | null, params: FallLogParams) => ['targets', targetId, 'logs', params] as const,
 };

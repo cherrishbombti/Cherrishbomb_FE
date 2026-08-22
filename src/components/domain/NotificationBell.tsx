@@ -10,10 +10,10 @@ import { timeAgo } from '../../utils/date';
 
 /** 알림 유형별 문구·색상. DEVICE_OFFLINE/EMERGENCY는 백엔드 생성 예정 */
 const TYPE_CONFIG: Record<NotificationType, { message: string; dot: string; bg: string }> = {
-  FALL:           { message: '낙상이 감지되었습니다',     dot: 'bg-red-500',    bg: 'bg-red-50' },
-  EMERGENCY:      { message: '긴급 상황입니다',           dot: 'bg-red-600',    bg: 'bg-red-50' },
-  WARNING:        { message: '주의가 필요한 상태입니다',  dot: 'bg-yellow-500', bg: 'bg-yellow-50' },
-  DEVICE_OFFLINE: { message: '기기 연결이 끊겼습니다',    dot: 'bg-gray-400',   bg: 'bg-gray-50' },
+  FALL: { message: '낙상이 감지되었습니다', dot: 'bg-red-500', bg: 'bg-red-50' },
+  EMERGENCY: { message: '긴급 상황입니다', dot: 'bg-red-600', bg: 'bg-red-50' },
+  WARNING: { message: '주의가 필요한 상태입니다', dot: 'bg-yellow-500', bg: 'bg-yellow-50' },
+  DEVICE_OFFLINE: { message: '기기 연결이 끊겼습니다', dot: 'bg-gray-400', bg: 'bg-gray-50' },
 };
 
 const FALLBACK = { message: '새로운 알림이 있습니다', dot: 'bg-gray-400', bg: 'bg-gray-50' };
@@ -80,7 +80,11 @@ export default function NotificationBell() {
         className="relative w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+          />
         </svg>
         {unreadCount > 0 && (
           <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[10px] font-medium flex items-center justify-center">
@@ -125,9 +129,7 @@ export default function NotificationBell() {
                 ))}
               </div>
             ) : isError ? (
-              <p className="px-4 py-8 text-center text-xs text-gray-500">
-                알림을 불러오지 못했습니다.
-              </p>
+              <p className="px-4 py-8 text-center text-xs text-gray-500">알림을 불러오지 못했습니다.</p>
             ) : items.length === 0 ? (
               <p className="px-4 py-8 text-center text-xs text-gray-500">새로운 알림이 없습니다.</p>
             ) : (
@@ -143,7 +145,9 @@ export default function NotificationBell() {
                   >
                     <span className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${cfg.dot}`} />
                     <span className="flex-1 min-w-0">
-                      <span className={`block text-sm truncate ${item.isRead ? 'text-gray-600' : 'font-medium text-gray-800'}`}>
+                      <span
+                        className={`block text-sm truncate ${item.isRead ? 'text-gray-600' : 'font-medium text-gray-800'}`}
+                      >
                         {item.memberName}
                       </span>
                       <span className="block text-xs text-gray-500 mt-0.5">{cfg.message}</span>

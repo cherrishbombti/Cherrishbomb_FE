@@ -10,15 +10,18 @@ interface Props {
 }
 
 // 상태별 스타일
-const STATUS_CONFIG: Record<TargetStatus, {
-  cardBg: string;
-  border: string;
-  badgeBg: string;
-  badgeText: string;
-  avatarBg: string;
-  dotColor: string;
-  accent: string;
-}> = {
+const STATUS_CONFIG: Record<
+  TargetStatus,
+  {
+    cardBg: string;
+    border: string;
+    badgeBg: string;
+    badgeText: string;
+    avatarBg: string;
+    dotColor: string;
+    accent: string;
+  }
+> = {
   DANGER: {
     cardBg: 'bg-red-50',
     border: 'border-red-200',
@@ -82,8 +85,7 @@ export default function TargetCard({ target, onClick }: Props) {
               className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500"
               title="아직 기기 신호를 받지 못해 상태를 알 수 없습니다."
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
-              －
+              <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />－
             </div>
           ) : (
             <div
@@ -92,7 +94,9 @@ export default function TargetCard({ target, onClick }: Props) {
               }`}
               title={staleStatus ? '기기 연결이 끊겨 마지막으로 수신된 상태입니다.' : undefined}
             >
-              <span className={`w-1.5 h-1.5 rounded-full ${cfg.dotColor} ${target.status === 'DANGER' && !staleStatus ? 'animate-pulse' : ''}`} />
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${cfg.dotColor} ${target.status === 'DANGER' && !staleStatus ? 'animate-pulse' : ''}`}
+              />
               {target.status}
             </div>
           )}
@@ -111,8 +115,18 @@ export default function TargetCard({ target, onClick }: Props) {
           className="w-7 h-7 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm transition-colors"
           aria-label={`${target.name}에게 전화`}
         >
-          <svg className="w-3.5 h-3.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 8V5z" />
+          <svg
+            className="w-3.5 h-3.5 text-indigo-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 8V5z"
+            />
           </svg>
         </button>
       </div>
@@ -127,7 +141,8 @@ export default function TargetCard({ target, onClick }: Props) {
             {target.name} <span className="font-normal text-gray-500">({target.age}세)</span>
           </p>
           <p className="text-xs text-gray-500 truncate mt-0.5">
-            <span className="mr-1">📍</span>{target.address}
+            <span className="mr-1">📍</span>
+            {target.address}
           </p>
         </div>
       </div>

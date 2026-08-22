@@ -34,5 +34,5 @@ axiosInstance.interceptors.response.use(
       window.location.href = '/worker/login';
     }
     return Promise.reject(error);
-  }
+  },
 );

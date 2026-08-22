@@ -10,9 +10,9 @@ export interface WorkerLoginResponse {
 
 // 사회복지사 회원가입 요청
 export interface WorkerSignupRequest {
-  orgId: string;    // 아이디
+  orgId: string; // 아이디
   password: string; // 비밀번호
-  name: string;     // 기관명
+  name: string; // 기관명
 }
 
 // 회원가입 응답 (성공 메시지 등)

@@ -115,16 +115,10 @@ export default function AddTargetModal({ isOpen, onClose, onSuccess }: Props) {
           required
         />
 
-        {serverError && (
-          <p className="text-sm text-red-500">{serverError}</p>
-        )}
+        {serverError && <p className="text-sm text-red-500">{serverError}</p>}
 
         <div className="flex gap-2 mt-2">
-          <BaseButton
-            variant="secondary"
-            onClick={handleClose}
-            className="flex-1"
-          >
+          <BaseButton variant="secondary" onClick={handleClose} className="flex-1">
             취소
           </BaseButton>
           <BaseButton

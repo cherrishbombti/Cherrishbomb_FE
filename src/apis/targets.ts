@@ -33,14 +33,8 @@ export const deleteTarget = async (id: number): Promise<void> => {
 };
 
 // [GET] 낙상/센서 이력 조회 (페이지네이션 + 기간 필터)
-export const getTargetLogs = async (
-  targetId: number,
-  params: FallLogParams = {}
-): Promise<PageResponse<FallLog>> => {
-  const { data } = await axiosInstance.get<PageResponse<FallLog>>(
-    `/api/targets/${targetId}/logs`,
-    { params }
-  );
+export const getTargetLogs = async (targetId: number, params: FallLogParams = {}): Promise<PageResponse<FallLog>> => {
+  const { data } = await axiosInstance.get<PageResponse<FallLog>>(`/api/targets/${targetId}/logs`, { params });
   return data;
 };
 
@@ -51,10 +45,7 @@ export const getTargetHealth = async (targetId: number): Promise<HealthInfo> => 
 };
 
 // [PATCH] 건강 정보 부분 수정 — 보내지 않은 필드는 유지, ""는 값 비우기
-export const patchTargetHealth = async (
-  targetId: number,
-  body: HealthInfoPatch
-): Promise<HealthInfo> => {
+export const patchTargetHealth = async (targetId: number, body: HealthInfoPatch): Promise<HealthInfo> => {
   const { data } = await axiosInstance.patch<HealthInfo>(`/api/targets/${targetId}/health`, body);
   return data;
 };

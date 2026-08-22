@@ -39,9 +39,7 @@ export function registerMessagingServiceWorker(): Promise<ServiceWorkerRegistrat
       return Promise.reject(new Error('서비스 워커를 지원하지 않는 브라우저입니다.'));
     }
     const params = new URLSearchParams(firebaseConfig);
-    swRegistrationPromise = navigator.serviceWorker.register(
-      `/firebase-messaging-sw.js?${params.toString()}`
-    );
+    swRegistrationPromise = navigator.serviceWorker.register(`/firebase-messaging-sw.js?${params.toString()}`);
   }
   return swRegistrationPromise;
 }

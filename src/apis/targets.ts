@@ -1,10 +1,25 @@
 import { axiosInstance } from './axiosInstance';
-import type { TargetsResponse, Target, AddTargetRequest, FallLog, FallLogParams, PageResponse } from '../types/target';
+import type {
+  TargetsResponse,
+  Target,
+  TargetDetail,
+  AddTargetRequest,
+  FallLog,
+  FallLogParams,
+  PageResponse,
+} from '../types/target';
 import type { HealthInfo, HealthInfoPatch } from '../types/health';
 
 // [GET] 대시보드 전체 피보호자 및 통계 조회
 export const getTargets = async (): Promise<TargetsResponse> => {
   const { data } = await axiosInstance.get<TargetsResponse>('/api/targets');
+  return data;
+};
+
+// [GET] 피보호자 상세 — 목록에 없는 비상연락망(contacts)을 얻기 위해 사용한다.
+// 상태·기기 정보는 폴링되는 목록 쪽 값을 계속 쓰므로 여기서 가져오지 않는다.
+export const getTarget = async (targetId: number): Promise<TargetDetail> => {
+  const { data } = await axiosInstance.get<TargetDetail>(`/api/targets/${targetId}`);
   return data;
 };
 

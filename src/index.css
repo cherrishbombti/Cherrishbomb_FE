@@ -38,6 +38,29 @@ body {
   animation: danger-blink 1.2s ease-in-out infinite;
 }
 
+/* 위급 토스트 강조 — 배경색 자체가 펄스해야 눈에 띄므로 danger-blink보다 강하게.
+   modal-panel-in(등장)과 반복 깜빡임을 한 규칙에 함께 선언 — 두 클래스가 각자 animation을
+   선언하면 나중에 정의된 쪽이 앞의 것을 통째로 덮어써 등장 애니메이션만 돌고 깜빡임이 씹힌다. */
+@keyframes toast-blink {
+  0%, 100% { background-color: #FEF2F2; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55), 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+  50%      { background-color: #FECACA; box-shadow: 0 0 0 7px rgba(239, 68, 68, 0.3), 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+}
+/* 화면 전체 가장자리 강조 — 콘텐츠는 그대로 읽히게 중앙은 투명, 테두리만 붉게 펄스.
+   초당 1회로 광과민성 발작 유발 기준(초당 3회 이상 명암 급변)보다 훨씬 느리게 유지한다. */
+@keyframes screen-alert-pulse {
+  0%, 100% { opacity: 0.18; }
+  50%      { opacity: 0.42; }
+}
+.screen-alert-overlay {
+  background: radial-gradient(ellipse at center, transparent 35%, rgba(239, 68, 68, 0.85) 140%);
+  animation: screen-alert-pulse 1s ease-in-out infinite;
+}
+
+.toast-urgent-blink {
+  background-color: #FEF2F2; /* 애니메이션 시작 전에도 항상 불투명하도록 고정 배경 */
+  animation: modal-panel-in 0.22s cubic-bezier(0.16, 1, 0.3, 1), toast-blink 1s ease-in-out 0.22s infinite;
+}
+
 /* 위급 알림 등장 애니메이션 */
 @keyframes alert-in {
   from {

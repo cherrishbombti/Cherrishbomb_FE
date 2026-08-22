@@ -1,6 +1,7 @@
 import type { Target, TargetStatus } from '../../types/target';
 import { timeAgo } from '../../utils/date';
 import { getDeviceState, isStatusStale, isStatusUnknown } from '../../utils/deviceStatus';
+import { isManageable } from '../../utils/targetPermission';
 import DeviceStateBadge from './DeviceStateBadge';
 
 interface Props {
@@ -58,6 +59,8 @@ export default function TargetCard({ target, onClick }: Props) {
   const staleStatus = isStatusStale(deviceState);
   // 수신 이력이 없으면 상태를 '안전'으로 오해하지 않도록 값 자체를 숨긴다
   const unknownStatus = isStatusUnknown(deviceState);
+  // 보호자가 등록해 연동만 된 대상 — 이 기관 소속이 아니라 조회만 가능하다는 걸 구분해 보여준다
+  const linkedByGuardian = !isManageable(target);
 
   const handleCall = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -96,6 +99,14 @@ export default function TargetCard({ target, onClick }: Props) {
               />
               {target.status}
             </div>
+          )}
+          {linkedByGuardian && (
+            <span
+              className="px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-500"
+              title="보호자가 등록하고 기관번호로 연동된 대상입니다. 조회만 가능합니다."
+            >
+              보호자 있음
+            </span>
           )}
         </div>
         {/* 전화 버튼 */}

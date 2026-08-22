@@ -5,7 +5,9 @@ import { timeAgo } from '../../utils/date';
 import { getDeviceState, isStatusStale, isStatusUnknown, DEVICE_STATE_CONFIG } from '../../utils/deviceStatus';
 import DeviceStateBadge from './DeviceStateBadge';
 import HealthInfoSection from './HealthInfoSection';
+import ContactsSection from './ContactsSection';
 import { deleteTarget } from '../../apis/targets';
+import { isManageable } from '../../utils/targetPermission';
 import type { Target } from '../../types/target';
 
 interface Props {
@@ -72,6 +74,8 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
   const deviceState = getDeviceState(target);
   const staleStatus = isStatusStale(deviceState);
   const unknownStatus = isStatusUnknown(deviceState);
+  // 보호자가 등록한 연동 대상은 이 기관에 관리 권한이 없어 삭제·수정 버튼을 노출하지 않는다
+  const manageable = isManageable(target);
 
   // 부모 transform 영향을 받지 않도록 body 직속으로 렌더
   return createPortal(
@@ -134,6 +138,14 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
                   </div>
                 )}
                 <DeviceStateBadge state={deviceState} />
+                {!manageable && (
+                  <span
+                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-500"
+                    title="보호자가 등록하고 기관번호로 연동된 대상입니다. 조회만 가능합니다."
+                  >
+                    보호자 있음
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -261,8 +273,11 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
             </div>
           </div>
 
+          {/* 비상연락망 — 보호자가 앱에서 등록한 연락처 */}
+          <ContactsSection targetId={target.id} />
+
           {/* 건강 정보 (민감정보) */}
-          <HealthInfoSection targetId={target.id} />
+          <HealthInfoSection targetId={target.id} editable={manageable} />
         </div>
 
         {/* 하단 버튼 */}
@@ -275,12 +290,19 @@ export default function TargetDetailModal({ target, onClose, onDelete }: Props) 
               >
                 닫기
               </button>
-              <button
-                onClick={() => setConfirmDelete(true)}
-                className="w-full py-2.5 rounded-xl text-red-400 hover:bg-red-50 text-sm font-semibold transition-colors border border-red-100"
-              >
-                피보호자 삭제
-              </button>
+              {/* 연동 대상은 이 기관 소속이 아니므로 삭제 버튼 자체를 노출하지 않는다 */}
+              {manageable ? (
+                <button
+                  onClick={() => setConfirmDelete(true)}
+                  className="w-full py-2.5 rounded-xl text-red-400 hover:bg-red-50 text-sm font-semibold transition-colors border border-red-100"
+                >
+                  피보호자 삭제
+                </button>
+              ) : (
+                <p className="text-xs text-gray-500 text-center px-2">
+                  보호자가 등록한 대상이라 조회만 가능합니다.
+                </p>
+              )}
             </>
           ) : (
             <div className="bg-red-50 border border-red-100 rounded-xl p-4 flex flex-col gap-3">

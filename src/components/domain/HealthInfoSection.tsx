@@ -60,7 +60,14 @@ export default function HealthInfoSection({ targetId, editable = true }: Props) 
     setSaveError('');
   };
 
-  const hasNoContent = !!data && !data.disease && !data.medication && !data.memo;
+  /**
+   * 서버가 저장된 값을 읽지 못한 상태(readable: false).
+   * 모든 필드가 null로 오지만 '미등록'과 달리 값은 존재하므로 빈 상태로 표시하면 안 된다.
+   * 이 경우 수정도 막는다 — 편집 기준(baseline)이 전부 빈 값이라 저장하면 원래 값을 덮어쓴다.
+   */
+  const unreadable = data?.readable === false;
+
+  const hasNoContent = !!data && !unreadable && !data.disease && !data.medication && !data.memo;
   // 수정 이력(updatedAt)이 있으면 '등록했다가 비운' 상태 — 감사 기록을 남겨야 하므로 구분한다
   const neverRegistered = hasNoContent && !data?.updatedAt;
   const clearedByUser = hasNoContent && !!data?.updatedAt;
@@ -93,7 +100,7 @@ export default function HealthInfoSection({ targetId, editable = true }: Props) 
           <h3 className="text-sm font-bold text-gray-700">건강 정보</h3>
           <span className="text-xs text-gray-500">민감정보</span>
         </div>
-        {editable && !isLoading && !isError && !editing && (
+        {editable && !isLoading && !isError && !unreadable && !editing && (
           <button
             onClick={startEditing}
             className="text-xs font-medium text-indigo-500 hover:text-indigo-600 transition-colors"
@@ -149,6 +156,30 @@ export default function HealthInfoSection({ targetId, editable = true }: Props) 
             >
               {isPending ? '저장 중…' : '저장'}
             </button>
+          </div>
+        </div>
+      ) : unreadable ? (
+        <div className="flex items-start gap-2 rounded-xl bg-yellow-50 border border-yellow-200 px-3 py-3">
+          <svg
+            className="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+            />
+          </svg>
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-yellow-800">
+              건강정보를 불러올 수 없습니다. 등록된 내용이 없는 것이 아니라, 저장된 값을 읽지 못한 상태입니다.
+            </span>
+            <span className="text-xs text-yellow-700">
+              응급 시 이 정보에 의존하지 말고 보호자에게 직접 확인해주세요. 문제가 계속되면 관리자에게 문의해주세요.
+            </span>
           </div>
         </div>
       ) : neverRegistered ? (

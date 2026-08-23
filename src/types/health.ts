@@ -8,6 +8,13 @@ export type UpdatedByType = 'USER' | 'ORGANIZATION';
  * 아직 등록 전이어도 404가 아닌 200 + 빈 값이 오므로 모든 필드가 null일 수 있다.
  */
 export interface HealthInfo {
+  /**
+   * 저장된 값을 서버가 읽어낼 수 있었는지 여부 (복호화 성공 여부).
+   * false면 disease/medication/memo가 전부 null로 오는데, 이는 '미등록'이 아니라
+   * '읽지 못함'이므로 빈 상태가 아닌 경고로 표시해야 한다.
+   * 필드가 없는 응답(PATCH 등)은 읽기 성공으로 간주한다.
+   */
+  readable?: boolean;
   disease: string | null; // 기저질환
   medication: string | null; // 복용약
   memo: string | null; // 병력·메모

@@ -39,6 +39,7 @@ export const getTargetLogs = async (targetId: number, params: FallLogParams = {}
 };
 
 // [GET] 피보호자 건강 정보 조회 (미등록 시에도 200 + 빈 값)
+// readable=false면 값은 있으나 서버가 읽지 못한 상태 — 미등록과 구분해 경고로 표시한다
 export const getTargetHealth = async (targetId: number): Promise<HealthInfo> => {
   const { data } = await axiosInstance.get<HealthInfo>(`/api/targets/${targetId}/health`);
   return data;

@@ -39,9 +39,28 @@ function redirectToLogin() {
   }
 }
 
+// 진행 중인 재발급 요청을 공유하는 single-flight 큐.
+// 백엔드가 refresh token을 회전(rotation)할 예정이라, 대시보드처럼 여러 요청이 동시에 401을
+// 맞았을 때 각자 재발급을 부르면 첫 번째가 옛 토큰을 폐기시켜 나머지는 이미 폐기된 토큰으로
+// 실패하고 강제 로그아웃된다. 실제 재발급 호출을 하나로 묶어 이 경쟁을 없앤다 (PR #37 후속 논의).
+let refreshPromise: Promise<string> | null = null;
+
+export function refreshOnce(): Promise<string> {
+  if (!refreshPromise) {
+    refreshPromise = axiosInstance
+      .post<RefreshTokenResponse>(REFRESH_ENDPOINT)
+      .then(({ data }) => {
+        setToken(data.token);
+        return data.token;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+  return refreshPromise;
+}
+
 // 응답 인터셉터 — access token 만료(401) 시 재발급 후 원요청 재시도.
-// 백엔드가 refresh token을 회전(rotation)하지 않기로 해, 동시에 여러 요청이 401을 맞아도
-// 각자 재발급을 호출하는 방식으로 충분하다 (중복 호출 방지 큐 불필요).
 axiosInstance.interceptors.response.use(
   (res) => res,
   async (error) => {
@@ -66,10 +85,9 @@ axiosInstance.interceptors.response.use(
     }
 
     try {
-      const { data } = await axiosInstance.post<RefreshTokenResponse>(REFRESH_ENDPOINT);
-      setToken(data.token);
+      const token = await refreshOnce();
       config._retried = true;
-      config.headers.Authorization = `Bearer ${data.token}`;
+      config.headers.Authorization = `Bearer ${token}`;
       return axiosInstance(config);
     } catch {
       redirectToLogin();

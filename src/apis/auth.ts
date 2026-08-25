@@ -1,4 +1,4 @@
-import { axiosInstance } from './axiosInstance';
+import { axiosInstance, refreshOnce } from './axiosInstance';
 import type {
   WorkerLoginRequest,
   WorkerLoginResponse,
@@ -26,10 +26,12 @@ export async function getMyOrg(): Promise<OrgProfile> {
   return data;
 }
 
-// httpOnly 쿠키의 refresh token으로 새 access token 발급 (POST /api/auth/refresh)
+// httpOnly 쿠키의 refresh token으로 새 access token 발급 (POST /api/auth/refresh).
+// axiosInstance의 401 재발급 인터셉터와 같은 single-flight 큐(refreshOnce)를 타야,
+// 부팅 시 복구 호출과 다른 요청의 401 재발급이 동시에 겹쳐도 refresh가 한 번만 나간다.
 export async function refreshAccessToken(): Promise<RefreshTokenResponse> {
-  const { data } = await axiosInstance.post<RefreshTokenResponse>('/api/auth/refresh');
-  return data;
+  const token = await refreshOnce();
+  return { token };
 }
 
 // 서버에 저장된 refresh token 무효화 (POST /api/auth/logout) — 호출하지 않으면 로그아웃 후에도 재발급이 가능한 상태로 남는다

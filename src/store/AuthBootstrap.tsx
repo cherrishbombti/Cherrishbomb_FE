@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { refreshAccessToken } from '../apis/auth';
 import { setToken } from '../utils/token';
+import Logo from '../components/common/Logo';
 
 /**
  * access token은 메모리에만 있어 새로고침하면 사라진다.
@@ -14,11 +16,23 @@ export default function AuthBootstrap({ children }: { children: React.ReactNode 
   useEffect(() => {
     refreshAccessToken()
       .then(({ token }) => setToken(token))
-      .catch(() => {})
+      .catch((err) => {
+        // 401(로그인 안 한 상태)은 정상 흐름이라 조용히 넘어간다.
+        // 그 외(5xx·타임아웃·BACKEND_ORIGIN 오설정 등)는 배포 후 진단할 수 있게 로그를 남긴다.
+        if (!axios.isAxiosError(err) || err.response?.status !== 401) {
+          console.error('세션 복구(refresh) 실패', err);
+        }
+      })
       .finally(() => setReady(true));
   }, []);
 
-  if (!ready) return null;
+  if (!ready) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-50">
+        <Logo size="xl" className="animate-pulse" />
+      </div>
+    );
+  }
 
   return <>{children}</>;
 }

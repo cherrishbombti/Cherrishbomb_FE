@@ -20,7 +20,9 @@ export default function WorkerLayout() {
     try {
       await logout(); // 서버의 refresh token도 무효화 — 안 하면 로그아웃 후에도 재발급이 가능한 상태로 남는다
     } catch {
-      // 서버 호출이 실패해도 클라이언트 로그아웃은 계속 진행한다
+      // httpOnly 쿠키는 서버 호출로만 지울 수 있어, 실패하면 공유 기기에서 다음 방문 시
+      // AuthBootstrap이 그 쿠키로 세션을 복구할 수 있다. 화면 이동은 막지 않되 사용자에게 알린다.
+      window.alert('서버에서 로그아웃 처리에 실패했습니다. 공유 기기라면 브라우저를 완전히 종료해주세요.');
     }
     clearToken();
     queryClient.clear(); // 다른 계정 로그인 시 이전 캐시가 남지 않도록

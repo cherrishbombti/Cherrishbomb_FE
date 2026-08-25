@@ -73,7 +73,7 @@ export default function HealthInfoSection({ targetId, editable = true }: Props) 
   const clearedByUser = hasNoContent && !!data?.updatedAt;
 
   const handleSave = () => {
-    if (!baseline) return;
+    if (!baseline || unreadable) return;
     // 편집 시작 시점 값과 비교해 바뀐 필드만 전송 (미전송 필드는 서버가 기존 값 유지)
     const patch: HealthInfoPatch = {};
     FIELDS.forEach(({ key }) => {
@@ -141,6 +141,16 @@ export default function HealthInfoSection({ targetId, editable = true }: Props) 
 
           {saveError && <p className="text-xs text-red-500">{saveError}</p>}
 
+          {unreadable && (
+            <p
+              role="alert"
+              className="text-xs text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-2"
+            >
+              편집 중 건강정보를 읽지 못하는 상태로 바뀌었습니다. 이대로 저장하면 수정하지 않은 항목이 사라질 수 있어
+              저장을 막았습니다. 취소 후 다시 시도해주세요.
+            </p>
+          )}
+
           <div className="flex gap-2">
             <button
               onClick={cancelEditing}
@@ -151,7 +161,7 @@ export default function HealthInfoSection({ targetId, editable = true }: Props) 
             </button>
             <button
               onClick={handleSave}
-              disabled={isPending}
+              disabled={isPending || unreadable}
               className="flex-1 h-9 rounded-lg text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-300 transition-colors"
             >
               {isPending ? '저장 중…' : '저장'}
@@ -159,7 +169,7 @@ export default function HealthInfoSection({ targetId, editable = true }: Props) 
           </div>
         </div>
       ) : unreadable ? (
-        <div className="flex items-start gap-2 rounded-xl bg-yellow-50 border border-yellow-200 px-3 py-3">
+        <div role="alert" className="flex items-start gap-2 rounded-xl bg-yellow-50 border border-yellow-200 px-3 py-3">
           <svg
             className="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5"
             fill="none"

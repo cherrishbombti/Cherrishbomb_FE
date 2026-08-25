@@ -5,6 +5,7 @@ import type {
   WorkerSignupRequest,
   WorkerSignupResponse,
   OrgProfile,
+  RefreshTokenResponse,
 } from '../types/auth';
 
 // 사회복지사 로그인 (POST /api/org/login) — 백엔드가 토큰 문자열 하나만 반환
@@ -23,4 +24,15 @@ export async function workerSignup(body: WorkerSignupRequest): Promise<WorkerSig
 export async function getMyOrg(): Promise<OrgProfile> {
   const { data } = await axiosInstance.get<OrgProfile>('/api/org/me');
   return data;
+}
+
+// httpOnly 쿠키의 refresh token으로 새 access token 발급 (POST /api/auth/refresh)
+export async function refreshAccessToken(): Promise<RefreshTokenResponse> {
+  const { data } = await axiosInstance.post<RefreshTokenResponse>('/api/auth/refresh');
+  return data;
+}
+
+// 서버에 저장된 refresh token 무효화 (POST /api/auth/logout) — 호출하지 않으면 로그아웃 후에도 재발급이 가능한 상태로 남는다
+export async function logout(): Promise<void> {
+  await axiosInstance.post('/api/auth/logout');
 }

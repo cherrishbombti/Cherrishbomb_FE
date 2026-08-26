@@ -8,6 +8,11 @@ export interface WorkerLoginResponse {
   token: string;
 }
 
+// refresh token(httpOnly 쿠키)으로 새 access token 발급 (POST /api/auth/refresh)
+export interface RefreshTokenResponse {
+  token: string;
+}
+
 // 사회복지사 회원가입 요청
 export interface WorkerSignupRequest {
   orgId: string; // 아이디

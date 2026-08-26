@@ -6,6 +6,7 @@ import PushToastListener from '../../components/domain/PushToastListener';
 import { useMyOrg } from '../../hooks/queries/useMyOrg';
 import { clearToken } from '../../utils/token';
 import { unregisterPushNotifications } from '../../utils/pushToken';
+import { logout } from '../../apis/auth';
 
 // 사회복지사 화면 공통 레이아웃 — 헤더 + 탭을 모든 하위 페이지가 공유
 export default function WorkerLayout() {
@@ -16,6 +17,13 @@ export default function WorkerLayout() {
 
   const handleLogout = async () => {
     await unregisterPushNotifications(); // JWT가 살아있는 동안 서버에서 토큰을 지워야 하므로 clearToken 전에 호출
+    try {
+      await logout(); // 서버의 refresh token도 무효화 — 안 하면 로그아웃 후에도 재발급이 가능한 상태로 남는다
+    } catch {
+      // httpOnly 쿠키는 서버 호출로만 지울 수 있어, 실패하면 공유 기기에서 다음 방문 시
+      // AuthBootstrap이 그 쿠키로 세션을 복구할 수 있다. 화면 이동은 막지 않되 사용자에게 알린다.
+      window.alert('서버에서 로그아웃 처리에 실패했습니다. 공유 기기라면 브라우저를 완전히 종료해주세요.');
+    }
     clearToken();
     queryClient.clear(); // 다른 계정 로그인 시 이전 캐시가 남지 않도록
     navigate('/worker/login');

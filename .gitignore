@@ -188,3 +188,9 @@ PRODUCT.md
 .env
 .env.local
 .env.*.local
+
+# 빌드 산출물
+dist/
+
+# Vercel CLI 로컬 설정
+.vercel/

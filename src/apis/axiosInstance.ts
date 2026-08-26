@@ -2,7 +2,7 @@ import axios, { type InternalAxiosRequestConfig } from 'axios';
 import { getToken, setToken, clearToken } from '../utils/token';
 import type { RefreshTokenResponse } from '../types/auth';
 
-// 배포본은 Cloudflare Pages Function이, 로컬은 vite dev proxy가 /api를 백엔드로 전달하므로
+// 배포본은 Vercel rewrite가, 로컬은 vite dev proxy가 /api를 백엔드로 전달하므로
 // 항상 상대경로로 호출한다 (같은 오리진이라 httpOnly refresh 쿠키도 자동으로 실린다).
 export const axiosInstance = axios.create({
   baseURL: '',

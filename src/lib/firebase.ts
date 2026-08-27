@@ -39,7 +39,38 @@ export function registerMessagingServiceWorker(): Promise<ServiceWorkerRegistrat
       return Promise.reject(new Error('서비스 워커를 지원하지 않는 브라우저입니다.'));
     }
     const params = new URLSearchParams(firebaseConfig);
-    swRegistrationPromise = navigator.serviceWorker.register(`/firebase-messaging-sw.js?${params.toString()}`);
+    swRegistrationPromise = navigator.serviceWorker
+      .register(`/firebase-messaging-sw.js?${params.toString()}`)
+      .then(waitUntilActive);
   }
   return swRegistrationPromise;
+}
+
+/**
+ * 워커가 활성화될 때까지 기다린다.
+ *
+ * register()는 등록만 되면 resolve하며, 그 시점의 워커는 아직 installing 일 수 있다.
+ * 활성화 전 registration을 getToken()에 넘기면 PushManager.subscribe가
+ * 'no active Service Worker'로 실패해 토큰이 발급되지 않는다.
+ *
+ * 기존 워커가 살아 있으면 즉시 통과하므로 평소에는 대기가 없다.
+ * 첫 설치나 워커가 사라진 뒤의 재설치에서만 기다린다.
+ */
+function waitUntilActive(registration: ServiceWorkerRegistration): Promise<ServiceWorkerRegistration> {
+  if (registration.active) return Promise.resolve(registration);
+
+  const worker = registration.installing ?? registration.waiting;
+  if (!worker) return navigator.serviceWorker.ready.then(() => registration);
+
+  return new Promise((resolve, reject) => {
+    worker.addEventListener('statechange', () => {
+      if (worker.state === 'activated') {
+        resolve(registration);
+      } else if (worker.state === 'redundant') {
+        // 스크립트 평가 실패 등으로 설치가 폐기된 경우.
+        // 여기서 끊지 않으면 이 Promise가 영원히 pending 으로 남는다.
+        reject(new Error('서비스 워커 설치에 실패했습니다.'));
+      }
+    });
+  });
 }
